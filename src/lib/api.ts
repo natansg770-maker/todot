@@ -183,3 +183,17 @@ export async function resetDbApi(): Promise<DbResponse> {
     }),
   );
 }
+
+export async function uploadLogoApi(file: File): Promise<{
+  src: string;
+  version: number;
+}> {
+  const form = new FormData();
+  form.append("logo", file);
+  return parse(
+    await fetch("/api/logo", {
+      method: "POST",
+      body: form,
+    }),
+  );
+}

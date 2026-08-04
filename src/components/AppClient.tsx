@@ -15,6 +15,7 @@ import {
   setSession,
   updateAssignmentApi,
   updatePersonApi,
+  uploadLogoApi,
   type DbResponse,
 } from "@/lib/api";
 import {
@@ -580,6 +581,7 @@ function AdminPanel({
   const [assigneeId, setAssigneeId] = useState(user.id);
   const [selectedRecipients, setSelectedRecipients] = useState<string[]>([]);
   const [filterRole, setFilterRole] = useState("all");
+  const [logoMessage, setLogoMessage] = useState<string | null>(null);
 
   const unassigned = useMemo(() => {
     const assigned = new Set(db.assignments.map((a) => a.recipientId));
@@ -604,6 +606,41 @@ function AdminPanel({
         <p className="mt-1 text-sm text-muted">
           הוספת תפקידים ואנשים, שיוך תודות, וחלוקה אוטומטית
         </p>
+      </div>
+
+      <div className="panel rounded-[28px] p-5 sm:p-6">
+        <h3 className="text-lg font-bold text-maroon">החלפת לוגו</h3>
+        <p className="mt-1 text-sm text-muted">
+          בחרו את קובץ הלוגו מהטלפון או מהמחשב (PNG / JPG / WEBP)
+        </p>
+        <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+          <Logo size={96} />
+          <label className="btn btn-secondary cursor-pointer">
+            בחירת קובץ לוגו
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              className="hidden"
+              disabled={pending}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (!file) return;
+                onAction(async () => {
+                  setLogoMessage(null);
+                  const meta = await uploadLogoApi(file);
+                  window.dispatchEvent(
+                    new CustomEvent("logo-updated", { detail: meta }),
+                  );
+                  setLogoMessage("הלוגו עודכן בהצלחה");
+                });
+              }}
+            />
+          </label>
+        </div>
+        {logoMessage && (
+          <p className="mt-3 text-sm font-semibold text-pine">{logoMessage}</p>
+        )}
       </div>
 
       <div className="panel rounded-[28px] p-5 sm:p-6">

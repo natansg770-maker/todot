@@ -42,3 +42,10 @@ next-env.d.ts
 
 # local database
 /data/db.json
+
+# uploaded logo variants/meta (keep default logo.png in repo)
+/public/brand/logo-meta.json
+/public/brand/logo.jpg
+/public/brand/logo.jpeg
+/public/brand/logo.webp
+/public/brand/logo.gif

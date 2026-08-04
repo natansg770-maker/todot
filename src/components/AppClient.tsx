@@ -67,12 +67,38 @@ export function AppClient() {
     }
   }
 
-  if (loading || !db) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center p-6">
         <div className="panel animate-rise rounded-3xl px-8 py-10 text-center">
           <Logo size={120} className="logo-float mx-auto mb-4" priority />
           <p className="text-muted">טוען את מערכת התודות…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!db) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-6">
+        <div className="panel animate-rise rounded-3xl px-8 py-10 text-center">
+          <Logo size={120} className="mx-auto mb-4" priority />
+          <p className="font-semibold text-maroon">לא הצלחנו לטעון את המערכת</p>
+          <p className="mt-2 text-sm text-muted">
+            {error || "בדקו את החיבור ונסו שוב"}
+          </p>
+          <button
+            className="btn btn-primary mt-5"
+            onClick={() => {
+              setLoading(true);
+              setError(null);
+              refresh()
+                .catch((err: Error) => setError(err.message))
+                .finally(() => setLoading(false));
+            }}
+          >
+            נסו שוב
+          </button>
         </div>
       </div>
     );

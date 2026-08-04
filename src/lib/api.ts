@@ -17,14 +17,31 @@ async function parse<T>(res: Response): Promise<T> {
   return data;
 }
 
+async function request(input: string, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+  try {
+    return await fetch(input, {
+      ...init,
+      cache: "no-store",
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("השרת לא מגיב. רעננו את הדף או נסו שוב בעוד רגע");
+    }
+    throw new Error("בעיית רשת. בדקו את החיבור ונסו שוב");
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function fetchDb(): Promise<DbResponse> {
-  return parse(await fetch("/api/db", { cache: "no-store" }));
+  return parse(await request("/api/db"));
 }
 
 export async function fetchSession(): Promise<Person | null> {
-  const data = await parse<{ user: Person | null }>(
-    await fetch("/api/session", { cache: "no-store" }),
-  );
+  const data = await parse<{ user: Person | null }>(await request("/api/session"));
   return data.user;
 }
 

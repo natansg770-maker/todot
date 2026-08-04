@@ -14,12 +14,30 @@ import {
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "db.json");
 
+const SENIOR_ROLE_NAMES = new Set([
+  "גנרל",
+  "מנהל מטבח",
+  "מנהל משבקי״ם",
+  'מנהל משבקי"ם',
+  "מנהל צוות טכני",
+  "מנהל שלאפט א חסיד",
+  "קצין",
+  "הנהלה בכירה",
+]);
+
 function normalizePeople(db: Database): boolean {
   let changed = false;
+  const roleNameById = new Map(db.roles.map((r) => [r.id, r.name]));
   for (const person of db.people) {
     const shouldAdmin = person.name === ADMIN_NAME;
     if (Boolean(person.isAdmin) !== shouldAdmin) {
       person.isAdmin = shouldAdmin;
+      changed = true;
+    }
+    const roleName = roleNameById.get(person.roleId) ?? "";
+    const shouldSenior = SENIOR_ROLE_NAMES.has(roleName) || shouldAdmin;
+    if (Boolean(person.isSenior) !== shouldSenior) {
+      person.isSenior = shouldSenior;
       changed = true;
     }
   }

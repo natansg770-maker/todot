@@ -46,7 +46,8 @@ export async function resetDatabase(): Promise<Database> {
 }
 
 export function computeStats(db: Database): Stats {
-  const thankable = db.people.filter((p) => !p.isSenior);
+  // Everyone on the roster can receive a thank-you (seniors thank the full team).
+  const thankable = db.people;
   const assignedRecipientIds = new Set(db.assignments.map((a) => a.recipientId));
   const completedRecipientIds = new Set(
     db.assignments.filter((a) => a.status === "done").map((a) => a.recipientId),
@@ -258,15 +259,17 @@ export async function deleteAssignment(assignmentId: string): Promise<void> {
 
 export async function autoDistribute(): Promise<Assignment[]> {
   const db = await ensureDb();
-  const seniors = db.people.filter((p) => p.isSenior);
-  const thankable = db.people.filter((p) => !p.isSenior);
+  const seniorList = db.people.filter((p) => p.isSenior);
   const assigned = new Set(db.assignments.map((a) => a.recipientId));
-  const unassigned = thankable.filter((p) => !assigned.has(p.id));
+  // Prefer assigning non-seniors first; seniors can still be assigned manually.
+  const unassigned = db.people.filter(
+    (p) => !p.isSenior && !assigned.has(p.id),
+  );
 
-  if (seniors.length === 0 || unassigned.length === 0) return [];
+  if (seniorList.length === 0 || unassigned.length === 0) return [];
 
   const load = new Map<string, number>();
-  for (const s of seniors) {
+  for (const s of seniorList) {
     load.set(
       s.id,
       db.assignments.filter((a) => a.assigneeId === s.id && a.status === "pending")
@@ -276,9 +279,9 @@ export async function autoDistribute(): Promise<Assignment[]> {
 
   const created: Assignment[] = [];
   for (const recipient of unassigned) {
-    let best = seniors[0];
+    let best = seniorList[0];
     let bestLoad = load.get(best.id) ?? 0;
-    for (const senior of seniors) {
+    for (const senior of seniorList) {
       const current = load.get(senior.id) ?? 0;
       if (current < bestLoad) {
         best = senior;

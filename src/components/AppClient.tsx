@@ -536,23 +536,21 @@ function TeamDirectory({ db }: { db: DbResponse }) {
                         <p className="text-xs text-muted">{person.phone}</p>
                       )}
                     </div>
-                    {!person.isSenior && (
-                      <span
-                        className={`chip ${
-                          coverage.hasDone
-                            ? "chip-done"
-                            : coverage.hasAny
-                              ? "chip-pending"
-                              : "chip-warn"
-                        }`}
-                      >
-                        {coverage.hasDone
-                          ? "קיבל תודה"
+                    <span
+                      className={`chip ${
+                        coverage.hasDone
+                          ? "chip-done"
                           : coverage.hasAny
-                            ? "משויך"
-                            : "ללא שיוך"}
-                      </span>
-                    )}
+                            ? "chip-pending"
+                            : "chip-warn"
+                      }`}
+                    >
+                      {coverage.hasDone
+                        ? "קיבל תודה"
+                        : coverage.hasAny
+                          ? "משויך"
+                          : "ללא שיוך"}
+                    </span>
                   </li>
                 );
               })}
@@ -586,11 +584,12 @@ function AdminPanel({
   const unassigned = useMemo(() => {
     const assigned = new Set(db.assignments.map((a) => a.recipientId));
     return thankablePeople(db).filter((p) => {
+      if (p.id === assigneeId) return false;
       if (assigned.has(p.id)) return false;
       if (filterRole !== "all" && p.roleId !== filterRole) return false;
       return true;
     });
-  }, [db, filterRole]);
+  }, [db, filterRole, assigneeId]);
 
   function toggleRecipient(id: string) {
     setSelectedRecipients((prev) =>

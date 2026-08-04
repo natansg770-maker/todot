@@ -20,7 +20,7 @@ export function seniors(db: Database): Person[] {
 
 export function thankablePeople(db: Database): Person[] {
   return db.people
-    .filter((p) => !p.isSenior)
+    .slice()
     .sort((a, b) => a.name.localeCompare(b.name, "he"));
 }
 

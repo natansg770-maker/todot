@@ -151,13 +151,17 @@ export function AppClient() {
             החלף משתמש
           </button>
         </div>
-        <nav className="grid grid-cols-2 gap-2 border-t border-[var(--line)] bg-white/40 p-3 sm:grid-cols-4">
+        <nav
+          className={`grid gap-2 border-t border-[var(--line)] bg-white/40 p-3 ${
+            user.isAdmin ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"
+          }`}
+        >
           {(
             [
               ["mine", "המשימות שלי"],
               ["overview", "סקירה"],
               ["team", "הצוות"],
-              ["admin", "ניהול"],
+              ...(user.isAdmin ? [["admin", "ניהול"] as const] : []),
             ] as const
           ).map(([id, label]) => (
             <button
@@ -190,7 +194,7 @@ export function AppClient() {
       )}
       {tab === "overview" && <Overview db={db} />}
       {tab === "team" && <TeamDirectory db={db} />}
-      {tab === "admin" && (
+      {tab === "admin" && user.isAdmin && (
         <AdminPanel
           db={db}
           user={user}
@@ -359,7 +363,7 @@ function MyTasks({
       )}
 
       {mine.length === 0 ? (
-        <EmptyState text="עדיין לא שויכו אליך אנשים להודות להם. אפשר לשייך במסך הניהול או לבצע חלוקה אוטומטית." />
+        <EmptyState text="עדיין לא שויכו אליך אנשים להודות להם. נתן שמחה יכול לשייך משימות במסך הניהול." />
       ) : (
         <div className="space-y-3">
           {mine.map((assignment) => {

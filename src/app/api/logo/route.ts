@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import { requireAdmin } from "@/lib/auth";
 
 const LOGO_DIR = path.join(process.cwd(), "public", "brand");
 const META_PATH = path.join(LOGO_DIR, "logo-meta.json");
@@ -23,6 +24,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    await requireAdmin();
     const form = await request.formData();
     const file = form.get("logo");
 
@@ -71,9 +73,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, ...meta });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "העלאת הלוגו נכשלה" },
-      { status: 500 },
-    );
+    const message =
+      error instanceof Error ? error.message : "העלאת הלוגו נכשלה";
+    const status = message.includes("נתן שמחה") ? 403 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }

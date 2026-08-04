@@ -1,4 +1,4 @@
-import type { Database, Person, Role } from "./types";
+import { ADMIN_NAME, type Database, type Person, type Role } from "./types";
 
 function id(prefix: string, index: number) {
   return `${prefix}-${String(index).padStart(3, "0")}`;
@@ -144,6 +144,7 @@ export function createSeedDatabase(): Database {
         name,
         roleId: roleIdByKey[key],
         isSenior: seniorRoleKeys.has(key),
+        isAdmin: name === ADMIN_NAME,
       });
     }
   }

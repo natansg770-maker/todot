@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 import { addRole, deleteRole, updateRole } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
+    await requireAdmin();
     const body = (await request.json()) as { name?: string };
     if (!body.name?.trim()) {
       return NextResponse.json({ error: "נא להזין שם תפקיד" }, { status: 400 });
@@ -10,15 +12,15 @@ export async function POST(request: Request) {
     const role = await addRole(body.name);
     return NextResponse.json({ role });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "שגיאה" },
-      { status: 400 },
-    );
+    const message = error instanceof Error ? error.message : "שגיאה";
+    const status = message.includes("נתן שמחה") ? 403 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 export async function PATCH(request: Request) {
   try {
+    await requireAdmin();
     const body = (await request.json()) as {
       id?: string;
       name?: string;
@@ -33,15 +35,15 @@ export async function PATCH(request: Request) {
     });
     return NextResponse.json({ role });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "שגיאה" },
-      { status: 400 },
-    );
+    const message = error instanceof Error ? error.message : "שגיאה";
+    const status = message.includes("נתן שמחה") ? 403 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 export async function DELETE(request: Request) {
   try {
+    await requireAdmin();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id) {
@@ -50,9 +52,8 @@ export async function DELETE(request: Request) {
     await deleteRole(id);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "שגיאה" },
-      { status: 400 },
-    );
+    const message = error instanceof Error ? error.message : "שגיאה";
+    const status = message.includes("נתן שמחה") ? 403 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }

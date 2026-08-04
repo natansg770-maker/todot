@@ -11,9 +11,13 @@ export type Person = {
   name: string;
   roleId: string;
   isSenior: boolean;
+  /** Only admins see the management tab and can change roster/assignments. */
+  isAdmin?: boolean;
   phone?: string;
   notes?: string;
 };
+
+export const ADMIN_NAME = "נתן שמחה גרינברג";
 
 export type AssignmentStatus = "pending" | "done";
 

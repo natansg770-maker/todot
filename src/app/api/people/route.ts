@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 import { addPerson, deletePerson, updatePerson } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
+    await requireAdmin();
     const body = (await request.json()) as {
       name?: string;
       roleId?: string;
@@ -25,15 +27,15 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ person });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "שגיאה" },
-      { status: 400 },
-    );
+    const message = error instanceof Error ? error.message : "שגיאה";
+    const status = message.includes("נתן שמחה") ? 403 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 export async function PATCH(request: Request) {
   try {
+    await requireAdmin();
     const body = (await request.json()) as {
       id?: string;
       name?: string;
@@ -54,15 +56,15 @@ export async function PATCH(request: Request) {
     });
     return NextResponse.json({ person });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "שגיאה" },
-      { status: 400 },
-    );
+    const message = error instanceof Error ? error.message : "שגיאה";
+    const status = message.includes("נתן שמחה") ? 403 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 export async function DELETE(request: Request) {
   try {
+    await requireAdmin();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id) {
@@ -71,9 +73,8 @@ export async function DELETE(request: Request) {
     await deletePerson(id);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "שגיאה" },
-      { status: 400 },
-    );
+    const message = error instanceof Error ? error.message : "שגיאה";
+    const status = message.includes("נתן שמחה") ? 403 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }

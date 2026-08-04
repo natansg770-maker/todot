@@ -1,22 +1,39 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { createSeedDatabase } from "./seed";
-import type {
-  Assignment,
-  ContactMethod,
-  Database,
-  Person,
-  Role,
-  Stats,
+import {
+  ADMIN_NAME,
+  type Assignment,
+  type ContactMethod,
+  type Database,
+  type Person,
+  type Role,
+  type Stats,
 } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "db.json");
 
+function normalizePeople(db: Database): boolean {
+  let changed = false;
+  for (const person of db.people) {
+    const shouldAdmin = person.name === ADMIN_NAME;
+    if (Boolean(person.isAdmin) !== shouldAdmin) {
+      person.isAdmin = shouldAdmin;
+      changed = true;
+    }
+  }
+  return changed;
+}
+
 async function ensureDb(): Promise<Database> {
   try {
     const raw = await fs.readFile(DB_PATH, "utf8");
-    return JSON.parse(raw) as Database;
+    const db = JSON.parse(raw) as Database;
+    if (normalizePeople(db)) {
+      await saveDb(db);
+    }
+    return db;
   } catch {
     const seed = createSeedDatabase();
     await fs.mkdir(DATA_DIR, { recursive: true });
@@ -112,11 +129,13 @@ export async function addPerson(input: {
   if (!db.roles.some((r) => r.id === input.roleId)) {
     throw new Error("התפקיד לא נמצא");
   }
+  const name = input.name.trim();
   const person: Person = {
     id: uid("person"),
-    name: input.name.trim(),
+    name,
     roleId: input.roleId,
     isSenior: Boolean(input.isSenior),
+    isAdmin: name === ADMIN_NAME,
     phone: input.phone?.trim() || undefined,
     notes: input.notes?.trim() || undefined,
   };
@@ -142,6 +161,7 @@ export async function updatePerson(
   if (patch.isSenior !== undefined) person.isSenior = patch.isSenior;
   if (patch.phone !== undefined) person.phone = patch.phone.trim() || undefined;
   if (patch.notes !== undefined) person.notes = patch.notes.trim() || undefined;
+  person.isAdmin = person.name === ADMIN_NAME;
   await saveDb(db);
   return person;
 }

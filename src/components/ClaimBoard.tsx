@@ -72,7 +72,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
   return (
     <section className="animate-rise space-y-5">
       <div className="panel rounded-[28px] p-5 sm:p-6">
-        <h2 className="section-title text-2xl text-maroon">
+        <h2 className="section-title text-3xl text-maroon">
           לוקחים תודות
         </h2>
         <p className="mt-1 max-w-2xl text-sm font-normal leading-6 text-muted">
@@ -137,7 +137,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-lg font-bold text-ink">{person.name}</h3>
+                    <h3 className="text-xl font-medium text-ink">{person.name}</h3>
                     {holders.length === 0 ? (
                       <span className="chip chip-pending">פנוי</span>
                     ) : mine ? (
@@ -149,12 +149,12 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                       <span className="chip chip-warn">בכיר</span>
                     )}
                   </div>
-                  <p className="mt-1 text-sm text-muted">
+                  <p className="mt-1 text-base text-muted">
                     {roleName(db, person.roleId)}
                     {person.phone ? ` · ${person.phone}` : ""}
                   </p>
                   {others.length > 0 && (
-                    <p className="mt-2 text-sm text-muted">
+                    <p className="mt-2 text-base text-muted">
                       אצל:{" "}
                       {others
                         .map((a) => personById(db, a.assigneeId)?.name)
@@ -163,7 +163,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                     </p>
                   )}
                   {myPendingRequest && (
-                    <p className="mt-2 text-sm font-semibold text-maroon">
+                    <p className="mt-2 text-base font-medium text-maroon">
                       בקשה ממתינה לאישור
                     </p>
                   )}
@@ -202,7 +202,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                     <>
                       {openRequestFor === person.id ? (
                         <div className="space-y-2 rounded-2xl border border-[var(--line)] bg-white/70 p-3">
-                          <p className="text-xs font-semibold text-maroon">
+                          <p className="text-base font-medium text-maroon">
                             בקשה להצטרף לתודה
                           </p>
                           <select
@@ -229,7 +229,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                           />
                           <div className="flex gap-2">
                             <button
-                              className="btn btn-primary flex-1 !py-2 text-sm"
+                              className="btn btn-primary flex-1 !py-2.5 text-base"
                               disabled={pending}
                               onClick={() => {
                                 const select = document.getElementById(
@@ -251,7 +251,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                               שליחת בקשה
                             </button>
                             <button
-                              className="btn btn-ghost !py-2 text-sm"
+                              className="btn btn-ghost !py-2.5 text-base"
                               onClick={() => setOpenRequestFor(null)}
                             >
                               ביטול
@@ -271,7 +271,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                   )}
 
                   {mine && holders.length > 1 && (
-                    <p className="text-xs text-muted">
+                    <p className="text-base text-muted">
                       עוד {holders.length - 1} מודים גם
                     </p>
                   )}

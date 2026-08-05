@@ -95,7 +95,7 @@ export function AppClient() {
         <div className="panel animate-rise rounded-3xl px-8 py-10 text-center">
           <Logo size={120} className="mx-auto mb-4" priority />
           <p className="font-semibold text-maroon">לא הצלחנו לטעון את המערכת</p>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-base text-muted">
             {error || "בדקו את החיבור ונסו שוב"}
           </p>
           <button
@@ -139,17 +139,17 @@ export function AppClient() {
           <div className="flex items-center gap-4">
             <Logo size={78} className="logo-float shrink-0" priority />
             <div>
-              <p className="text-sm font-normal text-orange">מערכת תודות צוות</p>
-              <h1 className="brand-display text-2xl text-maroon sm:text-3xl">
+              <p className="text-base font-medium text-orange">מערכת תודות צוות</p>
+              <h1 className="brand-display text-3xl text-maroon sm:text-4xl">
                 גן ישראל · משפחת השלוחים הצעירים
               </h1>
-              <p className="mt-1 text-sm font-normal text-muted">
+              <p className="mt-2 text-base font-medium leading-7 text-muted">
                 שלום {user.name} · מתאמים מי מודה למי, ומעדכנים אחרי השיחה
               </p>
             </div>
           </div>
           <button
-            className="btn btn-ghost self-start sm:self-center"
+            className="btn btn-ghost self-start text-base sm:self-center"
             onClick={() => {
               void run(async () => {
                 await setSession(null);
@@ -160,7 +160,7 @@ export function AppClient() {
             החלף משתמש
           </button>
         </div>
-        <nav className="flex flex-wrap gap-2 border-t border-[var(--line)] bg-white/40 p-3">
+        <nav className="flex flex-wrap gap-2 border-t border-[var(--line)] bg-white/40 p-3 sm:p-4">
           {(
             [
               ["mine", "המשימות שלי"],
@@ -172,10 +172,10 @@ export function AppClient() {
           ).map(([id, label]) => (
             <button
               key={id}
-              className={`min-w-[8.5rem] flex-1 rounded-2xl px-3 py-3 text-sm font-bold transition ${
+              className={`min-w-[9rem] flex-1 rounded-2xl px-3 py-3.5 text-base transition ${
                 tab === id
-                  ? "bg-maroon text-[var(--paper)] shadow-md"
-                  : "bg-transparent font-normal text-maroon hover:bg-orange/15"
+                  ? "bg-maroon font-medium text-[var(--paper)] shadow-md"
+                  : "bg-transparent font-medium text-maroon hover:bg-orange/15"
               }`}
               onClick={() => setTab(id)}
             >
@@ -186,7 +186,7 @@ export function AppClient() {
       </header>
 
       {error && (
-        <div className="mb-4 rounded-2xl border border-maroon/20 bg-maroon/8 px-4 py-3 text-sm text-maroon">
+        <div className="mb-4 rounded-2xl border border-maroon/20 bg-maroon/8 px-4 py-3 text-base font-medium text-maroon">
           {error}
         </div>
       )}
@@ -259,8 +259,8 @@ function PasswordSettings({
     <div className="panel rounded-[28px] p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="section-title text-lg text-maroon">הסיסמה שלי</h3>
-          <p className="text-sm font-normal text-muted">
+          <h3 className="section-title text-xl text-maroon">הסיסמה שלי</h3>
+          <p className="text-base font-medium text-muted">
             אפשר לעדכן את הסיסמה האישית בכל רגע
           </p>
         </div>
@@ -352,7 +352,7 @@ function LoginView({
         </div>
 
         <div className="space-y-4 border-t border-[var(--line)] bg-white/50 px-6 py-6 sm:px-10">
-          <label className="block text-sm font-semibold text-maroon">
+          <label className="block text-base font-medium text-maroon">
             מי אתה מהצוות הבכיר?
           </label>
           <select
@@ -367,7 +367,7 @@ function LoginView({
               </option>
             ))}
           </select>
-          <label className="block text-sm font-semibold text-maroon">
+          <label className="block text-base font-medium text-maroon">
             סיסמה אישית
           </label>
           <input
@@ -384,7 +384,7 @@ function LoginView({
             }}
           />
           {error && (
-            <div className="rounded-2xl border border-maroon/30 bg-maroon/10 px-4 py-3 text-sm font-semibold text-maroon">
+            <div className="rounded-2xl border border-maroon/30 bg-maroon/10 px-4 py-3 text-base font-medium text-maroon">
               {error}
             </div>
           )}
@@ -447,16 +447,16 @@ function MyTasks({
       <div className="panel rounded-[28px] p-5 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="section-title text-2xl text-maroon">
+            <h2 className="section-title text-3xl text-maroon">
               המשימות שלי
             </h2>
-            <p className="mt-1 text-sm font-normal text-muted">
+            <p className="mt-1 text-base font-medium text-muted">
               {pendingTasks.length} ממתינות · {done.length} בוצעו · סדרו לפי
               עדיפות
             </p>
           </div>
           <div className="min-w-[180px] flex-1 sm:max-w-xs">
-            <div className="mb-1 flex justify-between text-xs text-muted">
+            <div className="mb-1 flex justify-between text-base text-muted">
               <span>התקדמות</span>
               <span>{percent(done.length, mine.length)}%</span>
             </div>
@@ -491,7 +491,7 @@ function MyTasks({
                   )}
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
-                      className="btn btn-secondary !px-3 !py-2 text-xs"
+                      className="btn btn-secondary !px-3 !py-2.5 text-sm"
                       disabled={pending}
                       onClick={() =>
                         onAction(async () => {
@@ -505,7 +505,7 @@ function MyTasks({
                       אישור
                     </button>
                     <button
-                      className="btn btn-ghost !px-3 !py-2 text-xs"
+                      className="btn btn-ghost !px-3 !py-2.5 text-sm"
                       disabled={pending}
                       onClick={() =>
                         onAction(async () => {
@@ -607,7 +607,7 @@ function MyTasks({
                       <span className="chip chip-warn">
                         עדיפות {assignment.priority ?? index + 1}
                       </span>
-                      <h3 className="text-lg font-bold text-ink">
+                      <h3 className="text-xl font-medium text-ink">
                         {recipient.name}
                       </h3>
                       <span
@@ -620,12 +620,12 @@ function MyTasks({
                         {assignment.status === "done" ? "בוצע" : "ממתין"}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-muted">
+                    <p className="mt-1 text-base text-muted">
                       {roleName(db, recipient.roleId)}
                       {recipient.phone ? ` · ${recipient.phone}` : ""}
                     </p>
                     {assignment.status === "done" && (
-                      <p className="mt-2 text-sm text-muted">
+                      <p className="mt-2 text-base font-normal leading-6 text-ink/80">
                         {contactLabel(assignment.contactMethod)}
                         {assignment.feedback
                           ? ` · ${assignment.feedback}`
@@ -635,7 +635,7 @@ function MyTasks({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <button
-                      className="btn btn-ghost !px-3 !py-2 text-xs"
+                      className="btn btn-ghost !px-3 !py-2.5 text-sm"
                       disabled={pending || index === 0}
                       onClick={() =>
                         onAction(async () => {
@@ -646,7 +646,7 @@ function MyTasks({
                       למעלה
                     </button>
                     <button
-                      className="btn btn-ghost !px-3 !py-2 text-xs"
+                      className="btn btn-ghost !px-3 !py-2.5 text-sm"
                       disabled={pending || index === mine.length - 1}
                       onClick={() =>
                         onAction(async () => {
@@ -658,7 +658,7 @@ function MyTasks({
                     </button>
                     {assignment.status === "pending" && (
                       <button
-                        className="btn btn-ghost !px-3 !py-2 text-xs"
+                        className="btn btn-ghost !px-3 !py-2.5 text-sm"
                         disabled={pending}
                         onClick={() =>
                           onAction(async () => {
@@ -707,7 +707,7 @@ function Overview({ db }: { db: DbResponse }) {
         <h2 className="brand-display text-2xl font-bold text-maroon">
           סקירת התקדמות
         </h2>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-base text-muted">
           כמה מהצוות כבר קיבלו תודה, ומה עוד פתוח
         </p>
         <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -728,7 +728,7 @@ function Overview({ db }: { db: DbResponse }) {
       </div>
 
       <div className="panel rounded-[28px] p-5 sm:p-6">
-        <h3 className="text-lg font-bold text-maroon">עומס לפי איש צוות בכיר</h3>
+        <h3 className="text-xl font-medium text-maroon">עומס לפי איש צוות בכיר</h3>
         <div className="mt-4 space-y-3">
           {seniorStats.map(({ senior, total, done, pending }) => (
             <div
@@ -738,11 +738,11 @@ function Overview({ db }: { db: DbResponse }) {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="font-semibold">{senior.name}</p>
-                  <p className="text-xs text-muted">
+                  <p className="text-base text-muted">
                     {roleName(db, senior.roleId)}
                   </p>
                 </div>
-                <p className="text-sm text-muted">
+                <p className="text-base text-muted">
                   {done}/{total} בוצעו · {pending} ממתינים
                 </p>
               </div>
@@ -759,7 +759,7 @@ function Overview({ db }: { db: DbResponse }) {
 
       {needsMore.length > 0 && (
         <div className="panel rounded-[28px] p-5 sm:p-6">
-          <h3 className="text-lg font-bold text-maroon">
+          <h3 className="text-xl font-medium text-maroon">
             מומלץ שמישהו נוסף יודה
           </h3>
           <ul className="mt-3 space-y-2">
@@ -794,7 +794,7 @@ function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-2xl border border-[var(--line)] bg-white/60 px-4 py-4">
       <p className="text-3xl font-bold text-maroon">{value}</p>
-      <p className="mt-1 text-sm text-muted">{label}</p>
+      <p className="mt-1 text-base text-muted">{label}</p>
     </div>
   );
 }
@@ -807,7 +807,7 @@ function TeamDirectory({ db }: { db: DbResponse }) {
         <h2 className="brand-display text-2xl font-bold text-maroon">
           מדריך הצוות
         </h2>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-base text-muted">
           כל אנשי הצוות לפי תפקידים, עם סטטוס תודה
         </p>
       </div>
@@ -818,7 +818,7 @@ function TeamDirectory({ db }: { db: DbResponse }) {
         if (people.length === 0) return null;
         return (
           <div key={role.id} className="panel rounded-[28px] p-5">
-            <h3 className="text-lg font-bold text-maroon">{role.name}</h3>
+            <h3 className="text-xl font-medium text-maroon">{role.name}</h3>
             <ul className="mt-3 divide-y divide-[var(--line)]">
               {people.map((person) => {
                 const coverage = recipientCoverage(db, person.id);
@@ -833,7 +833,7 @@ function TeamDirectory({ db }: { db: DbResponse }) {
                         {person.isSenior ? " · בכיר" : ""}
                       </p>
                       {person.phone && (
-                        <p className="text-xs text-muted">{person.phone}</p>
+                        <p className="text-base text-muted">{person.phone}</p>
                       )}
                     </div>
                     <span
@@ -910,14 +910,14 @@ function AdminPanel({
     <section className="animate-rise space-y-5">
       <div className="panel rounded-[28px] p-5 sm:p-6">
         <h2 className="brand-display text-2xl font-bold text-maroon">ניהול</h2>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-base text-muted">
           צוות בכיר: 11 אנשים בלבד · סיסמאות, לוגו, שיוכים וניהול רשימות
         </p>
       </div>
 
       <div className="panel rounded-[28px] p-5 sm:p-6">
-        <h3 className="text-lg font-bold text-maroon">סיסמאות הצוות הבכיר</h3>
-        <p className="mt-1 text-sm text-muted">
+        <h3 className="text-xl font-medium text-maroon">סיסמאות הצוות הבכיר</h3>
+        <p className="mt-1 text-base text-muted">
           סיסמאות התחלתיות מוצגות רק למי שעדיין לא החליף. אפשר לאפס לכל אחד.
         </p>
         <div className="mt-4 space-y-3">
@@ -929,7 +929,7 @@ function AdminPanel({
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="font-semibold">{row.name}</p>
-                  <p className="text-xs text-muted">
+                  <p className="text-base text-muted">
                     {row.usesDefaultPassword
                       ? `סיסמה התחלתית: ${row.defaultPassword}`
                       : "החליף סיסמה אישית"}
@@ -949,7 +949,7 @@ function AdminPanel({
                     }
                   />
                   <button
-                    className="btn btn-ghost !px-3 !py-2 text-xs"
+                    className="btn btn-ghost !px-3 !py-2.5 text-sm"
                     disabled={pending || !(resetDrafts[row.id] ?? "").trim()}
                     onClick={() =>
                       onAction(async () => {
@@ -972,8 +972,8 @@ function AdminPanel({
       </div>
 
       <div className="panel rounded-[28px] p-5 sm:p-6">
-        <h3 className="text-lg font-bold text-maroon">החלפת לוגו</h3>
-        <p className="mt-1 text-sm text-muted">
+        <h3 className="text-xl font-medium text-maroon">החלפת לוגו</h3>
+        <p className="mt-1 text-base text-muted">
           בחרו את קובץ הלוגו מהטלפון או מהמחשב (PNG / JPG / WEBP)
         </p>
         <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -1002,12 +1002,12 @@ function AdminPanel({
           </label>
         </div>
         {logoMessage && (
-          <p className="mt-3 text-sm font-semibold text-pine">{logoMessage}</p>
+          <p className="mt-3 text-base font-medium text-pine">{logoMessage}</p>
         )}
       </div>
 
       <div className="panel rounded-[28px] p-5 sm:p-6">
-        <h3 className="text-lg font-bold text-maroon">חלוקת תודות</h3>
+        <h3 className="text-xl font-medium text-maroon">חלוקת תודות</h3>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <label className="block text-sm">
             <span className="mb-1 block font-semibold">מי מודה</span>
@@ -1042,7 +1042,7 @@ function AdminPanel({
 
         <div className="mt-4 max-h-64 space-y-2 overflow-y-auto rounded-2xl border border-[var(--line)] bg-white/50 p-3">
           {unassigned.length === 0 ? (
-            <p className="text-sm text-muted">אין אנשים לא משויכים בסינון הזה</p>
+            <p className="text-base text-muted">אין אנשים לא משויכים בסינון הזה</p>
           ) : (
             unassigned.map((person) => (
               <label
@@ -1105,7 +1105,7 @@ function AdminPanel({
 
       <div className="grid gap-5 lg:grid-cols-2">
         <div className="panel rounded-[28px] p-5">
-          <h3 className="text-lg font-bold text-maroon">הוספת תפקיד</h3>
+          <h3 className="text-xl font-medium text-maroon">הוספת תפקיד</h3>
           <div className="mt-3 flex gap-2">
             <input
               className="field"
@@ -1150,7 +1150,7 @@ function AdminPanel({
         </div>
 
         <div className="panel rounded-[28px] p-5">
-          <h3 className="text-lg font-bold text-maroon">הוספת אדם</h3>
+          <h3 className="text-xl font-medium text-maroon">הוספת אדם</h3>
           <div className="mt-3 space-y-3">
             <input
               className="field"
@@ -1199,7 +1199,7 @@ function AdminPanel({
       </div>
 
       <div className="panel rounded-[28px] p-5 sm:p-6">
-        <h3 className="text-lg font-bold text-maroon">אנשים ושיוכים</h3>
+        <h3 className="text-xl font-medium text-maroon">אנשים ושיוכים</h3>
         <div className="mt-4 space-y-3">
           {db.people
             .slice()
@@ -1215,13 +1215,13 @@ function AdminPanel({
                       {person.name}
                       {person.isSenior ? " · בכיר" : ""}
                     </p>
-                    <p className="text-xs text-muted">
+                    <p className="text-base text-muted">
                       {roleName(db, person.roleId)}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <button
-                      className="btn btn-ghost !px-3 !py-2 text-xs"
+                      className="btn btn-ghost !px-3 !py-2.5 text-sm"
                       disabled={pending}
                       onClick={() =>
                         onAction(async () => {
@@ -1234,7 +1234,7 @@ function AdminPanel({
                       {person.isSenior ? "הסר מבכירים" : "סמן כבכיר"}
                     </button>
                     <button
-                      className="btn btn-ghost !px-3 !py-2 text-xs"
+                      className="btn btn-ghost !px-3 !py-2.5 text-sm"
                       disabled={pending}
                       onClick={() =>
                         onAction(async () => {
@@ -1256,10 +1256,10 @@ function AdminPanel({
       </div>
 
       <div className="panel rounded-[28px] p-5 sm:p-6">
-        <h3 className="text-lg font-bold text-maroon">כל השיוכים</h3>
+        <h3 className="text-xl font-medium text-maroon">כל השיוכים</h3>
         <div className="mt-3 space-y-2">
           {db.assignments.length === 0 ? (
-            <p className="text-sm text-muted">עדיין אין שיוכים</p>
+            <p className="text-base text-muted">עדיין אין שיוכים</p>
           ) : (
             db.assignments.map((assignment) => {
               const assignee = personById(db, assignment.assigneeId);
@@ -1319,7 +1319,7 @@ function AdminPanel({
 
       <div className="rounded-[24px] border border-maroon/20 bg-maroon/5 p-5">
         <h3 className="font-bold text-maroon">איפוס נתונים</h3>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-base text-muted">
           מחזיר את רשימות הצוות והתפקידים למצב ההתחלתי ומוחק שיוכים ועדכונים.
         </p>
         <button
@@ -1386,7 +1386,7 @@ function UpdateModal({
             <h3 className="brand-display text-2xl font-bold text-maroon">
               עדכון תודה
             </h3>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-base text-muted">
               {recipient?.name} · {recipient ? roleName(db, recipient.roleId) : ""}
             </p>
           </div>
@@ -1397,7 +1397,7 @@ function UpdateModal({
 
         <div className="mt-5 space-y-4">
           <div>
-            <p className="mb-2 text-sm font-semibold">איך יצרת קשר?</p>
+            <p className="mb-2 text-base font-medium">איך יצרת קשר?</p>
             <div className="grid grid-cols-2 gap-2">
               {(
                 [
@@ -1407,7 +1407,7 @@ function UpdateModal({
               ).map(([value, label]) => (
                 <button
                   key={value}
-                  className={`rounded-2xl border px-3 py-3 text-sm font-semibold ${
+                  className={`rounded-2xl border px-3 py-3 text-base font-medium ${
                     contactMethod === value
                       ? "border-maroon bg-maroon text-[var(--paper)]"
                       : "border-[var(--line)] bg-white/70"
@@ -1432,7 +1432,7 @@ function UpdateModal({
             />
           </label>
 
-          <label className="flex items-center gap-2 text-sm font-semibold">
+          <label className="flex items-center gap-2 text-base font-medium">
             <input
               type="checkbox"
               checked={needsMore}
@@ -1443,7 +1443,7 @@ function UpdateModal({
 
           {needsMore && (
             <div className="space-y-3 rounded-2xl border border-[var(--line)] bg-white/60 p-3">
-              <p className="text-sm font-semibold">מי עוד כדאי שיודה?</p>
+              <p className="text-base font-medium">מי עוד כדאי שיודה?</p>
               <div className="max-h-40 space-y-1 overflow-y-auto">
                 {seniors(db)
                   .filter((p) => p.id !== assignment.assigneeId)
@@ -1470,7 +1470,7 @@ function UpdateModal({
             </div>
           )}
 
-          <label className="flex items-center gap-2 text-sm font-semibold">
+          <label className="flex items-center gap-2 text-base font-medium">
             <input
               type="checkbox"
               checked={markDone}

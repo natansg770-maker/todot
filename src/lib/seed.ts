@@ -27,6 +27,7 @@ const roleDefs: Array<{ key: string; name: string }> = [
   { key: "media", name: "צוות צילום וסושיאל" },
   { key: "officer", name: "קצין" },
   { key: "leadership", name: "הנהלה בכירה" },
+  { key: "zeide", name: "זיידע" },
 ];
 
 const peopleByRole: Record<string, string[]> = {
@@ -64,6 +65,7 @@ const peopleByRole: Record<string, string[]> = {
     "שמואל קלמן",
     "יחזקאל פינסון",
     "אריאל שלום תעיזי",
+    "יהודא לייב רונצוייג",
   ],
   kitchen: ["שמואל טורנהיים", "לוי יצחק טורנהיים"],
   "mishbakim-mgr": ["מאיר בורובסקי", "שלום כהן", "שניאור זלמן קשת"],
@@ -105,6 +107,7 @@ const peopleByRole: Record<string, string[]> = {
     "מנחם מענדל גולדובסקי",
     "שלום דובער פז",
     "הילל רז",
+    "יוסף יצחק רומנוב",
   ],
   tech: ["אלחנן גליצנשטיין", "שניאור זלמן רוזנשיין", "יוסף יצחק טוביה קישון"],
   office: ["שלום דובער ישראל סויסא", "זכריה תעיזי"],
@@ -117,6 +120,7 @@ const peopleByRole: Record<string, string[]> = {
     "מנחם מענדל בורנשטיין",
   ],
   leadership: ["מענדל קשת", "חיים וייספיש", "יעקב קנייבסקי"],
+  zeide: ["ישראל גולדברג"],
 };
 
 export function createSeedDatabase(): Database {

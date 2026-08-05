@@ -1355,6 +1355,8 @@ html.dark .float-panel .chat-bubble.mine {
 /* Keep card content from colliding with floating action buttons */
 @media (max-width: 1099px) {
   .app-main {
+    /* Physical left — FABs sit on CSS left in RTL layouts */
+    padding-left: max(4.25rem, calc(env(safe-area-inset-left) + 3.75rem));
     padding-bottom: max(7.5rem, calc(env(safe-area-inset-bottom) + 6.5rem));
   }
 

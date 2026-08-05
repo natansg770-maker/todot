@@ -198,7 +198,8 @@ textarea {
   border: 0.5px solid var(--apple-glass-border);
   box-shadow: var(--apple-glass-shadow);
   background: transparent;
-  overflow: hidden;
+  /* Must stay overflow:visible — otherwise backdrop-filter can't see page content */
+  overflow: visible;
   transition:
     border-radius 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
     box-shadow 280ms ease;
@@ -217,6 +218,7 @@ html.dark .site-header-shell {
   z-index: 0;
   border-radius: inherit;
   background: var(--apple-glass-bg);
+  /* Apple vibrancy — keep this element free of overflow clipping parents */
   backdrop-filter: saturate(180%) blur(40px);
   -webkit-backdrop-filter: saturate(180%) blur(40px);
   pointer-events: none;

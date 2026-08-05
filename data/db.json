@@ -913,9 +913,9 @@
       "status": "done",
       "priority": 6,
       "createdAt": "2026-08-05T20:19:11.050Z",
-      "updatedAt": "2026-08-05T20:23:49.532Z",
-      "contactMethod": null,
-      "feedback": "",
+      "updatedAt": "2026-08-05T20:24:40.171Z",
+      "contactMethod": "phone",
+      "feedback": "דובר על היחס המפנק לצוות - שלדעתי היה יחס יותר טוב לצוות פח...",
       "needsAdditionalThanks": true,
       "additionalThankerIds": [
         "person-004",
@@ -929,11 +929,11 @@
         "person-087"
       ],
       "additionalThankerNote": "תגיד לו תודה על ניהול הצוות ופינוקם",
-      "completedAt": "2026-08-05T20:23:49.532Z"
+      "completedAt": "2026-08-05T20:24:40.171Z"
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:23:49.532Z",
-  "revision": 89,
-  "writeToken": "w-msgjbml8-uigbyn"
+  "updatedAt": "2026-08-05T20:24:40.171Z",
+  "revision": 90,
+  "writeToken": "w-msgjcpnv-o3wn3q"
 }

@@ -40,6 +40,7 @@ import type { Assignment, ContactMethod, Person } from "@/lib/types";
 import { ClaimBoard } from "./ClaimBoard";
 import { LiveLayer } from "./LiveLayer";
 import { Logo } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 
 type Tab = "mine" | "claim" | "overview" | "team" | "admin";
 
@@ -47,6 +48,7 @@ export function AppClient() {
   const [db, setDb] = useState<DbResponse | null>(null);
   const [user, setUser] = useState<Person | null>(null);
   const [tab, setTab] = useState<Tab>("mine");
+  const [flashId, setFlashId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState(false);
@@ -155,19 +157,22 @@ export function AppClient() {
               </p>
             </div>
           </div>
-          <button
-            className="btn btn-ghost self-start text-base sm:self-center"
-            onClick={() => {
-              void run(async () => {
-                await setSession(null);
-                setUser(null);
-              });
-            }}
-          >
-            החלף משתמש
-          </button>
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
+            <ThemeToggle />
+            <button
+              className="btn btn-ghost text-base"
+              onClick={() => {
+                void run(async () => {
+                  await setSession(null);
+                  setUser(null);
+                });
+              }}
+            >
+              החלף משתמש
+            </button>
+          </div>
         </div>
-        <nav className="flex flex-wrap gap-2 border-t border-[var(--line)] bg-white/40 p-3 sm:p-4">
+        <nav className="flex flex-wrap gap-2 border-t border-[var(--line)] surface p-3 sm:p-4">
           {(
             [
               ["mine", "המשימות שלי"],
@@ -200,39 +205,42 @@ export function AppClient() {
 
       <LiveLayer user={user} onDbRefresh={refreshDbOnly} />
 
-      {tab === "mine" && (
-        <MyTasks
-          db={db}
-          user={user}
-          pending={pending}
-          onOpen={(assignment) => setActiveAssignment(assignment)}
-          onAction={(action) => {
-            void run(action);
-          }}
-        />
-      )}
-      {tab === "claim" && (
-        <ClaimBoard
-          db={db}
-          user={user}
-          pending={pending}
-          onAction={(action) => {
-            void run(action);
-          }}
-        />
-      )}
-      {tab === "overview" && <Overview db={db} />}
-      {tab === "team" && <TeamDirectory db={db} />}
-      {tab === "admin" && user.isAdmin && (
-        <AdminPanel
-          db={db}
-          user={user}
-          pending={pending}
-          onAction={(action) => {
-            void run(action);
-          }}
-        />
-      )}
+      <div key={tab} className="animate-rise">
+        {tab === "mine" && (
+          <MyTasks
+            db={db}
+            user={user}
+            pending={pending}
+            flashId={flashId}
+            onOpen={(assignment) => setActiveAssignment(assignment)}
+            onAction={(action) => {
+              void run(action);
+            }}
+          />
+        )}
+        {tab === "claim" && (
+          <ClaimBoard
+            db={db}
+            user={user}
+            pending={pending}
+            onAction={(action) => {
+              void run(action);
+            }}
+          />
+        )}
+        {tab === "overview" && <Overview db={db} />}
+        {tab === "team" && <TeamDirectory db={db} />}
+        {tab === "admin" && user.isAdmin && (
+          <AdminPanel
+            db={db}
+            user={user}
+            pending={pending}
+            onAction={(action) => {
+              void run(action);
+            }}
+          />
+        )}
+      </div>
 
       {activeAssignment && (
         <UpdateModal
@@ -241,8 +249,13 @@ export function AppClient() {
           onClose={() => setActiveAssignment(null)}
           onSave={(patch) =>
             run(async () => {
-              await updateAssignmentApi(activeAssignment.id, patch);
+              const id = activeAssignment.id;
+              await updateAssignmentApi(id, patch);
               setActiveAssignment(null);
+              if (patch.status === "done") {
+                setFlashId(id);
+                window.setTimeout(() => setFlashId(null), 800);
+              }
             })
           }
         />
@@ -344,6 +357,9 @@ function LoginView({
 
   return (
     <div className="relative mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-4 py-10">
+      <div className="mb-4 flex justify-start">
+        <ThemeToggle />
+      </div>
       <div className="panel animate-rise overflow-hidden rounded-[32px]">
         <div className="relative px-6 pb-8 pt-10 text-center sm:px-10">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,rgba(245,168,58,0.35),transparent_70%)]" />
@@ -360,7 +376,7 @@ function LoginView({
           </p>
         </div>
 
-        <div className="space-y-4 border-t border-[var(--line)] bg-white/50 px-6 py-6 sm:px-10">
+        <div className="space-y-4 border-t border-[var(--line)] surface px-6 py-6 sm:px-10">
           <label className="block text-base font-medium text-maroon">
             מי אתה מהצוות הבכיר?
           </label>
@@ -414,15 +430,18 @@ function MyTasks({
   db,
   user,
   pending,
+  flashId,
   onOpen,
   onAction,
 }: {
   db: DbResponse;
   user: Person;
   pending: boolean;
+  flashId: string | null;
   onOpen: (assignment: Assignment) => void;
   onAction: (action: () => Promise<void>) => void;
 }) {
+  const [busyId, setBusyId] = useState<string | null>(null);
   const mine = assignmentsForAssignee(db, user.id);
   const pendingTasks = mine.filter((a) => a.status === "pending");
   const done = mine.filter((a) => a.status === "done");
@@ -489,7 +508,7 @@ function MyTasks({
               return (
                 <li
                   key={request.id}
-                  className="rounded-2xl bg-white/80 px-3 py-3 text-sm"
+                  className="rounded-2xl surface-strong px-3 py-3 text-sm"
                 >
                   <p>
                     <strong>{requester?.name}</strong> מבקש גם להודות ל־
@@ -545,7 +564,7 @@ function MyTasks({
               return (
                 <li
                   key={request.id}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-white/70 px-3 py-3 text-sm"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-2xl surface-strong px-3 py-3 text-sm"
                 >
                   <span>
                     בקשה על <strong>{recipient?.name}</strong> אצל {target?.name}
@@ -581,7 +600,7 @@ function MyTasks({
               return (
                 <li
                   key={a.id}
-                  className="rounded-2xl bg-white/70 px-3 py-3 text-sm"
+                  className="rounded-2xl surface-strong px-3 py-3 text-sm"
                 >
                   <strong>{recipient?.name}</strong>
                   <span className="text-muted">
@@ -605,10 +624,14 @@ function MyTasks({
           {mine.map((assignment, index) => {
             const recipient = personById(db, assignment.recipientId);
             if (!recipient) return null;
+            const isBusy = pending && busyId === assignment.id;
+            const isFlash = flashId === assignment.id;
             return (
               <article
                 key={assignment.id}
-                className="panel rounded-[24px] p-4 transition hover:-translate-y-0.5 sm:p-5"
+                className={`panel rounded-[24px] p-4 transition hover:-translate-y-0.5 sm:p-5${
+                  isBusy ? " pending-pulse" : ""
+                }${isFlash ? " success-flash" : ""}`}
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
@@ -669,11 +692,16 @@ function MyTasks({
                       <button
                         className="btn btn-ghost !px-3 !py-2.5 text-sm"
                         disabled={pending}
-                        onClick={() =>
+                        onClick={() => {
+                          setBusyId(assignment.id);
                           onAction(async () => {
-                            await releaseAssignmentApi(assignment.id);
-                          })
-                        }
+                            try {
+                              await releaseAssignmentApi(assignment.id);
+                            } finally {
+                              setBusyId(null);
+                            }
+                          });
+                        }}
                       >
                         שחרור
                       </button>
@@ -742,7 +770,7 @@ function Overview({ db }: { db: DbResponse }) {
           {seniorStats.map(({ senior, total, done, pending }) => (
             <div
               key={senior.id}
-              className="rounded-2xl border border-[var(--line)] bg-white/55 px-4 py-3"
+              className="rounded-2xl border border-[var(--line)] surface px-4 py-3"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
@@ -801,7 +829,7 @@ function Overview({ db }: { db: DbResponse }) {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-[var(--line)] bg-white/60 px-4 py-4">
+    <div className="rounded-2xl border border-[var(--line)] surface px-4 py-4">
       <p className="text-3xl font-bold text-maroon">{value}</p>
       <p className="mt-1 text-base text-muted">{label}</p>
     </div>
@@ -933,7 +961,7 @@ function AdminPanel({
           {passwordRows.map((row) => (
             <div
               key={row.id}
-              className="rounded-2xl border border-[var(--line)] bg-white/60 px-4 py-3"
+              className="rounded-2xl border border-[var(--line)] surface px-4 py-3"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
@@ -1049,7 +1077,7 @@ function AdminPanel({
           </label>
         </div>
 
-        <div className="mt-4 max-h-64 space-y-2 overflow-y-auto rounded-2xl border border-[var(--line)] bg-white/50 p-3">
+        <div className="mt-4 max-h-64 space-y-2 overflow-y-auto rounded-2xl border border-[var(--line)] surface p-3">
           {unassigned.length === 0 ? (
             <p className="text-base text-muted">אין אנשים לא משויכים בסינון הזה</p>
           ) : (
@@ -1139,7 +1167,7 @@ function AdminPanel({
             {sortedRoles(db).map((role) => (
               <li
                 key={role.id}
-                className="flex items-center justify-between gap-2 rounded-xl bg-white/55 px-3 py-2 text-sm"
+                className="flex items-center justify-between gap-2 rounded-xl surface px-3 py-2 text-sm"
               >
                 <span>{role.name}</span>
                 <button
@@ -1216,7 +1244,7 @@ function AdminPanel({
             .map((person) => (
               <div
                 key={person.id}
-                className="rounded-2xl border border-[var(--line)] bg-white/55 px-4 py-3"
+                className="rounded-2xl border border-[var(--line)] surface px-4 py-3"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
@@ -1276,7 +1304,7 @@ function AdminPanel({
               return (
                 <div
                   key={assignment.id}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-white/55 px-3 py-3 text-sm"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-2xl surface px-3 py-3 text-sm"
                 >
                   <span>
                     <strong>{assignee?.name}</strong> → {recipient?.name}{" "}
@@ -1427,7 +1455,7 @@ function UpdateModal({
                   className={`rounded-2xl border px-3 py-3 text-base font-medium ${
                     contactMethod === value
                       ? "border-maroon bg-maroon text-[var(--paper)]"
-                      : "border-[var(--line)] bg-white/70"
+                      : "border-[var(--line)] surface-strong"
                   }`}
                   onClick={() => setContactMethod(value)}
                 >
@@ -1459,7 +1487,7 @@ function UpdateModal({
           </label>
 
           {needsMore && (
-            <div className="space-y-3 rounded-2xl border border-[var(--line)] bg-white/60 p-3">
+            <div className="space-y-3 rounded-2xl border border-[var(--line)] surface p-3">
               <p className="text-base font-medium">מי עוד כדאי שיודה?</p>
               <div className="max-h-40 space-y-1 overflow-y-auto">
                 {seniors(db)

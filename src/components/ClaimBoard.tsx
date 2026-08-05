@@ -25,6 +25,18 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
   const [mode, setMode] = useState<FilterMode>("all");
   const [requestNote, setRequestNote] = useState<Record<string, string>>({});
   const [openRequestFor, setOpenRequestFor] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  function runBusy(personId: string, action: () => Promise<void>) {
+    setBusyId(personId);
+    onAction(async () => {
+      try {
+        await action();
+      } finally {
+        setBusyId(null);
+      }
+    });
+  }
 
   const rows = useMemo(() => {
     const q = query.trim();
@@ -132,7 +144,9 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
           rows.map(({ person, holders, mine, others, myPendingRequest }) => (
             <article
               key={person.id}
-              className="panel rounded-[24px] p-4 transition hover:-translate-y-0.5 sm:p-5"
+              className={`panel rounded-[24px] p-4 transition hover:-translate-y-0.5 sm:p-5${
+                pending && busyId === person.id ? " pending-pulse" : ""
+              }`}
             >
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0">
@@ -175,12 +189,12 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                       className="btn btn-secondary"
                       disabled={pending}
                       onClick={() =>
-                        onAction(async () => {
+                        runBusy(person.id, async () => {
                           await claimAssignmentApi(person.id);
                         })
                       }
                     >
-                      {pending ? "שומר…" : "לוקח על עצמי"}
+                      {pending && busyId === person.id ? "שומר…" : "לוקח על עצמי"}
                     </button>
                   )}
 
@@ -189,19 +203,21 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                       className="btn btn-ghost"
                       disabled={pending}
                       onClick={() =>
-                        onAction(async () => {
+                        runBusy(person.id, async () => {
                           await releaseAssignmentApi(mine.id);
                         })
                       }
                     >
-                      {pending ? "משחרר…" : "שחרור מהרשימה שלי"}
+                      {pending && busyId === person.id
+                        ? "משחרר…"
+                        : "שחרור מהרשימה שלי"}
                     </button>
                   )}
 
                   {!mine && others.length > 0 && !myPendingRequest && (
                     <>
                       {openRequestFor === person.id ? (
-                        <div className="space-y-2 rounded-2xl border border-[var(--line)] bg-white/70 p-3">
+                        <div className="space-y-2 rounded-2xl border border-[var(--line)] surface-strong p-3">
                           <p className="text-base font-medium text-maroon">
                             בקשה להצטרף לתודה
                           </p>
@@ -238,7 +254,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                                 const targetAssigneeId =
                                   select?.value || others[0]?.assigneeId;
                                 if (!targetAssigneeId) return;
-                                onAction(async () => {
+                                runBusy(person.id, async () => {
                                   await createClaimRequestApi({
                                     recipientId: person.id,
                                     targetAssigneeId,

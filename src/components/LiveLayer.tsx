@@ -274,7 +274,7 @@ export function LiveLayer({
                 זה יופיע כאן.
               </p>
             ) : (
-              <ul className="activity-list">
+              <ul className="activity-list stagger-in">
                 {activity.slice(0, 20).map((event) => (
                   <li key={event.id} className="activity-row">
                     <span className={`activity-tag tag-${event.type}`}>
@@ -372,7 +372,7 @@ export function LiveLayer({
             !
           </span>
           {unreadActivity > 0 && (
-            <span className="fab-badge">
+            <span key={`a-${unreadActivity}`} className="fab-badge badge-pop">
               {unreadActivity > 99 ? "99+" : unreadActivity}
             </span>
           )}
@@ -395,7 +395,7 @@ export function LiveLayer({
             className="fab-logo"
           />
           {unreadChat > 0 && (
-            <span className="fab-badge">
+            <span key={`c-${unreadChat}`} className="fab-badge badge-pop">
               {unreadChat > 99 ? "99+" : unreadChat}
             </span>
           )}

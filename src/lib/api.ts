@@ -21,9 +21,24 @@ export type LiveSnapshot = {
 };
 
 async function parse<T>(res: Response): Promise<T> {
-  const data = (await res.json()) as T & { error?: string };
+  const text = await res.text();
+  let data: (T & { error?: string }) | null = null;
+  if (text) {
+    try {
+      data = JSON.parse(text) as T & { error?: string };
+    } catch {
+      throw new Error(
+        res.ok
+          ? "השרת החזיר תשובה לא תקינה. רעננו את הדף"
+          : "השרת לא זמין כרגע. נסו שוב בעוד רגע",
+      );
+    }
+  }
   if (!res.ok) {
-    throw new Error(data.error || "בקשה נכשלה");
+    throw new Error(data?.error || "בקשה נכשלה. נסו שוב בעוד רגע");
+  }
+  if (!data) {
+    throw new Error("השרת החזיר תשובה ריקה. רעננו את הדף");
   }
   return data;
 }

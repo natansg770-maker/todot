@@ -5,13 +5,18 @@ import { heartbeatPresence } from "@/lib/live-store";
 import { SESSION_COOKIE } from "@/lib/session";
 
 export async function GET() {
-  const jar = await cookies();
-  const userId = jar.get(SESSION_COOKIE)?.value ?? null;
-  if (!userId) return NextResponse.json({ user: null });
+  try {
+    const jar = await cookies();
+    const userId = jar.get(SESSION_COOKIE)?.value ?? null;
+    if (!userId) return NextResponse.json({ user: null });
 
-  const db = await getDatabase();
-  const user = db.people.find((p) => p.id === userId && p.isSenior) ?? null;
-  return NextResponse.json({ user: user ? publicPerson(user) : null });
+    const db = await getDatabase();
+    const user = db.people.find((p) => p.id === userId && p.isSenior) ?? null;
+    return NextResponse.json({ user: user ? publicPerson(user) : null });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "שגיאה";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {

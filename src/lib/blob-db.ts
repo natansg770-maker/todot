@@ -69,6 +69,7 @@ export async function readBlobDb(): Promise<BlobDbSnapshot> {
       const { etag } = await writeBlobDb(seed, null);
       return { db: seed, etag };
     }
+    // Suspended / blocked / auth failures should fall through to another store.
     throw error;
   }
 }

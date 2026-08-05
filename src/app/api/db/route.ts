@@ -8,11 +8,16 @@ import {
 } from "@/lib/db";
 
 export async function GET() {
-  const db = await getDatabase();
-  return NextResponse.json({
-    ...publicDatabase(db),
-    stats: computeStats(db),
-  });
+  try {
+    const db = await getDatabase();
+    return NextResponse.json({
+      ...publicDatabase(db),
+      stats: computeStats(db),
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "שגיאה";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {

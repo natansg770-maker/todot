@@ -6,6 +6,7 @@ import {
   get,
   put,
 } from "@vercel/blob";
+import { isUnavailableStorageError } from "./storage-errors";
 import type {
   ActivityEvent,
   ChatMessage,
@@ -15,6 +16,7 @@ import type {
 
 const PATHNAME = "data/live.json";
 const LOCAL_PATH = path.join(process.cwd(), "data", "live.json");
+const TMP_PATH = path.join("/tmp", "todot-live.json");
 const MAX_ACTIVITY = 40;
 const MAX_CHAT = 120;
 const ONLINE_MS = 45_000;
@@ -22,9 +24,11 @@ const MAX_MUTATION_RETRIES = 10;
 
 let mutationChain: Promise<unknown> = Promise.resolve();
 let blobEtag: string | null = null;
+let blobDisabled = false;
+let memoryStore: LiveStore | null = null;
 
 function canUseBlob() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN) && !blobDisabled;
 }
 
 function strongEtag(etag: string | null | undefined): string | null {
@@ -55,7 +59,12 @@ function normalizeStore(data: LiveStore): LiveStore {
 async function ensureLiveSeed(): Promise<LiveStore> {
   const seed = emptyLive();
   blobEtag = null;
-  await writeRaw(seed, null);
+  memoryStore = seed;
+  try {
+    await writeRaw(seed, null);
+  } catch {
+    /* ignore — in-memory seed is enough for reads */
+  }
   return seed;
 }
 
@@ -72,9 +81,13 @@ async function readRaw(): Promise<LiveStore> {
       }
       blobEtag = strongEtag(result.blob.etag);
       const buffer = Buffer.from(await new Response(result.stream).arrayBuffer());
-      return normalizeStore(JSON.parse(buffer.toString("utf8")) as LiveStore);
+      const store = normalizeStore(JSON.parse(buffer.toString("utf8")) as LiveStore);
+      memoryStore = store;
+      return store;
     } catch (error) {
-      if (
+      if (isUnavailableStorageError(error)) {
+        blobDisabled = true;
+      } else if (
         error instanceof BlobNotFoundError ||
         (error instanceof Error &&
           (error.message.includes("not found") ||
@@ -83,21 +96,30 @@ async function readRaw(): Promise<LiveStore> {
             error.message.includes("Live blob get failed")))
       ) {
         return ensureLiveSeed();
+      } else {
+        throw error;
       }
-      throw error;
     }
   }
 
-  try {
-    const raw = await fs.readFile(LOCAL_PATH, "utf8");
-    return normalizeStore(JSON.parse(raw) as LiveStore);
-  } catch {
-    return emptyLive();
+  for (const filePath of [TMP_PATH, LOCAL_PATH]) {
+    try {
+      const raw = await fs.readFile(filePath, "utf8");
+      const store = normalizeStore(JSON.parse(raw) as LiveStore);
+      memoryStore = store;
+      return store;
+    } catch {
+      /* try next */
+    }
   }
+
+  if (memoryStore) return normalizeStore(structuredClone(memoryStore));
+  return emptyLive();
 }
 
 async function writeRaw(store: LiveStore, etag: string | null): Promise<void> {
   store.updatedAt = new Date().toISOString();
+  memoryStore = store;
   const body = JSON.stringify(store, null, 2);
 
   if (canUseBlob()) {
@@ -117,12 +139,23 @@ async function writeRaw(store: LiveStore, etag: string | null): Promise<void> {
       if (error instanceof BlobPreconditionFailedError) {
         throw new Error("LIVE_CONFLICT");
       }
-      throw error;
+      if (isUnavailableStorageError(error)) {
+        blobDisabled = true;
+      } else {
+        throw error;
+      }
     }
   }
 
-  await fs.mkdir(path.dirname(LOCAL_PATH), { recursive: true });
-  await fs.writeFile(LOCAL_PATH, body, "utf8");
+  try {
+    await fs.mkdir(path.dirname(LOCAL_PATH), { recursive: true });
+    await fs.writeFile(LOCAL_PATH, body, "utf8");
+    return;
+  } catch {
+    /* serverless often blocks writes under cwd */
+  }
+
+  await fs.writeFile(TMP_PATH, body, "utf8");
 }
 
 async function mutateLive<T>(fn: (store: LiveStore) => T | Promise<T>): Promise<T> {

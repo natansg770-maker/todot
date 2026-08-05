@@ -14,6 +14,7 @@ import {
   verifyPassword,
 } from "./passwords";
 import { createSeedDatabase } from "./seed";
+import { isUnavailableStorageError } from "./storage-errors";
 import {
   ADMIN_NAME,
   type Assignment,
@@ -27,13 +28,19 @@ import {
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "db.json");
+/** Writable fallback on serverless when Blob/GitHub are unavailable. */
+const TMP_DB_PATH = path.join("/tmp", "todot-db.json");
 const MAX_MUTATION_RETRIES = 12;
 
 let githubSha: string | null = null;
 /** ETag of the last Blob read/write on this instance (for conditional puts). */
 let blobEtag: string | null = null;
+/** When Blob is suspended/blocked, skip it for the rest of this instance. */
+let blobDisabled = false;
 /** Serializes read-modify-write so concurrent handlers on one instance cannot stomp each other. */
 let mutationChain: Promise<unknown> = Promise.resolve();
+/** Last good DB kept in memory so reads still work if remotes die mid-flight. */
+let memoryDb: Database | null = null;
 
 function uid(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -101,46 +108,99 @@ function normalizePeople(db: Database): boolean {
   return changed;
 }
 
+async function readLocalDbFile(): Promise<Database | null> {
+  for (const filePath of [TMP_DB_PATH, DB_PATH]) {
+    try {
+      const raw = await fs.readFile(filePath, "utf8");
+      return JSON.parse(raw) as Database;
+    } catch {
+      /* try next */
+    }
+  }
+  return null;
+}
+
 async function readRawDb(): Promise<Database> {
-  if (canUseBlobDb()) {
-    const { db, etag } = await readBlobDb();
-    blobEtag = etag;
-    return db;
+  if (canUseBlobDb() && !blobDisabled) {
+    try {
+      const { db, etag } = await readBlobDb();
+      blobEtag = etag;
+      memoryDb = db;
+      return db;
+    } catch (error) {
+      if (isUnavailableStorageError(error)) {
+        blobDisabled = true;
+      } else {
+        throw error;
+      }
+    }
   }
 
   if (canUseGithubDb()) {
-    const { db, sha } = await readGithubDb();
-    githubSha = sha;
-    return db;
+    try {
+      const { db, sha } = await readGithubDb();
+      githubSha = sha;
+      memoryDb = db;
+      return db;
+    } catch (error) {
+      if (!isUnavailableStorageError(error)) throw error;
+    }
   }
 
-  try {
-    const raw = await fs.readFile(DB_PATH, "utf8");
-    return JSON.parse(raw) as Database;
-  } catch {
-    return createSeedDatabase();
+  const local = await readLocalDbFile();
+  if (local) {
+    memoryDb = local;
+    return local;
   }
+
+  if (memoryDb) return structuredClone(memoryDb);
+
+  const seed = createSeedDatabase();
+  memoryDb = seed;
+  return seed;
 }
 
 async function writeRawDb(db: Database): Promise<void> {
   db.updatedAt = new Date().toISOString();
   db.revision = (db.revision ?? 0) + 1;
   db.writeToken = uid("w");
+  memoryDb = db;
 
-  if (canUseBlobDb()) {
-    const saved = await writeBlobDb(db, blobEtag);
-    blobEtag = saved.etag;
-    return;
+  if (canUseBlobDb() && !blobDisabled) {
+    try {
+      const saved = await writeBlobDb(db, blobEtag);
+      blobEtag = saved.etag;
+      return;
+    } catch (error) {
+      if (isUnavailableStorageError(error)) {
+        blobDisabled = true;
+      } else if (error instanceof BlobConflictError) {
+        throw error;
+      } else {
+        throw error;
+      }
+    }
   }
 
   if (canUseGithubDb()) {
-    const saved = await writeGithubDb(db, githubSha);
-    githubSha = saved.sha;
-    return;
+    try {
+      const saved = await writeGithubDb(db, githubSha);
+      githubSha = saved.sha;
+      return;
+    } catch (error) {
+      if (!isUnavailableStorageError(error)) throw error;
+    }
   }
 
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
+    return;
+  } catch {
+    /* serverless filesystems are often read-only — use /tmp */
+  }
+
+  await fs.writeFile(TMP_DB_PATH, JSON.stringify(db, null, 2), "utf8");
 }
 
 /**

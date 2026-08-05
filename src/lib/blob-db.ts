@@ -1,4 +1,4 @@
-import { head, put } from "@vercel/blob";
+import { BlobNotFoundError, get, put } from "@vercel/blob";
 import { createSeedDatabase } from "./seed";
 import type { Database } from "./types";
 
@@ -8,19 +8,30 @@ export function canUseBlobDb(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
+async function readPrivateJson(): Promise<Database> {
+  const result = await get(PATHNAME, {
+    access: "private",
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+  });
+
+  if (!result || result.statusCode !== 200 || !result.stream) {
+    throw new Error(`Blob get failed: ${result?.statusCode ?? "unknown"}`);
+  }
+
+  const buffer = Buffer.from(await new Response(result.stream).arrayBuffer());
+  return JSON.parse(buffer.toString("utf8")) as Database;
+}
+
 export async function readBlobDb(): Promise<Database> {
   try {
-    const meta = await head(PATHNAME, {
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-    });
-    const res = await fetch(meta.url, { cache: "no-store" });
-    if (!res.ok) {
-      throw new Error(`Blob fetch failed: ${res.status}`);
-    }
-    return (await res.json()) as Database;
+    return await readPrivateJson();
   } catch (error) {
+    if (error instanceof BlobNotFoundError) {
+      const seed = createSeedDatabase();
+      await writeBlobDb(seed);
+      return seed;
+    }
     const message = error instanceof Error ? error.message : String(error);
-    // Missing blob => seed
     if (
       message.includes("not found") ||
       message.includes("404") ||

@@ -947,8 +947,19 @@
       "completedAt": "2026-08-05T20:28:00.470Z"
     }
   ],
-  "claimRequests": [],
-  "updatedAt": "2026-08-05T20:28:00.470Z",
-  "revision": 92,
-  "writeToken": "w-msgjh07q-5nc5xz"
+  "claimRequests": [
+    {
+      "id": "claim-msgji3c5-9xa7yp",
+      "recipientId": "person-021",
+      "requesterId": "person-003",
+      "targetAssigneeId": "person-085",
+      "note": "בשביל הפייפן",
+      "status": "pending",
+      "createdAt": "2026-08-05T20:28:51.173Z",
+      "updatedAt": "2026-08-05T20:28:51.173Z"
+    }
+  ],
+  "updatedAt": "2026-08-05T20:28:51.173Z",
+  "revision": 93,
+  "writeToken": "w-msgji3c5-wp49l5"
 }

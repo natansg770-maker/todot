@@ -94,7 +94,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0545901293",
-      "passwordHash": "2890763f435811dfd8268acc2fd654e9:386e9af860d397835fbd9048a8c6745dbb64236c96b08bca481fd9ac2de70545",
+      "passwordHash": "bbde111f1e5fabcd344b98ca8329d7bc:a18dd303e844ee129fc22404c9920daf7719d558cbbf039e3d25f8fb589d98c3",
       "usesDefaultPassword": true
     },
     {
@@ -104,7 +104,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0533611770",
-      "passwordHash": "7de062c0f5a0c6070c015824392de440:fb02a71d96bce86cb2e3183339e556fbcb82d9986e4df3c36633e99ed0bf3e67",
+      "passwordHash": "996bd74f5e78c501319f5e00021810da:cf594ca4c4f7d5452fb735d7983e4701269366a486556fd2a593cf19f6777c44",
       "usesDefaultPassword": true
     },
     {
@@ -114,7 +114,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0533370016",
-      "passwordHash": "04bc8282685dc1de9f8ce4229db81c15:153e5e1a9b37a7d4ca2916e2a25ad1e525983e32d0d464194e40891671573552",
+      "passwordHash": "33305492d2e03a90fd372699ea59a48d:e78c44c98184937cb7767186fd7c75c5273cacd015957a497bc744b338e0529b",
       "usesDefaultPassword": true
     },
     {
@@ -124,7 +124,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0515137704",
-      "passwordHash": "656a518053b65c78f6460080d107fdd6:962b2b9f19228f77f70dd7c67fa3881c6546dc13e0a0a058362c77c63af54c69",
+      "passwordHash": "c399abdec5a2733efd1b52800bc9b6fd:332572c8784cb6c60ee55958676b3b233d77ba6f4eb48ad95d4eeaa1ec364fd9",
       "usesDefaultPassword": true
     },
     {
@@ -774,7 +774,7 @@
       "isSenior": true,
       "isAdmin": true,
       "phone": "0559771003",
-      "passwordHash": "90e3a2eb01c433a8a406420b505c80c2:235058b81c971adffa9ec9067ba3f935e65b08921e1fd221d729381907f36219",
+      "passwordHash": "034fbd9a689b0ff28fff7ecd40487c40:fbd5df668af0f02feb2d6e6670b78dd08666108c32c3bc95434ffd85a869b099",
       "usesDefaultPassword": true
     },
     {
@@ -784,7 +784,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0553196076",
-      "passwordHash": "cc357b0e67e6ac0940122d37a41ffc89:dbb213467527bf11e9424a71f5741c48ff9e53062a0936618d63b89178486ac5",
+      "passwordHash": "d74d86afecdb09a25c636db43e25be03:3d23353e7aae6f3029fe0944492116d42fa8e1f49097f3c3146a873b13c0263a",
       "usesDefaultPassword": true
     },
     {
@@ -794,7 +794,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0515337702",
-      "passwordHash": "ce28ae0f749de2f1c5ebab123ec41f6c:323040048789be507213c92f736b772d89368a40a31248b251a8d1599f0a0334",
+      "passwordHash": "2a3b9f4e377bddc26f8daf4312665daf:b559d5890d66a406b6a51aef1942cfe70a333b5f5c1d09cd71100b43cce26de0",
       "usesDefaultPassword": true
     },
     {
@@ -804,7 +804,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0533578477",
-      "passwordHash": "43404ab32c57feb9d01ba885237e97e4:d1d364154033ebd283316098cded0cfa92f930341971524d09c19dd1c4c0c1dc",
+      "passwordHash": "2e70054b30bbfb002afcc2bed346dea2:cb059ce93a54e1b1e7265d3d0df58f432cbc35e0fd29d6c5486a8747962afe00",
       "usesDefaultPassword": true
     },
     {
@@ -814,7 +814,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0502491888",
-      "passwordHash": "cd803f56922ba419bfe33bce2c503533:66012e1f020669fd3f470f7a1ec8cfe28af7c4ca13c91c96fc6c5763a8c59a5b",
+      "passwordHash": "be019dd725126629c3d23d5f5a491ad5:b18aa930c0a3b7c38442d87a3ed5b34a4d64dd264d47ac35ed98b4a2eca2cccd",
       "usesDefaultPassword": true
     },
     {
@@ -824,7 +824,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0584243770",
-      "passwordHash": "5e8bc7d353936a6a6dc6a82000d6aed2:ddc9f8156eb4fc518231e5058c40ca90d626ddb77be6831b456c65e8d62bf4db",
+      "passwordHash": "18e9b12766d2b9c3efae9570502c4917:418f97e718e6f88c1c5967e3b68363daf251c882b29e1861dc6d7a9d1374756b",
       "usesDefaultPassword": true
     },
     {
@@ -834,7 +834,7 @@
       "isSenior": true,
       "isAdmin": false,
       "phone": "0536277055",
-      "passwordHash": "677729b332366793bc15bec45a975fc8:c7d38f57e0b217421f72f800822a97320eee86dd14f1725fb2f17def35b9c81a",
+      "passwordHash": "244ca0c92d66259af7d16ee8ccc33e4c:113d96c8cfe2c1fab1a12263fe99888e5ed1ddb12f34f8ab46caecbe03695210",
       "usesDefaultPassword": true
     },
     {
@@ -848,6 +848,701 @@
   ],
   "assignments": [
     {
+      "id": "assign-msf9lhjo-wtvxj2",
+      "assigneeId": "person-001",
+      "recipientId": "person-005",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.220Z",
+      "updatedAt": "2026-08-04T23:03:47.220Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhjp-cxvq3g",
+      "assigneeId": "person-002",
+      "recipientId": "person-006",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.221Z",
+      "updatedAt": "2026-08-04T23:03:47.221Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhjq-sfk2gn",
+      "assigneeId": "person-003",
+      "recipientId": "person-007",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.222Z",
+      "updatedAt": "2026-08-04T23:03:47.222Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhjr-1fqcqn",
+      "assigneeId": "person-004",
+      "recipientId": "person-008",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.223Z",
+      "updatedAt": "2026-08-04T23:03:47.223Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhjt-feih2z",
+      "assigneeId": "person-033",
+      "recipientId": "person-009",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.225Z",
+      "updatedAt": "2026-08-04T23:03:47.225Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhjy-wjocz1",
+      "assigneeId": "person-034",
+      "recipientId": "person-010",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.230Z",
+      "updatedAt": "2026-08-04T23:03:47.230Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhjz-d4na8z",
+      "assigneeId": "person-035",
+      "recipientId": "person-011",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.231Z",
+      "updatedAt": "2026-08-04T23:03:47.231Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhk3-l5pr20",
+      "assigneeId": "person-036",
+      "recipientId": "person-012",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.235Z",
+      "updatedAt": "2026-08-04T23:03:47.235Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhk4-6e150u",
+      "assigneeId": "person-037",
+      "recipientId": "person-013",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.236Z",
+      "updatedAt": "2026-08-04T23:03:47.236Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhk6-hvnr7j",
+      "assigneeId": "person-038",
+      "recipientId": "person-014",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.238Z",
+      "updatedAt": "2026-08-04T23:03:47.238Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhk9-p6jop8",
+      "assigneeId": "person-039",
+      "recipientId": "person-015",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.241Z",
+      "updatedAt": "2026-08-04T23:03:47.241Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkb-fswrje",
+      "assigneeId": "person-040",
+      "recipientId": "person-017",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.243Z",
+      "updatedAt": "2026-08-04T23:03:47.243Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkd-11wwpv",
+      "assigneeId": "person-086",
+      "recipientId": "person-019",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.245Z",
+      "updatedAt": "2026-08-04T23:03:47.245Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhke-7su45h",
+      "assigneeId": "person-087",
+      "recipientId": "person-020",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.246Z",
+      "updatedAt": "2026-08-04T23:03:47.246Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkf-1vvngv",
+      "assigneeId": "person-088",
+      "recipientId": "person-021",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.247Z",
+      "updatedAt": "2026-08-04T23:03:47.247Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkg-mc2pgu",
+      "assigneeId": "person-089",
+      "recipientId": "person-022",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.248Z",
+      "updatedAt": "2026-08-04T23:03:47.248Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkh-omyg4y",
+      "assigneeId": "person-090",
+      "recipientId": "person-023",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.249Z",
+      "updatedAt": "2026-08-04T23:03:47.249Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhki-erla40",
+      "assigneeId": "person-091",
+      "recipientId": "person-024",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.250Z",
+      "updatedAt": "2026-08-04T23:03:47.250Z",
+      "priority": 1,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkj-iuzaxo",
+      "assigneeId": "person-001",
+      "recipientId": "person-025",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.251Z",
+      "updatedAt": "2026-08-04T23:03:47.251Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkk-uld3jc",
+      "assigneeId": "person-002",
+      "recipientId": "person-026",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.252Z",
+      "updatedAt": "2026-08-04T23:03:47.252Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkm-d3lh5c",
+      "assigneeId": "person-003",
+      "recipientId": "person-027",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.254Z",
+      "updatedAt": "2026-08-04T23:03:47.254Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkn-s0fcaq",
+      "assigneeId": "person-004",
+      "recipientId": "person-028",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.255Z",
+      "updatedAt": "2026-08-04T23:03:47.255Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkp-djghbr",
+      "assigneeId": "person-033",
+      "recipientId": "person-029",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.257Z",
+      "updatedAt": "2026-08-04T23:03:47.257Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkq-6ypbdl",
+      "assigneeId": "person-034",
+      "recipientId": "person-030",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.258Z",
+      "updatedAt": "2026-08-04T23:03:47.258Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkq-e470on",
+      "assigneeId": "person-035",
+      "recipientId": "person-031",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.258Z",
+      "updatedAt": "2026-08-04T23:03:47.258Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkr-hftbxd",
+      "assigneeId": "person-036",
+      "recipientId": "person-041",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.259Z",
+      "updatedAt": "2026-08-04T23:03:47.259Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhks-9x2ptk",
+      "assigneeId": "person-037",
+      "recipientId": "person-042",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.260Z",
+      "updatedAt": "2026-08-04T23:03:47.260Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkt-x9hgd4",
+      "assigneeId": "person-038",
+      "recipientId": "person-043",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.261Z",
+      "updatedAt": "2026-08-04T23:03:47.261Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkv-66rl4m",
+      "assigneeId": "person-039",
+      "recipientId": "person-044",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.263Z",
+      "updatedAt": "2026-08-04T23:03:47.263Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkw-te1wlk",
+      "assigneeId": "person-040",
+      "recipientId": "person-045",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.264Z",
+      "updatedAt": "2026-08-04T23:03:47.264Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkx-2fzhea",
+      "assigneeId": "person-085",
+      "recipientId": "person-046",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.265Z",
+      "updatedAt": "2026-08-05T09:01:27.727Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhky-va144z",
+      "assigneeId": "person-086",
+      "recipientId": "person-047",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.266Z",
+      "updatedAt": "2026-08-04T23:03:47.266Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkz-vv2uhp",
+      "assigneeId": "person-087",
+      "recipientId": "person-048",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.267Z",
+      "updatedAt": "2026-08-04T23:03:47.267Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhkz-9jkjwn",
+      "assigneeId": "person-088",
+      "recipientId": "person-049",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.267Z",
+      "updatedAt": "2026-08-04T23:03:47.267Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhl0-ty4p0x",
+      "assigneeId": "person-089",
+      "recipientId": "person-050",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.268Z",
+      "updatedAt": "2026-08-04T23:03:47.268Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhl1-p5xe8z",
+      "assigneeId": "person-090",
+      "recipientId": "person-051",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.269Z",
+      "updatedAt": "2026-08-04T23:03:47.269Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhl2-uezqj3",
+      "assigneeId": "person-091",
+      "recipientId": "person-052",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.270Z",
+      "updatedAt": "2026-08-04T23:03:47.270Z",
+      "priority": 2,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhl3-skrqb4",
+      "assigneeId": "person-001",
+      "recipientId": "person-053",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.271Z",
+      "updatedAt": "2026-08-04T23:03:47.271Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhl4-cnp760",
+      "assigneeId": "person-002",
+      "recipientId": "person-054",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.272Z",
+      "updatedAt": "2026-08-04T23:03:47.272Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhl6-6xuiqg",
+      "assigneeId": "person-003",
+      "recipientId": "person-055",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.274Z",
+      "updatedAt": "2026-08-04T23:03:47.274Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhl7-xcs046",
+      "assigneeId": "person-004",
+      "recipientId": "person-056",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.275Z",
+      "updatedAt": "2026-08-04T23:03:47.275Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhl8-3vluf8",
+      "assigneeId": "person-033",
+      "recipientId": "person-057",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.276Z",
+      "updatedAt": "2026-08-04T23:03:47.276Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhla-7ni0uv",
+      "assigneeId": "person-034",
+      "recipientId": "person-058",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.278Z",
+      "updatedAt": "2026-08-04T23:03:47.278Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhlb-pnvxzs",
+      "assigneeId": "person-035",
+      "recipientId": "person-059",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.279Z",
+      "updatedAt": "2026-08-04T23:03:47.279Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhld-l4epj0",
+      "assigneeId": "person-036",
+      "recipientId": "person-060",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.281Z",
+      "updatedAt": "2026-08-04T23:03:47.281Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhle-7xg0v1",
+      "assigneeId": "person-037",
+      "recipientId": "person-061",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.282Z",
+      "updatedAt": "2026-08-04T23:03:47.282Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhlf-4ef4pe",
+      "assigneeId": "person-038",
+      "recipientId": "person-062",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.283Z",
+      "updatedAt": "2026-08-04T23:03:47.283Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhlx-gjch3k",
+      "assigneeId": "person-039",
+      "recipientId": "person-063",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.301Z",
+      "updatedAt": "2026-08-04T23:03:47.301Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhm8-lsqe97",
+      "assigneeId": "person-040",
+      "recipientId": "person-064",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.312Z",
+      "updatedAt": "2026-08-04T23:03:47.312Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhm9-5t4eu4",
+      "assigneeId": "person-085",
+      "recipientId": "person-065",
+      "status": "done",
+      "createdAt": "2026-08-04T23:03:47.313Z",
+      "updatedAt": "2026-08-05T09:01:27.727Z",
+      "contactMethod": "phone",
+      "feedback": "היה מהים",
+      "needsAdditionalThanks": false,
+      "additionalThankerIds": [],
+      "additionalThankerNote": "",
+      "completedAt": "2026-08-05T08:57:15.800Z",
+      "priority": 1
+    },
+    {
+      "id": "assign-msf9lhma-cc0j0b",
+      "assigneeId": "person-086",
+      "recipientId": "person-066",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.314Z",
+      "updatedAt": "2026-08-04T23:03:47.314Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhmc-u26zlv",
+      "assigneeId": "person-087",
+      "recipientId": "person-067",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.316Z",
+      "updatedAt": "2026-08-04T23:03:47.316Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhme-ppj3wy",
+      "assigneeId": "person-088",
+      "recipientId": "person-068",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.318Z",
+      "updatedAt": "2026-08-04T23:03:47.318Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhmh-qigqcc",
+      "assigneeId": "person-089",
+      "recipientId": "person-069",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.321Z",
+      "updatedAt": "2026-08-04T23:03:47.321Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhmo-wrppss",
+      "assigneeId": "person-090",
+      "recipientId": "person-070",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.328Z",
+      "updatedAt": "2026-08-04T23:03:47.328Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhmq-9pmnh4",
+      "assigneeId": "person-091",
+      "recipientId": "person-071",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.330Z",
+      "updatedAt": "2026-08-04T23:03:47.330Z",
+      "priority": 3,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhmu-f9cnjw",
+      "assigneeId": "person-001",
+      "recipientId": "person-072",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.334Z",
+      "updatedAt": "2026-08-04T23:03:47.334Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhmv-hci9iw",
+      "assigneeId": "person-002",
+      "recipientId": "person-073",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.335Z",
+      "updatedAt": "2026-08-04T23:03:47.335Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhmx-gqahnu",
+      "assigneeId": "person-003",
+      "recipientId": "person-075",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.337Z",
+      "updatedAt": "2026-08-04T23:03:47.337Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhmy-g10bq7",
+      "assigneeId": "person-004",
+      "recipientId": "person-076",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.338Z",
+      "updatedAt": "2026-08-04T23:03:47.338Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhn0-4vt8f2",
+      "assigneeId": "person-033",
+      "recipientId": "person-077",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.340Z",
+      "updatedAt": "2026-08-04T23:03:47.340Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhn1-b6yo8t",
+      "assigneeId": "person-034",
+      "recipientId": "person-078",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.341Z",
+      "updatedAt": "2026-08-04T23:03:47.341Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhn2-do4tkp",
+      "assigneeId": "person-035",
+      "recipientId": "person-079",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.342Z",
+      "updatedAt": "2026-08-04T23:03:47.342Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhn3-btgmel",
+      "assigneeId": "person-036",
+      "recipientId": "person-080",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.343Z",
+      "updatedAt": "2026-08-04T23:03:47.343Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhn4-7f4tof",
+      "assigneeId": "person-037",
+      "recipientId": "person-081",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.344Z",
+      "updatedAt": "2026-08-04T23:03:47.344Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhn6-t0jr6l",
+      "assigneeId": "person-038",
+      "recipientId": "person-082",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.346Z",
+      "updatedAt": "2026-08-04T23:03:47.346Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhn7-ok501b",
+      "assigneeId": "person-039",
+      "recipientId": "person-083",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.347Z",
+      "updatedAt": "2026-08-04T23:03:47.347Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msf9lhn8-3dtnyu",
+      "assigneeId": "person-040",
+      "recipientId": "person-084",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.348Z",
+      "updatedAt": "2026-08-04T23:03:47.348Z",
+      "priority": 4,
+      "additionalThankerIds": []
+    },
+    {
+      "id": "assign-msfut4w1-ay4lk5",
+      "assigneeId": "person-086",
+      "recipientId": "person-001",
+      "status": "pending",
+      "priority": 4,
+      "createdAt": "2026-08-05T08:57:36.001Z",
+      "updatedAt": "2026-08-05T08:57:36.001Z",
+      "additionalThankerIds": []
+    },
+    {
       "id": "assign-msgi5gkb-8byw9j",
       "assigneeId": "person-085",
       "recipientId": "person-005",
@@ -858,7 +1553,6 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T19:51:02.171Z",
-  "revision": 2,
-  "writeToken": "w-msgi5gkb-yga4rd"
+  "updatedAt": "2026-08-05T19:57:34.491Z",
+  "revision": 3
 }

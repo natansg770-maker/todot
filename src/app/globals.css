@@ -163,6 +163,182 @@ textarea {
   z-index: 1;
 }
 
+.header-sentinel {
+  height: 1px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  width: min(72rem, calc(100% - 2rem));
+  margin: 1.25rem auto 0;
+  overflow: hidden;
+  border-radius: 28px;
+  transition:
+    width 220ms ease,
+    margin 220ms ease,
+    border-radius 220ms ease,
+    background 220ms ease,
+    box-shadow 220ms ease,
+    backdrop-filter 220ms ease;
+}
+
+.site-header-inner {
+  width: 100%;
+}
+
+.site-header-brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .site-header {
+    width: min(72rem, calc(100% - 3rem));
+    margin-top: 2rem;
+  }
+
+  .site-header-brand {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.35rem 1.75rem 1.15rem;
+  }
+}
+
+.site-header-title {
+  font-size: clamp(1.55rem, 3.4vw, 2.25rem);
+}
+
+.site-header-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  padding: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .site-header-nav {
+    padding: 1rem;
+  }
+}
+
+.site-tab {
+  min-width: 9rem;
+  flex: 1 1 0;
+  border-radius: 1rem;
+  padding: 0.85rem 0.75rem;
+  font-size: 1rem;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.site-tab-active {
+  background: var(--maroon);
+  font-weight: 500;
+  color: #fff9f2;
+  box-shadow: 0 8px 18px rgba(122, 14, 20, 0.22);
+}
+
+html.dark .site-tab-active {
+  background: linear-gradient(135deg, #b8454c 0%, #8a242a 100%);
+  color: #fff9f2;
+}
+
+.site-tab-idle {
+  background: transparent;
+  font-weight: 500;
+  color: var(--maroon);
+}
+
+.site-tab-idle:hover {
+  background: rgba(245, 168, 58, 0.15);
+}
+
+.site-header.is-stuck {
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  box-shadow: 0 10px 28px rgba(28, 18, 16, 0.12);
+}
+
+html.dark .site-header.is-stuck {
+  background: rgba(14, 11, 10, 0.9);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.site-header.is-stuck .site-header-inner {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .site-header.is-stuck .site-header-inner {
+    padding-inline: 1.5rem;
+  }
+}
+
+.site-header.is-stuck .site-header-brand {
+  gap: 0.75rem;
+  padding: 0.65rem 0 0.55rem;
+}
+
+.site-header.is-stuck .site-header-kicker,
+.site-header.is-stuck .site-header-greeting {
+  display: none;
+}
+
+.site-header.is-stuck .site-header-title {
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  line-height: 1.2;
+}
+
+.site-header.is-stuck .site-header-nav {
+  padding: 0.45rem 0 0.7rem;
+  background: transparent;
+  border-top-color: color-mix(in srgb, var(--line) 80%, transparent);
+}
+
+.site-header.is-stuck .site-tab {
+  min-width: 7.5rem;
+  padding: 0.65rem 0.6rem;
+  font-size: 0.95rem;
+}
+
+.site-header.is-stuck .logo-compact,
+.site-header.is-stuck .logo-float {
+  animation: none;
+}
+
+.site-header.is-stuck .btn-ghost {
+  padding: 0.55rem 0.95rem;
+  font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: none;
+  }
+}
+
 /* Brand hero — Magnet Black */
 .brand-display {
   font-family: var(--font-magnet);

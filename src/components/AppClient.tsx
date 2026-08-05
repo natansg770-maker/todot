@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   autoDistributeApi,
   changePasswordApi,
@@ -55,6 +55,8 @@ export function AppClient() {
   const [activeAssignment, setActiveAssignment] = useState<Assignment | null>(
     null,
   );
+  const [headerStuck, setHeaderStuck] = useState(false);
+  const headerSentinelRef = useRef<HTMLDivElement>(null);
 
   async function refresh() {
     const [nextDb, nextUser] = await Promise.all([fetchDb(), fetchSession()]);
@@ -73,6 +75,17 @@ export function AppClient() {
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    const sentinel = headerSentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHeaderStuck(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [user, loading]);
 
   async function run(action: () => Promise<void>) {
     setError(null);
@@ -142,124 +155,140 @@ export function AppClient() {
   }
 
   return (
-    <div className="mx-auto min-h-screen max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
-      <header className="panel animate-rise mb-5 overflow-hidden rounded-[28px]">
-        <div className="relative flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
-          <div className="flex items-center gap-4">
-            <Logo size={78} className="logo-float shrink-0" priority />
-            <div>
-              <p className="text-base font-medium text-orange">מערכת תודות צוות</p>
-              <h1 className="brand-display text-3xl text-maroon sm:text-4xl">
-                גן ישראל | משפחת השלוחים הצעירים
-              </h1>
-              <p className="mt-2 text-base font-medium leading-7 text-muted">
-                שלום {user.name} · מתאמים מי מודה למי, ומעדכנים אחרי השיחה
-              </p>
+    <div className="min-h-screen">
+      <div ref={headerSentinelRef} className="header-sentinel" aria-hidden />
+
+      <header
+        className={`site-header panel animate-rise${
+          headerStuck ? " is-stuck" : ""
+        }`}
+      >
+        <div className="site-header-inner">
+          <div className="site-header-brand">
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+              <Logo
+                size={headerStuck ? 48 : 78}
+                className={`logo-float shrink-0${
+                  headerStuck ? " logo-compact" : ""
+                }`}
+                priority
+              />
+              <div className="min-w-0">
+                <p className="site-header-kicker text-base font-medium text-orange">
+                  מערכת תודות צוות
+                </p>
+                <h1 className="brand-display site-header-title text-maroon">
+                  גן ישראל | משפחת השלוחים הצעירים
+                </h1>
+                <p className="site-header-greeting mt-2 text-base font-medium leading-7 text-muted">
+                  שלום {user.name} · מתאמים מי מודה למי, ומעדכנים אחרי השיחה
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
+              <ThemeToggle />
+              <button
+                className="btn btn-ghost text-base"
+                onClick={() => {
+                  void run(async () => {
+                    await setSession(null);
+                    setUser(null);
+                  });
+                }}
+              >
+                החלף משתמש
+              </button>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
-            <ThemeToggle />
-            <button
-              className="btn btn-ghost text-base"
-              onClick={() => {
-                void run(async () => {
-                  await setSession(null);
-                  setUser(null);
-                });
-              }}
-            >
-              החלף משתמש
-            </button>
-          </div>
+          <nav className="site-header-nav">
+            {(
+              [
+                ["mine", "המשימות שלי"],
+                ["claim", "לוקחים תודות"],
+                ["overview", "סקירה"],
+                ["team", "הצוות"],
+                ...(user.isAdmin ? [["admin", "ניהול"] as const] : []),
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                className={`site-tab ${
+                  tab === id ? "site-tab-active" : "site-tab-idle"
+                }`}
+                onClick={() => setTab(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
         </div>
-        <nav className="flex flex-wrap gap-2 border-t border-[var(--line)] surface p-3 sm:p-4">
-          {(
-            [
-              ["mine", "המשימות שלי"],
-              ["claim", "לוקחים תודות"],
-              ["overview", "סקירה"],
-              ["team", "הצוות"],
-              ...(user.isAdmin ? [["admin", "ניהול"] as const] : []),
-            ] as const
-          ).map(([id, label]) => (
-            <button
-              key={id}
-              className={`min-w-[9rem] flex-1 rounded-2xl px-3 py-3.5 text-base transition ${
-                tab === id
-                  ? "bg-maroon font-medium text-[var(--paper)] shadow-md"
-                  : "bg-transparent font-medium text-maroon hover:bg-orange/15"
-              }`}
-              onClick={() => setTab(id)}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
       </header>
 
-      {error && (
-        <div className="mb-4 rounded-2xl border border-maroon/20 bg-maroon/8 px-4 py-3 text-base font-medium text-maroon">
-          {error}
+      <div className="mx-auto max-w-6xl px-4 pb-8 pt-5 sm:px-6 sm:pb-10 sm:pt-6">
+        {error && (
+          <div className="mb-4 rounded-2xl border border-maroon/20 bg-maroon/8 px-4 py-3 text-base font-medium text-maroon">
+            {error}
+          </div>
+        )}
+
+        <LiveLayer user={user} onDbRefresh={refreshDbOnly} />
+
+        <div key={tab} className="animate-rise">
+          {tab === "mine" && (
+            <MyTasks
+              db={db}
+              user={user}
+              pending={pending}
+              flashId={flashId}
+              onOpen={(assignment) => setActiveAssignment(assignment)}
+              onAction={(action) => {
+                void run(action);
+              }}
+            />
+          )}
+          {tab === "claim" && (
+            <ClaimBoard
+              db={db}
+              user={user}
+              pending={pending}
+              onAction={(action) => {
+                void run(action);
+              }}
+            />
+          )}
+          {tab === "overview" && <Overview db={db} />}
+          {tab === "team" && <TeamDirectory db={db} />}
+          {tab === "admin" && user.isAdmin && (
+            <AdminPanel
+              db={db}
+              user={user}
+              pending={pending}
+              onAction={(action) => {
+                void run(action);
+              }}
+            />
+          )}
         </div>
-      )}
 
-      <LiveLayer user={user} onDbRefresh={refreshDbOnly} />
-
-      <div key={tab} className="animate-rise">
-        {tab === "mine" && (
-          <MyTasks
+        {activeAssignment && (
+          <UpdateModal
             db={db}
-            user={user}
-            pending={pending}
-            flashId={flashId}
-            onOpen={(assignment) => setActiveAssignment(assignment)}
-            onAction={(action) => {
-              void run(action);
-            }}
-          />
-        )}
-        {tab === "claim" && (
-          <ClaimBoard
-            db={db}
-            user={user}
-            pending={pending}
-            onAction={(action) => {
-              void run(action);
-            }}
-          />
-        )}
-        {tab === "overview" && <Overview db={db} />}
-        {tab === "team" && <TeamDirectory db={db} />}
-        {tab === "admin" && user.isAdmin && (
-          <AdminPanel
-            db={db}
-            user={user}
-            pending={pending}
-            onAction={(action) => {
-              void run(action);
-            }}
+            assignment={activeAssignment}
+            onClose={() => setActiveAssignment(null)}
+            onSave={(patch) =>
+              run(async () => {
+                const id = activeAssignment.id;
+                await updateAssignmentApi(id, patch);
+                setActiveAssignment(null);
+                if (patch.status === "done") {
+                  setFlashId(id);
+                  window.setTimeout(() => setFlashId(null), 800);
+                }
+              })
+            }
           />
         )}
       </div>
-
-      {activeAssignment && (
-        <UpdateModal
-          db={db}
-          assignment={activeAssignment}
-          onClose={() => setActiveAssignment(null)}
-          onSave={(patch) =>
-            run(async () => {
-              const id = activeAssignment.id;
-              await updateAssignmentApi(id, patch);
-              setActiveAssignment(null);
-              if (patch.status === "done") {
-                setFlashId(id);
-                window.setTimeout(() => setFlashId(null), 800);
-              }
-            })
-          }
-        />
-      )}
     </div>
   );
 }

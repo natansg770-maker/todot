@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import {
   autoDistributeApi,
+  changePasswordApi,
   createAssignmentsBulkApi,
   createPerson,
   createRole,
@@ -10,16 +11,19 @@ import {
   deletePersonApi,
   deleteRoleApi,
   fetchDb,
+  fetchSeniorPasswordsApi,
   fetchSession,
   releaseAssignmentApi,
   reorderAssignmentsApi,
   resetDbApi,
+  resetPasswordApi,
   respondClaimRequestApi,
   setSession,
   updateAssignmentApi,
   updatePersonApi,
   uploadLogoApi,
   type DbResponse,
+  type SeniorPasswordInfo,
 } from "@/lib/api";
 import {
   assignmentsForAssignee,
@@ -114,10 +118,10 @@ export function AppClient() {
         db={db}
         error={error}
         pending={pending}
-        onLogin={(userId) => {
+        onLogin={(userId, password) => {
           startTransition(() => {
             void run(async () => {
-              const next = await setSession(userId);
+              const next = await setSession(userId, password);
               setUser(next);
               setTab("mine");
             });
@@ -249,6 +253,80 @@ export function AppClient() {
   );
 }
 
+function PasswordSettings({
+  pending,
+  onAction,
+}: {
+  pending: boolean;
+  onAction: (action: () => Promise<void>) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+
+  return (
+    <div className="panel rounded-[28px] p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 className="font-bold text-maroon">הסיסמה שלי</h3>
+          <p className="text-sm text-muted">אפשר לעדכן את הסיסמה האישית בכל רגע</p>
+        </div>
+        <button className="btn btn-ghost" onClick={() => setOpen((v) => !v)}>
+          {open ? "סגור" : "שינוי סיסמה"}
+        </button>
+      </div>
+      {open && (
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <input
+            className="field"
+            type="password"
+            placeholder="סיסמה נוכחית"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+          />
+          <input
+            className="field"
+            type="password"
+            placeholder="סיסמה חדשה"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <input
+            className="field"
+            type="password"
+            placeholder="אימות סיסמה חדשה"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+          />
+          <button
+            className="btn btn-primary sm:col-span-3"
+            disabled={pending || !currentPassword || !newPassword}
+            onClick={() => {
+              if (newPassword !== confirm) {
+                setMessage("הסיסמאות החדשות לא תואמות");
+                return;
+              }
+              onAction(async () => {
+                await changePasswordApi({ currentPassword, newPassword });
+                setCurrentPassword("");
+                setNewPassword("");
+                setConfirm("");
+                setMessage("הסיסמה עודכנה בהצלחה");
+                setOpen(false);
+              });
+            }}
+          >
+            שמירת סיסמה חדשה
+          </button>
+          {message && <p className="text-sm text-maroon sm:col-span-3">{message}</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LoginView({
   db,
   onLogin,
@@ -256,12 +334,13 @@ function LoginView({
   pending,
 }: {
   db: DbResponse;
-  onLogin: (userId: string) => void;
+  onLogin: (userId: string, password: string) => void;
   error: string | null;
   pending: boolean;
 }) {
   const seniorList = seniors(db);
   const [selected, setSelected] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <div className="relative mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-4 py-10">
@@ -276,8 +355,8 @@ function LoginView({
             משפחת השלוחים הצעירים
           </p>
           <p className="animate-rise-delay-2 mx-auto mt-4 max-w-md text-base leading-7 text-muted">
-            הקעמפ תם — עכשיו הזמן להודות לצוות. בחרו את שמכם כדי לראות את
-            המשימות, לעדכן שיחות וסמסים, ולתאם מי מתקשר למי.
+            כניסה לצוות הבכיר בלבד — 11 אנשים: 4 גנרלים, 4 קצינים, חיים,
+            מענדל ויעקב.
           </p>
         </div>
 
@@ -297,11 +376,27 @@ function LoginView({
               </option>
             ))}
           </select>
+          <label className="block text-sm font-semibold text-maroon">
+            סיסמה אישית
+          </label>
+          <input
+            className="field"
+            type="password"
+            autoComplete="current-password"
+            placeholder="הסיסמה שלך"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && selected && password) {
+                onLogin(selected, password);
+              }
+            }}
+          />
           {error && <p className="text-sm text-maroon">{error}</p>}
           <button
             className="btn btn-primary w-full"
-            disabled={!selected || pending}
-            onClick={() => onLogin(selected)}
+            disabled={!selected || !password || pending}
+            onClick={() => onLogin(selected, password)}
           >
             כניסה למערכת התודות
           </button>
@@ -352,6 +447,8 @@ function MyTasks({
 
   return (
     <section className="animate-rise space-y-5">
+      <PasswordSettings pending={pending} onAction={onAction} />
+
       <div className="panel rounded-[28px] p-5 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -789,6 +886,14 @@ function AdminPanel({
   const [selectedRecipients, setSelectedRecipients] = useState<string[]>([]);
   const [filterRole, setFilterRole] = useState("all");
   const [logoMessage, setLogoMessage] = useState<string | null>(null);
+  const [passwordRows, setPasswordRows] = useState<SeniorPasswordInfo[]>([]);
+  const [resetDrafts, setResetDrafts] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    void fetchSeniorPasswordsApi()
+      .then(setPasswordRows)
+      .catch(() => setPasswordRows([]));
+  }, [db.updatedAt]);
 
   const unassigned = useMemo(() => {
     const assigned = new Set(db.assignments.map((a) => a.recipientId));
@@ -811,8 +916,64 @@ function AdminPanel({
       <div className="panel rounded-[28px] p-5 sm:p-6">
         <h2 className="brand-display text-2xl font-bold text-maroon">ניהול</h2>
         <p className="mt-1 text-sm text-muted">
-          הוספת תפקידים ואנשים, שיוך תודות, וחלוקה אוטומטית
+          צוות בכיר: 11 אנשים בלבד · סיסמאות, לוגו, שיוכים וניהול רשימות
         </p>
+      </div>
+
+      <div className="panel rounded-[28px] p-5 sm:p-6">
+        <h3 className="text-lg font-bold text-maroon">סיסמאות הצוות הבכיר</h3>
+        <p className="mt-1 text-sm text-muted">
+          סיסמאות התחלתיות מוצגות רק למי שעדיין לא החליף. אפשר לאפס לכל אחד.
+        </p>
+        <div className="mt-4 space-y-3">
+          {passwordRows.map((row) => (
+            <div
+              key={row.id}
+              className="rounded-2xl border border-[var(--line)] bg-white/60 px-4 py-3"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="font-semibold">{row.name}</p>
+                  <p className="text-xs text-muted">
+                    {row.usesDefaultPassword
+                      ? `סיסמה התחלתית: ${row.defaultPassword}`
+                      : "החליף סיסמה אישית"}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    className="field !w-40"
+                    type="text"
+                    placeholder="סיסמה חדשה"
+                    value={resetDrafts[row.id] ?? ""}
+                    onChange={(e) =>
+                      setResetDrafts((prev) => ({
+                        ...prev,
+                        [row.id]: e.target.value,
+                      }))
+                    }
+                  />
+                  <button
+                    className="btn btn-ghost !px-3 !py-2 text-xs"
+                    disabled={pending || !(resetDrafts[row.id] ?? "").trim()}
+                    onClick={() =>
+                      onAction(async () => {
+                        await resetPasswordApi({
+                          personId: row.id,
+                          newPassword: resetDrafts[row.id],
+                        });
+                        setResetDrafts((prev) => ({ ...prev, [row.id]: "" }));
+                        setPasswordRows(await fetchSeniorPasswordsApi());
+                      })
+                    }
+                  >
+                    איפוס
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="panel rounded-[28px] p-5 sm:p-6">

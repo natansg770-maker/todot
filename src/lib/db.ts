@@ -2,6 +2,12 @@ import { promises as fs } from "fs";
 import path from "path";
 import { canUseBlobDb, readBlobDb, writeBlobDb } from "./blob-db";
 import { canUseGithubDb, readGithubDb, writeGithubDb } from "./github-db";
+import {
+  DEFAULT_SENIOR_PASSWORDS,
+  hashPassword,
+  SENIOR_NAMES,
+  verifyPassword,
+} from "./passwords";
 import { createSeedDatabase } from "./seed";
 import {
   ADMIN_NAME,
@@ -17,17 +23,6 @@ import {
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "db.json");
 
-const SENIOR_ROLE_NAMES = new Set([
-  "גנרל",
-  "מנהל מטבח",
-  "מנהל משבקי״ם",
-  'מנהל משבקי"ם',
-  "מנהל צוות טכני",
-  "מנהל שלאפט א חסיד",
-  "קצין",
-  "הנהלה בכירה",
-]);
-
 let githubSha: string | null = null;
 let writeQueue: Promise<void> = Promise.resolve();
 
@@ -38,17 +33,28 @@ function normalizePeople(db: Database): boolean {
     changed = true;
   }
 
-  const roleNameById = new Map(db.roles.map((r) => [r.id, r.name]));
   for (const person of db.people) {
     const shouldAdmin = person.name === ADMIN_NAME;
     if (Boolean(person.isAdmin) !== shouldAdmin) {
       person.isAdmin = shouldAdmin;
       changed = true;
     }
-    const roleName = roleNameById.get(person.roleId) ?? "";
-    const shouldSenior = SENIOR_ROLE_NAMES.has(roleName) || shouldAdmin;
+    const shouldSenior = SENIOR_NAMES.has(person.name);
     if (Boolean(person.isSenior) !== shouldSenior) {
       person.isSenior = shouldSenior;
+      changed = true;
+    }
+
+    if (shouldSenior) {
+      const defaultPassword = DEFAULT_SENIOR_PASSWORDS[person.name];
+      if (!person.passwordHash && defaultPassword) {
+        person.passwordHash = hashPassword(defaultPassword);
+        person.usesDefaultPassword = true;
+        changed = true;
+      }
+    } else if (person.passwordHash || person.usesDefaultPassword) {
+      delete person.passwordHash;
+      delete person.usesDefaultPassword;
       changed = true;
     }
   }
@@ -142,6 +148,50 @@ export async function getDatabase(): Promise<Database> {
   return ensureDb();
 }
 
+/** Public-safe person object (no password hash). */
+export function publicPerson(person: Person): Person {
+  const { passwordHash: _passwordHash, ...rest } = person;
+  return rest;
+}
+
+export function publicDatabase(db: Database): Database {
+  return {
+    ...db,
+    people: db.people.map(publicPerson),
+  };
+}
+
+export async function authenticateSenior(
+  userId: string,
+  password: string,
+): Promise<Person> {
+  const db = await ensureDb();
+  const user = db.people.find((p) => p.id === userId && p.isSenior);
+  if (!user?.passwordHash) {
+    throw new Error("משתמש לא נמצא או שאין לו סיסמה");
+  }
+  if (!verifyPassword(password, user.passwordHash)) {
+    throw new Error("סיסמה שגויה");
+  }
+  return publicPerson(user);
+}
+
+export async function setPersonPassword(input: {
+  personId: string;
+  password: string;
+  asDefault?: boolean;
+}): Promise<Person> {
+  const db = await ensureDb();
+  const person = db.people.find((p) => p.id === input.personId);
+  if (!person?.isSenior) throw new Error("ניתן להגדיר סיסמה רק לצוות בכיר");
+  const password = input.password.trim();
+  if (password.length < 4) throw new Error("הסיסמה חייבת להכיל לפחות 4 תווים");
+  person.passwordHash = hashPassword(password);
+  person.usesDefaultPassword = Boolean(input.asDefault);
+  await saveDb(db);
+  return publicPerson(person);
+}
+
 export async function resetDatabase(): Promise<Database> {
   const seed = createSeedDatabase();
   return saveDb(seed);
@@ -223,18 +273,23 @@ export async function addPerson(input: {
     throw new Error("התפקיד לא נמצא");
   }
   const name = input.name.trim();
+  const isSenior = SENIOR_NAMES.has(name);
+  const defaultPassword = DEFAULT_SENIOR_PASSWORDS[name];
   const person: Person = {
     id: uid("person"),
     name,
     roleId: input.roleId,
-    isSenior: Boolean(input.isSenior),
+    isSenior,
     isAdmin: name === ADMIN_NAME,
     phone: input.phone?.trim() || undefined,
     notes: input.notes?.trim() || undefined,
+    passwordHash:
+      isSenior && defaultPassword ? hashPassword(defaultPassword) : undefined,
+    usesDefaultPassword: isSenior && defaultPassword ? true : undefined,
   };
   db.people.push(person);
   await saveDb(db);
-  return person;
+  return publicPerson(person);
 }
 
 export async function updatePerson(
@@ -257,8 +312,20 @@ export async function updatePerson(
   if (patch.phone !== undefined) person.phone = patch.phone.trim() || undefined;
   if (patch.notes !== undefined) person.notes = patch.notes.trim() || undefined;
   person.isAdmin = person.name === ADMIN_NAME;
+  person.isSenior = SENIOR_NAMES.has(person.name);
+  if (person.isSenior && !person.passwordHash) {
+    const defaultPassword = DEFAULT_SENIOR_PASSWORDS[person.name];
+    if (defaultPassword) {
+      person.passwordHash = hashPassword(defaultPassword);
+      person.usesDefaultPassword = true;
+    }
+  }
+  if (!person.isSenior) {
+    delete person.passwordHash;
+    delete person.usesDefaultPassword;
+  }
   await saveDb(db);
-  return person;
+  return publicPerson(person);
 }
 
 export async function deletePerson(personId: string): Promise<void> {

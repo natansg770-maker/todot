@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { computeStats, getDatabase, resetDatabase } from "@/lib/db";
+import {
+  computeStats,
+  getDatabase,
+  publicDatabase,
+  resetDatabase,
+} from "@/lib/db";
 
 export async function GET() {
   const db = await getDatabase();
-  return NextResponse.json({ ...db, stats: computeStats(db) });
+  return NextResponse.json({
+    ...publicDatabase(db),
+    stats: computeStats(db),
+  });
 }
 
 export async function POST(request: Request) {
@@ -13,7 +21,10 @@ export async function POST(request: Request) {
     if (body.action === "reset") {
       await requireAdmin();
       const db = await resetDatabase();
-      return NextResponse.json({ ...db, stats: computeStats(db) });
+      return NextResponse.json({
+        ...publicDatabase(db),
+        stats: computeStats(db),
+      });
     }
     return NextResponse.json({ error: "פעולה לא ידועה" }, { status: 400 });
   } catch (error) {

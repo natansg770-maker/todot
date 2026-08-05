@@ -46,15 +46,61 @@ export async function fetchSession(): Promise<Person | null> {
   return data.user;
 }
 
-export async function setSession(userId: string | null): Promise<Person | null> {
+export async function setSession(
+  userId: string | null,
+  password?: string,
+): Promise<Person | null> {
   const data = await parse<{ user: Person | null }>(
-    await fetch("/api/session", {
+    await request("/api/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ userId, password }),
     }),
   );
   return data.user;
+}
+
+export type SeniorPasswordInfo = {
+  id: string;
+  name: string;
+  roleId: string;
+  usesDefaultPassword: boolean;
+  defaultPassword: string | null;
+};
+
+export async function fetchSeniorPasswordsApi(): Promise<SeniorPasswordInfo[]> {
+  const data = await parse<{ seniors: SeniorPasswordInfo[] }>(
+    await request("/api/passwords"),
+  );
+  return data.seniors;
+}
+
+export async function changePasswordApi(input: {
+  currentPassword: string;
+  newPassword: string;
+}): Promise<Person> {
+  const data = await parse<{ person: Person }>(
+    await request("/api/passwords", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "change", ...input }),
+    }),
+  );
+  return data.person;
+}
+
+export async function resetPasswordApi(input: {
+  personId: string;
+  newPassword: string;
+}): Promise<Person> {
+  const data = await parse<{ person: Person }>(
+    await request("/api/passwords", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "reset", ...input }),
+    }),
+  );
+  return data.person;
 }
 
 export async function createRole(name: string): Promise<Role> {

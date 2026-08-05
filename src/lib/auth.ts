@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { getDatabase } from "./db";
+import { getDatabase, publicPerson } from "./db";
 import { SESSION_COOKIE } from "./session";
 import type { Person } from "./types";
 
@@ -8,7 +8,8 @@ export async function getCurrentUser(): Promise<Person | null> {
   const userId = jar.get(SESSION_COOKIE)?.value;
   if (!userId) return null;
   const db = await getDatabase();
-  return db.people.find((p) => p.id === userId && p.isSenior) ?? null;
+  const user = db.people.find((p) => p.id === userId && p.isSenior);
+  return user ? publicPerson(user) : null;
 }
 
 export async function requireAdmin(): Promise<Person> {

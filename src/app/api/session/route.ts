@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getDatabase } from "@/lib/db";
+import { authenticateSenior, getDatabase, publicPerson } from "@/lib/db";
 import { SESSION_COOKIE } from "@/lib/session";
 
 export async function GET() {
@@ -10,30 +10,39 @@ export async function GET() {
 
   const db = await getDatabase();
   const user = db.people.find((p) => p.id === userId && p.isSenior) ?? null;
-  return NextResponse.json({ user });
+  return NextResponse.json({ user: user ? publicPerson(user) : null });
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as { userId?: string | null };
-  const jar = await cookies();
+  try {
+    const body = (await request.json()) as {
+      userId?: string | null;
+      password?: string;
+    };
+    const jar = await cookies();
 
-  if (!body.userId) {
-    jar.delete(SESSION_COOKIE);
-    return NextResponse.json({ user: null });
+    if (!body.userId) {
+      jar.delete(SESSION_COOKIE);
+      return NextResponse.json({ user: null });
+    }
+
+    if (!body.password?.trim()) {
+      return NextResponse.json({ error: "נא להזין סיסמה" }, { status: 400 });
+    }
+
+    const user = await authenticateSenior(body.userId, body.password.trim());
+
+    jar.set(SESSION_COOKIE, user.id, {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 60,
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return NextResponse.json({ user });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "שגיאה";
+    return NextResponse.json({ error: message }, { status: 401 });
   }
-
-  const db = await getDatabase();
-  const user = db.people.find((p) => p.id === body.userId && p.isSenior);
-  if (!user) {
-    return NextResponse.json({ error: "משתמש לא נמצא בצוות הבכיר" }, { status: 400 });
-  }
-
-  jar.set(SESSION_COOKIE, user.id, {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 60,
-  });
-
-  return NextResponse.json({ user });
 }

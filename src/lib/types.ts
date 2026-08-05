@@ -15,6 +15,9 @@ export type Person = {
   isAdmin?: boolean;
   phone?: string;
   notes?: string;
+  /** scrypt hash in the form salt:hash — never send to clients. */
+  passwordHash?: string;
+  usesDefaultPassword?: boolean;
 };
 
 export const ADMIN_NAME = "נתן שמחה גרינברג";

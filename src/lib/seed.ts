@@ -1,3 +1,8 @@
+import {
+  DEFAULT_SENIOR_PASSWORDS,
+  hashPassword,
+  SENIOR_NAMES,
+} from "./passwords";
 import { ADMIN_NAME, type Database, type Person, type Role } from "./types";
 
 function id(prefix: string, index: number) {
@@ -112,17 +117,6 @@ const peopleByRole: Record<string, string[]> = {
   leadership: ["מענדל קשת", "חיים וייספיש", "יעקב קנייבסקי"],
 };
 
-/** Roles that are part of the senior thank-you team by default */
-const seniorRoleKeys = new Set([
-  "general",
-  "kitchen",
-  "mishbakim-mgr",
-  "tech-mgr",
-  "shlofta-mgr",
-  "officer",
-  "leadership",
-]);
-
 export function createSeedDatabase(): Database {
   const roles: Role[] = roleDefs.map((role, index) => ({
     id: id("role", index + 1),
@@ -139,12 +133,19 @@ export function createSeedDatabase(): Database {
 
   for (const [key, names] of Object.entries(peopleByRole)) {
     for (const name of names) {
+      const isSenior = SENIOR_NAMES.has(name);
+      const defaultPassword = DEFAULT_SENIOR_PASSWORDS[name];
       people.push({
         id: id("person", personIndex++),
         name,
         roleId: roleIdByKey[key],
-        isSenior: seniorRoleKeys.has(key),
+        isSenior,
         isAdmin: name === ADMIN_NAME,
+        passwordHash:
+          isSenior && defaultPassword
+            ? hashPassword(defaultPassword)
+            : undefined,
+        usesDefaultPassword: isSenior ? true : undefined,
       });
     }
   }

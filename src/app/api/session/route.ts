@@ -43,6 +43,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ user });
   } catch (error) {
     const message = error instanceof Error ? error.message : "שגיאה";
-    return NextResponse.json({ error: message }, { status: 401 });
+    const status = message.includes("סיסמה שגויה") ? 401 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }

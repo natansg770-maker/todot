@@ -159,13 +159,7 @@ export function AppClient() {
             החלף משתמש
           </button>
         </div>
-        <nav
-          className={`grid gap-2 border-t border-[var(--line)] bg-white/40 p-3 ${
-            user.isAdmin
-              ? "grid-cols-2 sm:grid-cols-5"
-              : "grid-cols-2 sm:grid-cols-4"
-          }`}
-        >
+        <nav className="flex flex-wrap gap-2 border-t border-[var(--line)] bg-white/40 p-3">
           {(
             [
               ["mine", "המשימות שלי"],
@@ -177,7 +171,7 @@ export function AppClient() {
           ).map(([id, label]) => (
             <button
               key={id}
-              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+              className={`min-w-[8.5rem] flex-1 rounded-2xl px-3 py-3 text-sm font-semibold transition ${
                 tab === id
                   ? "bg-maroon text-[var(--paper)] shadow-md"
                   : "bg-transparent text-maroon hover:bg-orange/15"
@@ -392,7 +386,11 @@ function LoginView({
               }
             }}
           />
-          {error && <p className="text-sm text-maroon">{error}</p>}
+          {error && (
+            <div className="rounded-2xl border border-maroon/30 bg-maroon/10 px-4 py-3 text-sm font-semibold text-maroon">
+              {error}
+            </div>
+          )}
           <button
             className="btn btn-primary w-full"
             disabled={!selected || !password || pending}

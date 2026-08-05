@@ -158,17 +158,13 @@ export function AppClient() {
     <div className="min-h-screen">
       <div ref={headerSentinelRef} className="header-sentinel" aria-hidden />
 
-      <header
-        className={`site-header animate-rise${headerStuck ? " is-stuck" : ""}`}
-      >
-        <div className="site-header-shell panel">
+      <header className={`site-header${headerStuck ? " is-stuck" : ""}`}>
+        <div className="site-header-shell">
           <div className="site-header-row">
             <div className="site-header-identity">
               <Logo
-                size={headerStuck ? 52 : 64}
-                className={`logo-float shrink-0${
-                  headerStuck ? " logo-compact" : ""
-                }`}
+                size={headerStuck ? 44 : 56}
+                className={`shrink-0${headerStuck ? "" : " logo-float"}`}
                 priority
               />
               <h1
@@ -191,6 +187,7 @@ export function AppClient() {
               ).map(([id, label]) => (
                 <button
                   key={id}
+                  type="button"
                   className={`site-tab ${
                     tab === id ? "site-tab-active" : "site-tab-idle"
                   }`}

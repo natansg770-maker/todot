@@ -22,7 +22,7 @@ import {
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "db.json");
-const MAX_MUTATION_RETRIES = 8;
+const MAX_MUTATION_RETRIES = 5;
 
 let githubSha: string | null = null;
 /** Serializes read-modify-write so concurrent handlers on one instance cannot stomp each other. */
@@ -116,6 +116,7 @@ async function readRawDb(): Promise<Database> {
 async function writeRawDb(db: Database): Promise<void> {
   db.updatedAt = new Date().toISOString();
   db.revision = (db.revision ?? 0) + 1;
+  db.writeToken = uid("w");
 
   if (canUseBlobDb()) {
     await writeBlobDb(db);
@@ -143,8 +144,8 @@ async function loadDb(): Promise<Database> {
 }
 
 /**
- * Atomic-ish mutation: serialize on this instance, retry when another writer
- * overwrites our Blob put (detected via unique writeToken).
+ * Serialize mutations on this instance: read → mutate → write.
+ * Retries only on storage put failures.
  */
 async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
   const run = async (): Promise<T> => {
@@ -155,24 +156,13 @@ async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
       const result = await fn(db);
       normalizePeople(db);
 
-      const writeToken = uid("w");
-      db.writeToken = writeToken;
-
       try {
         await writeRawDb(db);
+        return result;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        await sleep(50 * (attempt + 1));
-        continue;
+        await new Promise((resolve) => setTimeout(resolve, 60 * (attempt + 1)));
       }
-
-      // Confirm THIS write is what Blob currently holds.
-      const confirmed = await readRawDb();
-      if (confirmed.writeToken === writeToken) {
-        return result;
-      }
-
-      await sleep(50 * (attempt + 1));
     }
 
     throw (
@@ -187,10 +177,6 @@ async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
     () => undefined,
   );
   return next;
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function getDatabase(): Promise<Database> {
@@ -446,6 +432,11 @@ export async function claimForSelf(input: {
   return mutateDb((db) => {
     const user = db.people.find((p) => p.id === input.userId);
     if (!user?.isSenior) throw new Error("רק צוות בכיר יכול לקחת תודה");
+    const existing = db.assignments.find(
+      (a) =>
+        a.assigneeId === input.userId && a.recipientId === input.recipientId,
+    );
+    if (existing) return existing;
     return createAssignmentInDb(db, {
       assigneeId: input.userId,
       recipientId: input.recipientId,
@@ -460,7 +451,8 @@ export async function releaseOwnAssignment(input: {
 }): Promise<void> {
   await mutateDb((db) => {
     const assignment = db.assignments.find((a) => a.id === input.assignmentId);
-    if (!assignment) throw new Error("השיוך לא נמצא");
+    // Idempotent: already released / missing is success.
+    if (!assignment) return;
     if (!input.isAdmin && assignment.assigneeId !== input.userId) {
       throw new Error("ניתן לשחרר רק משימה שלך");
     }

@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { canUseGithubDb, readGithubDb, writeGithubDb } from "./github-db";
 import { createSeedDatabase } from "./seed";
 import {
   ADMIN_NAME,
@@ -25,6 +26,9 @@ const SENIOR_ROLE_NAMES = new Set([
   "הנהלה בכירה",
 ]);
 
+let githubSha: string | null = null;
+let writeQueue: Promise<void> = Promise.resolve();
+
 function normalizePeople(db: Database): boolean {
   let changed = false;
   const roleNameById = new Map(db.roles.map((r) => [r.id, r.name]));
@@ -45,23 +49,40 @@ function normalizePeople(db: Database): boolean {
 }
 
 async function ensureDb(): Promise<Database> {
+  if (canUseGithubDb()) {
+    const { db, sha } = await readGithubDb();
+    githubSha = sha;
+    if (normalizePeople(db)) {
+      return saveDb(db);
+    }
+    return db;
+  }
+
   try {
     const raw = await fs.readFile(DB_PATH, "utf8");
     const db = JSON.parse(raw) as Database;
     if (normalizePeople(db)) {
-      await saveDb(db);
+      return saveDb(db);
     }
     return db;
   } catch {
     const seed = createSeedDatabase();
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.writeFile(DB_PATH, JSON.stringify(seed, null, 2), "utf8");
-    return seed;
+    return saveDb(seed);
   }
 }
 
 async function saveDb(db: Database): Promise<Database> {
   db.updatedAt = new Date().toISOString();
+
+  if (canUseGithubDb()) {
+    writeQueue = writeQueue.then(async () => {
+      const saved = await writeGithubDb(db, githubSha);
+      githubSha = saved.sha;
+    });
+    await writeQueue;
+    return db;
+  }
+
   await fs.mkdir(DATA_DIR, { recursive: true });
   await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
   return db;
@@ -81,7 +102,6 @@ export async function resetDatabase(): Promise<Database> {
 }
 
 export function computeStats(db: Database): Stats {
-  // Everyone on the roster can receive a thank-you (seniors thank the full team).
   const thankable = db.people;
   const assignedRecipientIds = new Set(db.assignments.map((a) => a.recipientId));
   const completedRecipientIds = new Set(
@@ -92,13 +112,15 @@ export function computeStats(db: Database): Stats {
     totalRecipients: thankable.length,
     assignedRecipients: thankable.filter((p) => assignedRecipientIds.has(p.id))
       .length,
-    completedRecipients: thankable.filter((p) => completedRecipientIds.has(p.id))
-      .length,
+    completedRecipients: thankable.filter((p) =>
+      completedRecipientIds.has(p.id),
+    ).length,
     pendingAssignments: db.assignments.filter((a) => a.status === "pending")
       .length,
     doneAssignments: db.assignments.filter((a) => a.status === "done").length,
-    unassignedRecipients: thankable.filter((p) => !assignedRecipientIds.has(p.id))
-      .length,
+    unassignedRecipients: thankable.filter(
+      (p) => !assignedRecipientIds.has(p.id),
+    ).length,
     additionalThanksNeeded: db.assignments.filter(
       (a) => a.needsAdditionalThanks && a.status === "done",
     ).length,
@@ -108,7 +130,11 @@ export function computeStats(db: Database): Stats {
 export async function addRole(name: string): Promise<Role> {
   const db = await ensureDb();
   const maxOrder = db.roles.reduce((m, r) => Math.max(m, r.sortOrder), 0);
-  const role: Role = { id: uid("role"), name: name.trim(), sortOrder: maxOrder + 1 };
+  const role: Role = {
+    id: uid("role"),
+    name: name.trim(),
+    sortOrder: maxOrder + 1,
+  };
   db.roles.push(role);
   await saveDb(db);
   return role;
@@ -164,7 +190,9 @@ export async function addPerson(input: {
 
 export async function updatePerson(
   personId: string,
-  patch: Partial<Pick<Person, "name" | "roleId" | "isSenior" | "phone" | "notes">>,
+  patch: Partial<
+    Pick<Person, "name" | "roleId" | "isSenior" | "phone" | "notes">
+  >,
 ): Promise<Person> {
   const db = await ensureDb();
   const person = db.people.find((p) => p.id === personId);
@@ -299,10 +327,7 @@ export async function autoDistribute(): Promise<Assignment[]> {
   const db = await ensureDb();
   const seniorList = db.people.filter((p) => p.isSenior);
   const assigned = new Set(db.assignments.map((a) => a.recipientId));
-  // Prefer assigning non-seniors first; seniors can still be assigned manually.
-  const unassigned = db.people.filter(
-    (p) => !p.isSenior && !assigned.has(p.id),
-  );
+  const unassigned = db.people.filter((p) => !p.isSenior && !assigned.has(p.id));
 
   if (seniorList.length === 0 || unassigned.length === 0) return [];
 

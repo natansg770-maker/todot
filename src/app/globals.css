@@ -188,7 +188,7 @@ textarea {
 }
 
 .site-header-shell {
-  --apple-glass-bg: rgba(255, 255, 255, 0.52);
+  --apple-glass-bg: rgba(255, 255, 255, 0.42);
   --apple-glass-border: rgba(0, 0, 0, 0.1);
   --apple-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -206,7 +206,7 @@ textarea {
 }
 
 html.dark .site-header-shell {
-  --apple-glass-bg: rgba(22, 22, 24, 0.55);
+  --apple-glass-bg: rgba(22, 22, 24, 0.45);
   --apple-glass-border: rgba(255, 255, 255, 0.14);
   --apple-glass-shadow: 0 10px 36px rgba(0, 0, 0, 0.4);
 }
@@ -219,8 +219,8 @@ html.dark .site-header-shell {
   border-radius: inherit;
   background: var(--apple-glass-bg);
   /* Apple vibrancy — keep this element free of overflow clipping parents */
-  backdrop-filter: saturate(180%) blur(40px);
-  -webkit-backdrop-filter: saturate(180%) blur(40px);
+  backdrop-filter: saturate(180%) blur(50px);
+  -webkit-backdrop-filter: saturate(180%) blur(50px);
   pointer-events: none;
 }
 

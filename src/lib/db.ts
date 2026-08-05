@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { canUseBlobDb, readBlobDb, writeBlobDb } from "./blob-db";
 import { canUseGithubDb, readGithubDb, writeGithubDb } from "./github-db";
 import { createSeedDatabase } from "./seed";
 import {
@@ -49,6 +50,14 @@ function normalizePeople(db: Database): boolean {
 }
 
 async function ensureDb(): Promise<Database> {
+  if (canUseBlobDb()) {
+    const db = await readBlobDb();
+    if (normalizePeople(db)) {
+      return saveDb(db);
+    }
+    return db;
+  }
+
   if (canUseGithubDb()) {
     const { db, sha } = await readGithubDb();
     githubSha = sha;
@@ -73,6 +82,14 @@ async function ensureDb(): Promise<Database> {
 
 async function saveDb(db: Database): Promise<Database> {
   db.updatedAt = new Date().toISOString();
+
+  if (canUseBlobDb()) {
+    writeQueue = writeQueue.then(async () => {
+      await writeBlobDb(db);
+    });
+    await writeQueue;
+    return db;
+  }
 
   if (canUseGithubDb()) {
     writeQueue = writeQueue.then(async () => {

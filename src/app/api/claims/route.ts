@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       const recipient = personName(db.people, pending?.recipientId);
       const requester = personName(db.people, pending?.requesterId);
       if (body.approve) {
-        recordActivity({
+        await recordActivity({
           type: "join_approved",
           actorId: user.id,
           actorName: user.name,
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
         });
       } else {
         const selfCancel = pending?.requesterId === user.id;
-        recordActivity({
+        await recordActivity({
           type: "join_rejected",
           actorId: user.id,
           actorName: user.name,
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
       note: body.note,
     });
     const db = await getDatabase();
-    recordActivity({
+    await recordActivity({
       type: "join_request",
       actorId: user.id,
       actorName: user.name,

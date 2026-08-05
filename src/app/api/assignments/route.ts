@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       });
       const db = await getDatabase();
       const recipient = personName(db.people, body.recipientId);
-      recordActivity({
+      await recordActivity({
         type: "claim",
         actorId: user.id,
         actorName: user.name,
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
         assignmentId: body.assignmentId,
         isAdmin: Boolean(user.isAdmin),
       });
-      recordActivity({
+      await recordActivity({
         type: "release",
         actorId: user.id,
         actorName: user.name,
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
           isAdmin: false,
         });
       }
-      recordActivity({
+      await recordActivity({
         type: "delete",
         actorId: user.id,
         actorName: user.name,
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
 
     if (body.action === "auto-distribute") {
       const assignments = await autoDistribute();
-      recordActivity({
+      await recordActivity({
         type: "claim",
         actorId: user.id,
         actorName: user.name,
@@ -152,7 +152,7 @@ export async function POST(request: Request) {
         recipientIds: body.recipientIds,
       });
       const db = await getDatabase();
-      recordActivity({
+      await recordActivity({
         type: "claim",
         actorId: user.id,
         actorName: user.name,
@@ -173,7 +173,7 @@ export async function POST(request: Request) {
       recipientId: body.recipientId,
     });
     const db = await getDatabase();
-    recordActivity({
+    await recordActivity({
       type: "claim",
       actorId: user.id,
       actorName: user.name,
@@ -232,7 +232,7 @@ export async function PATCH(request: Request) {
           : body.contactMethod === "phone"
             ? "בשיחה"
             : "";
-      recordActivity({
+      await recordActivity({
         type: "done",
         actorId: user.id,
         actorName: user.name,
@@ -270,7 +270,7 @@ export async function DELETE(request: Request) {
         isAdmin: false,
       });
     }
-    recordActivity({
+    await recordActivity({
       type: "delete",
       actorId: user.id,
       actorName: user.name,

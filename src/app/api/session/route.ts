@@ -42,8 +42,10 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === "production",
     });
 
-    void heartbeatPresence({ userId: user.id, name: user.name }).catch(() => {});
-    recordActivity({
+    await heartbeatPresence({ userId: user.id, name: user.name }).catch(
+      () => undefined,
+    );
+    await recordActivity({
       type: "login",
       actorId: user.id,
       actorName: user.name,

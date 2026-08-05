@@ -6,17 +6,23 @@ import {
   readBlobDb,
   writeBlobDb,
 } from "./blob-db";
-import { canUseGithubDb, readGithubDb, writeGithubDb } from "./github-db";
+import { assertSafeAssignmentWrite, isLiveRuntime } from "./db-guards";
+import {
+  readDefaultDatabase,
+  writeDefaultDatabase,
+} from "./default-db";
+import {
+  canUseGithubDb,
+  peekGithubDb,
+  readGithubDb,
+  writeGithubDb,
+} from "./github-db";
 import {
   DEFAULT_SENIOR_PASSWORDS,
   hashPassword,
   SENIOR_NAMES,
   verifyPassword,
 } from "./passwords";
-import {
-  readDefaultDatabase,
-  writeDefaultDatabase,
-} from "./default-db";
 import { createSeedDatabase } from "./seed";
 import { isUnavailableStorageError } from "./storage-errors";
 import {
@@ -125,6 +131,8 @@ async function readLocalDbFile(): Promise<Database | null> {
 }
 
 async function readRawDb(): Promise<Database> {
+  const errors: string[] = [];
+
   if (canUseBlobDb() && !blobDisabled) {
     try {
       const { db, etag } = await readBlobDb();
@@ -132,8 +140,10 @@ async function readRawDb(): Promise<Database> {
       memoryDb = db;
       return db;
     } catch (error) {
-      if (isUnavailableStorageError(error)) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (message === "BLOB_DB_NOT_FOUND" || isUnavailableStorageError(error)) {
         blobDisabled = true;
+        errors.push(message);
       } else {
         throw error;
       }
@@ -147,24 +157,53 @@ async function readRawDb(): Promise<Database> {
       memoryDb = db;
       return db;
     } catch (error) {
-      if (!isUnavailableStorageError(error)) throw error;
+      const message = error instanceof Error ? error.message : String(error);
+      if (message === "GITHUB_DB_NOT_FOUND" || isUnavailableStorageError(error)) {
+        errors.push(message);
+      } else {
+        throw error;
+      }
     }
   }
 
   const local = await readLocalDbFile();
   if (local) {
+    // On live runtimes, refuse a bundled empty seed when remotes failed —
+    // that pattern wiped everyone's claims after token expiry.
+    const localCount = local.assignments?.length ?? 0;
+    if (isLiveRuntime() && localCount === 0 && errors.length > 0) {
+      throw new Error(
+        "לא ניתן לטעון את מסד הנתונים החי (GitHub/Blob). לא נטען seed ריק כדי לא למחוק לקיחות. בדקו את GITHUB_DB_TOKEN ב-Vercel.",
+      );
+    }
     memoryDb = local;
     return local;
   }
 
   if (memoryDb) return structuredClone(memoryDb);
 
+  if (isLiveRuntime()) {
+    throw new Error(
+      "אין מסד נתונים זמין. לא נוצר seed ריק בסביבת פרודקשן. בדקו את GITHUB_DB_TOKEN.",
+    );
+  }
+
+  // Local development only.
   const seed = createSeedDatabase();
   memoryDb = seed;
   return seed;
 }
 
-async function writeRawDb(db: Database): Promise<void> {
+async function writeRawDb(
+  db: Database,
+  options?: { allowDestructive?: boolean },
+): Promise<void> {
+  // Peek remote first — block accidental wipes even if this instance loaded stale/empty data.
+  const remote =
+    (canUseGithubDb() ? await peekGithubDb() : null) ??
+    (memoryDb && memoryDb !== db ? memoryDb : null);
+  assertSafeAssignmentWrite(db, remote, options);
+
   db.updatedAt = new Date().toISOString();
   db.revision = (db.revision ?? 0) + 1;
   db.writeToken = uid("w");
@@ -193,7 +232,16 @@ async function writeRawDb(db: Database): Promise<void> {
       return;
     } catch (error) {
       if (!isUnavailableStorageError(error)) throw error;
+      throw new Error(
+        "לא הצלחנו לשמור ל-GitHub (טוקן לא תקף?). לא נשמר seed מקומי במקום — הלקיחות לא נמחקו.",
+      );
     }
+  }
+
+  if (isLiveRuntime()) {
+    throw new Error(
+      "אין אחסון מרוחק זמין לשמירה. הלקיחות לא נמחקו. הגדירו GITHUB_DB_TOKEN יציב ב-Vercel.",
+    );
   }
 
   try {
@@ -221,7 +269,10 @@ async function loadDb(): Promise<Database> {
  * Serialize mutations on this instance: read → mutate → conditional write.
  * Retries when another instance changed the Blob (ETag mismatch).
  */
-async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
+async function mutateDb<T>(
+  fn: (db: Database) => T | Promise<T>,
+  options?: { allowDestructive?: boolean },
+): Promise<T> {
   const run = async (): Promise<T> => {
     let lastError: Error | null = null;
 
@@ -231,13 +282,18 @@ async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
       normalizePeople(db);
 
       try {
-        await writeRawDb(db);
+        await writeRawDb(db, options);
         return result;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         const conflict =
           error instanceof BlobConflictError ||
           (error instanceof Error && error.message === "BLOB_CONFLICT");
+        const blocked =
+          lastError.message.includes("נחסמה שמירה מסוכנת") ||
+          lastError.message.includes("לא הצלחנו לשמור ל-GitHub") ||
+          lastError.message.includes("אין אחסון מרוחק");
+        if (blocked) throw lastError;
         // Conflict: re-read latest and retry the whole mutation.
         // Other put errors: brief backoff then retry.
         await new Promise((resolve) =>
@@ -314,7 +370,17 @@ export async function setPersonPassword(input: {
 
 async function loadResetSource(): Promise<Database> {
   const saved = await readDefaultDatabase();
-  return saved ?? createSeedDatabase();
+  if (!saved) {
+    throw new Error(
+      "אין ברירת מחדל שמורה. לחצו קודם ״הגדר מצב עכשווי ברירת מחדל המערכת״. לא בוצע איפוס.",
+    );
+  }
+  if ((saved.assignments?.length ?? 0) === 0) {
+    throw new Error(
+      "ברירת המחדל השמורה ריקה מלקחות — איפוס נחסם כדי לא למחוק הכל. שמרו ברירת מחדל חדשה כשיש לקיחות.",
+    );
+  }
+  return saved;
 }
 
 /** Save the current live database as the system default for future resets. */
@@ -324,6 +390,11 @@ export async function saveCurrentAsDefault(): Promise<{
   peopleCount: number;
 }> {
   const db = await loadDb();
+  if ((db.assignments?.length ?? 0) === 0) {
+    throw new Error(
+      "לא שומרים ברירת מחדל בלי לקיחות. קחו לפחות לקיחה אחת ואז שמרו.",
+    );
+  }
   const saved = await writeDefaultDatabase(db);
   return {
     savedAt: saved.updatedAt,
@@ -334,14 +405,17 @@ export async function saveCurrentAsDefault(): Promise<{
 
 export async function resetDatabase(): Promise<Database> {
   const seed = await loadResetSource();
-  return mutateDb((db) => {
-    db.roles = seed.roles;
-    db.people = seed.people;
-    db.assignments = seed.assignments;
-    db.claimRequests = seed.claimRequests ?? [];
-    db.revision = seed.revision ?? 1;
-    return db;
-  });
+  return mutateDb(
+    (db) => {
+      db.roles = seed.roles;
+      db.people = seed.people;
+      db.assignments = seed.assignments;
+      db.claimRequests = seed.claimRequests ?? [];
+      db.revision = seed.revision ?? 1;
+      return db;
+    },
+    { allowDestructive: true },
+  );
 }
 
 export function computeStats(db: Database): Stats {

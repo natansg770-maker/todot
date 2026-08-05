@@ -1,4 +1,3 @@
-import { createSeedDatabase } from "./seed";
 import type { Database } from "./types";
 
 const REPO = process.env.GITHUB_REPOSITORY || "natansg770-maker/todot";
@@ -41,6 +40,9 @@ type ContentResponse = {
   encoding: string;
 };
 
+/**
+ * Read the GitHub-hosted DB. Never auto-seeds on 404 — that wiped live claims.
+ */
 export async function readGithubDb(): Promise<{ db: Database; sha: string | null }> {
   try {
     const data = await gh<ContentResponse>(
@@ -51,11 +53,20 @@ export async function readGithubDb(): Promise<{ db: Database; sha: string | null
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     if (message.includes("404")) {
-      const seed = createSeedDatabase();
-      const saved = await writeGithubDb(seed, null);
-      return saved;
+      throw new Error("GITHUB_DB_NOT_FOUND");
     }
     throw error;
+  }
+}
+
+/** Peek current remote DB for safe-write checks (null if unavailable). */
+export async function peekGithubDb(): Promise<Database | null> {
+  if (!canUseGithubDb()) return null;
+  try {
+    const { db } = await readGithubDb();
+    return db;
+  } catch {
+    return null;
   }
 }
 

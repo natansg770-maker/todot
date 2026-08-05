@@ -1465,11 +1465,13 @@ function AdminPanel({
             disabled={pending}
             onClick={() =>
               onAction(async () => {
-                if (
-                  !confirm(
-                    "לאפס את כל הנתונים למצב ברירת המחדל השמור? לקיחות ועדכונים נוכחיים יימחקו.",
-                  )
-                ) {
+                const typed = window.prompt(
+                  'אזהרה: זה יחליף את כל הלקיחות בברירת המחדל השמורה.\nכדי לאשר, הקלידו בדיוק: איפוס',
+                );
+                if (typed !== "איפוס") {
+                  if (typed !== null) {
+                    alert("האיפוס בוטל — לא הוקלד האישור הנכון.");
+                  }
                   return;
                 }
                 await resetDbApi();

@@ -4,7 +4,6 @@ import {
   get,
   put,
 } from "@vercel/blob";
-import { createSeedDatabase } from "./seed";
 import type { Database } from "./types";
 
 const PATHNAME = "data/db.json";
@@ -49,14 +48,16 @@ async function readPrivateJson(): Promise<BlobDbSnapshot> {
   return { db, etag: strongEtag(result.blob.etag) };
 }
 
+/**
+ * Read the Blob DB. Never auto-creates/writes a seed — missing data must not
+ * silently wipe production claims.
+ */
 export async function readBlobDb(): Promise<BlobDbSnapshot> {
   try {
     return await readPrivateJson();
   } catch (error) {
     if (error instanceof BlobNotFoundError) {
-      const seed = createSeedDatabase();
-      const { etag } = await writeBlobDb(seed, null);
-      return { db: seed, etag };
+      throw new Error("BLOB_DB_NOT_FOUND");
     }
     const message = error instanceof Error ? error.message : String(error);
     if (
@@ -65,11 +66,8 @@ export async function readBlobDb(): Promise<BlobDbSnapshot> {
       message.includes("NoSuchKey") ||
       message.includes("does not exist")
     ) {
-      const seed = createSeedDatabase();
-      const { etag } = await writeBlobDb(seed, null);
-      return { db: seed, etag };
+      throw new Error("BLOB_DB_NOT_FOUND");
     }
-    // Suspended / blocked / auth failures should fall through to another store.
     throw error;
   }
 }

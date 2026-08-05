@@ -13,6 +13,10 @@ import {
   SENIOR_NAMES,
   verifyPassword,
 } from "./passwords";
+import {
+  readDefaultDatabase,
+  writeDefaultDatabase,
+} from "./default-db";
 import { createSeedDatabase } from "./seed";
 import { isUnavailableStorageError } from "./storage-errors";
 import {
@@ -308,13 +312,33 @@ export async function setPersonPassword(input: {
   });
 }
 
+async function loadResetSource(): Promise<Database> {
+  const saved = await readDefaultDatabase();
+  return saved ?? createSeedDatabase();
+}
+
+/** Save the current live database as the system default for future resets. */
+export async function saveCurrentAsDefault(): Promise<{
+  savedAt: string;
+  assignmentCount: number;
+  peopleCount: number;
+}> {
+  const db = await loadDb();
+  const saved = await writeDefaultDatabase(db);
+  return {
+    savedAt: saved.updatedAt,
+    assignmentCount: saved.assignments.length,
+    peopleCount: saved.people.length,
+  };
+}
+
 export async function resetDatabase(): Promise<Database> {
+  const seed = await loadResetSource();
   return mutateDb((db) => {
-    const seed = createSeedDatabase();
     db.roles = seed.roles;
     db.people = seed.people;
     db.assignments = seed.assignments;
-    db.claimRequests = seed.claimRequests;
+    db.claimRequests = seed.claimRequests ?? [];
     db.revision = seed.revision ?? 1;
     return db;
   });

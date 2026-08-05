@@ -5,6 +5,7 @@ import {
   getDatabase,
   publicDatabase,
   resetDatabase,
+  saveCurrentAsDefault,
 } from "@/lib/db";
 
 export async function GET() {
@@ -23,6 +24,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { action?: string };
+    if (body.action === "save_default") {
+      await requireAdmin();
+      const result = await saveCurrentAsDefault();
+      return NextResponse.json({ ok: true, ...result });
+    }
     if (body.action === "reset") {
       await requireAdmin();
       const db = await resetDatabase();

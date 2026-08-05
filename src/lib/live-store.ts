@@ -294,3 +294,9 @@ export async function clearActivityFeed(): Promise<void> {
     store.activity = [];
   });
 }
+
+export async function clearChatFeed(): Promise<void> {
+  await mutateLive((store) => {
+    store.chat = [];
+  });
+}

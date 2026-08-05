@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   autoDistributeApi,
   changePasswordApi,
+  clearActivityApi,
+  clearChatApi,
   createAssignmentsBulkApi,
   createPerson,
   createRole,
@@ -18,6 +20,7 @@ import {
   resetDbApi,
   resetPasswordApi,
   respondClaimRequestApi,
+  saveDefaultDbApi,
   setSession,
   updateAssignmentApi,
   updatePersonApi,
@@ -1406,23 +1409,76 @@ function AdminPanel({
       </div>
 
       <div className="rounded-[24px] border border-maroon/20 bg-maroon/5 p-5">
-        <h3 className="font-bold text-maroon">איפוס נתונים</h3>
+        <h3 className="font-bold text-maroon">מצב מערכת</h3>
         <p className="mt-1 text-base text-muted">
-          מחזיר את רשימות הצוות והתפקידים למצב ההתחלתי ומוחק שיוכים ועדכונים.
+          שמירת ברירת מחדל, איפוס עדכונים/צ׳אט, או חזרה למצב ברירת המחדל
+          השמור.
         </p>
-        <button
-          className="btn btn-ghost mt-3"
-          disabled={pending}
-          onClick={() =>
-            onAction(async () => {
-              if (confirm("לאפס את כל הנתונים?")) {
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          <button
+            className="btn btn-secondary"
+            disabled={pending}
+            onClick={() =>
+              onAction(async () => {
+                if (
+                  !confirm(
+                    "לשמור את המצב הנוכחי (אנשים, לקיחות, סיסמאות) כברירת מחדל של המערכת?",
+                  )
+                ) {
+                  return;
+                }
+                const result = await saveDefaultDbApi();
+                alert(
+                  `נשמר כברירת מחדל · ${result.peopleCount} אנשים · ${result.assignmentCount} לקיחות`,
+                );
+              })
+            }
+          >
+            הגדר מצב עכשווי ברירת מחדל המערכת
+          </button>
+          <button
+            className="btn btn-ghost"
+            disabled={pending}
+            onClick={() =>
+              onAction(async () => {
+                if (!confirm("לאפס את כל העדכונים?")) return;
+                await clearActivityApi();
+              })
+            }
+          >
+            איפוס עידכונים
+          </button>
+          <button
+            className="btn btn-ghost"
+            disabled={pending}
+            onClick={() =>
+              onAction(async () => {
+                if (!confirm("לאפס את כל הצ׳אט?")) return;
+                await clearChatApi();
+              })
+            }
+          >
+            איפוס צ׳אט
+          </button>
+          <button
+            className="btn btn-ghost"
+            disabled={pending}
+            onClick={() =>
+              onAction(async () => {
+                if (
+                  !confirm(
+                    "לאפס את כל הנתונים למצב ברירת המחדל השמור? לקיחות ועדכונים נוכחיים יימחקו.",
+                  )
+                ) {
+                  return;
+                }
                 await resetDbApi();
-              }
-            })
-          }
-        >
-          איפוס למצב התחלתי
-        </button>
+              })
+            }
+          >
+            איפוס למצב ברירת מחדל
+          </button>
+        </div>
       </div>
     </section>
   );

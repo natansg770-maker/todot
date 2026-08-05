@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, requireAdmin } from "@/lib/auth";
 import {
+  clearActivityFeed,
+  clearChatFeed,
   getLiveSnapshot,
   heartbeatPresence,
   postChatMessage,
@@ -47,10 +49,31 @@ export async function POST(request: Request) {
       return NextResponse.json(snapshot);
     }
 
+    if (body.action === "clear_activity") {
+      await requireAdmin();
+      await clearActivityFeed();
+      const snapshot = await getLiveSnapshot();
+      return NextResponse.json(snapshot);
+    }
+
+    if (body.action === "clear_chat") {
+      await requireAdmin();
+      await clearChatFeed();
+      const snapshot = await getLiveSnapshot();
+      return NextResponse.json(snapshot);
+    }
+
     return NextResponse.json({ error: "פעולה לא ידועה" }, { status: 400 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "שגיאה";
-    const status = message.includes("הודעה") || message.includes("נא ") ? 400 : 500;
+    const status =
+      message.includes("הודעה") ||
+      message.includes("נא ") ||
+      message.includes("נתן שמחה")
+        ? message.includes("נתן שמחה")
+          ? 403
+          : 400
+        : 500;
     return NextResponse.json({ error: message }, { status });
   }
 }

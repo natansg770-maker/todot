@@ -354,10 +354,45 @@ export async function deleteAssignmentApi(id: string): Promise<void> {
 
 export async function resetDbApi(): Promise<DbResponse> {
   return parse(
-    await fetch("/api/db", {
+    await request("/api/db", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "reset" }),
+    }),
+  );
+}
+
+export async function saveDefaultDbApi(): Promise<{
+  ok: boolean;
+  savedAt: string;
+  assignmentCount: number;
+  peopleCount: number;
+}> {
+  return parse(
+    await request("/api/db", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "save_default" }),
+    }),
+  );
+}
+
+export async function clearActivityApi(): Promise<LiveSnapshot> {
+  return parse(
+    await request("/api/live", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "clear_activity" }),
+    }),
+  );
+}
+
+export async function clearChatApi(): Promise<LiveSnapshot> {
+  return parse(
+    await request("/api/live", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "clear_chat" }),
     }),
   );
 }

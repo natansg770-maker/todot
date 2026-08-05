@@ -869,10 +869,16 @@
       "id": "assign-msgj4tcp-wfqof2",
       "assigneeId": "person-085",
       "recipientId": "person-009",
-      "status": "pending",
+      "status": "done",
       "priority": 3,
       "createdAt": "2026-08-05T20:18:31.704Z",
-      "updatedAt": "2026-08-05T20:18:31.704Z"
+      "updatedAt": "2026-08-05T20:23:14.691Z",
+      "contactMethod": "sms",
+      "feedback": "נשלח SMS תודה",
+      "needsAdditionalThanks": false,
+      "additionalThankerIds": [],
+      "additionalThankerNote": "",
+      "completedAt": "2026-08-05T20:23:14.691Z"
     },
     {
       "id": "assign-msgj55ht-j54mdc",
@@ -911,7 +917,7 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:21:21.984Z",
-  "revision": 86,
-  "writeToken": "w-msgj8gqo-9uum95"
+  "updatedAt": "2026-08-05T20:23:14.691Z",
+  "revision": 87,
+  "writeToken": "w-msgjavpf-rwcqvp"
 }

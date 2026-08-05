@@ -1341,15 +1341,15 @@
       "id": "assign-msf9lhm9-5t4eu4",
       "assigneeId": "person-085",
       "recipientId": "person-065",
-      "status": "done",
+      "status": "pending",
       "createdAt": "2026-08-04T23:03:47.313Z",
-      "updatedAt": "2026-08-05T09:01:27.727Z",
+      "updatedAt": "2026-08-05T20:09:03.340Z",
       "contactMethod": "phone",
       "feedback": "היה מהים",
       "needsAdditionalThanks": false,
       "additionalThankerIds": [],
       "additionalThankerNote": "",
-      "completedAt": "2026-08-05T08:57:15.800Z",
+      "completedAt": null,
       "priority": 1
     },
     {
@@ -1544,6 +1544,7 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T19:59:15.849Z",
-  "revision": 4
+  "updatedAt": "2026-08-05T20:09:03.340Z",
+  "revision": 5,
+  "writeToken": "w-msgismss-zi7lks"
 }

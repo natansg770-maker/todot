@@ -160,7 +160,14 @@ export function AppClient() {
 
       <header className={`site-header${headerStuck ? " is-stuck" : ""}`}>
         <div className="site-header-shell">
-          <div className="site-header-glass" aria-hidden />
+          <div
+            className="site-header-glass"
+            aria-hidden
+            style={{
+              backdropFilter: "saturate(180%) blur(50px)",
+              WebkitBackdropFilter: "saturate(180%) blur(50px)",
+            }}
+          />
           <div className="site-header-row">
             <div className="site-header-identity">
               <Logo

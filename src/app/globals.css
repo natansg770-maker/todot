@@ -211,16 +211,13 @@ html.dark .site-header-shell {
   --apple-glass-shadow: 0 10px 36px rgba(0, 0, 0, 0.4);
 }
 
-/* Dedicated glass layer — more reliable than blur on the shell itself */
+/* Dedicated glass layer — blur set inline too (CSS minify was dropping it) */
 .site-header-glass {
   position: absolute;
   inset: 0;
   z-index: 0;
   border-radius: inherit;
   background: var(--apple-glass-bg);
-  /* Apple vibrancy — keep this element free of overflow clipping parents */
-  backdrop-filter: saturate(180%) blur(50px);
-  -webkit-backdrop-filter: saturate(180%) blur(50px);
   pointer-events: none;
 }
 

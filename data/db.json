@@ -935,14 +935,20 @@
       "id": "assign-msgjg7el-w2yvw3",
       "assigneeId": "person-003",
       "recipientId": "person-017",
-      "status": "pending",
+      "status": "done",
       "priority": 1,
       "createdAt": "2026-08-05T20:27:23.133Z",
-      "updatedAt": "2026-08-05T20:27:23.133Z"
+      "updatedAt": "2026-08-05T20:28:00.470Z",
+      "contactMethod": "sms",
+      "feedback": "טרם",
+      "needsAdditionalThanks": false,
+      "additionalThankerIds": [],
+      "additionalThankerNote": "",
+      "completedAt": "2026-08-05T20:28:00.470Z"
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:27:23.133Z",
-  "revision": 91,
-  "writeToken": "w-msgjg7el-6erc05"
+  "updatedAt": "2026-08-05T20:28:00.470Z",
+  "revision": 92,
+  "writeToken": "w-msgjh07q-5nc5xz"
 }

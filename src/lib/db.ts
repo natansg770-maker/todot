@@ -27,7 +27,7 @@ import {
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "db.json");
-const MAX_MUTATION_RETRIES = 5;
+const MAX_MUTATION_RETRIES = 12;
 
 let githubSha: string | null = null;
 /** ETag of the last Blob read/write on this instance (for conditional puts). */
@@ -182,9 +182,13 @@ async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
       }
     }
 
-    throw (
-      lastError ??
-      new Error("לא הצלחנו לשמור את השינוי. נסו שוב בעוד רגע")
+    const conflict =
+      lastError instanceof BlobConflictError ||
+      (lastError instanceof Error && lastError.message === "BLOB_CONFLICT");
+    throw new Error(
+      conflict
+        ? "מישהו אחר עדכן במקביל. נסו שוב"
+        : lastError?.message || "לא הצלחנו לשמור את השינוי. נסו שוב בעוד רגע",
     );
   };
 

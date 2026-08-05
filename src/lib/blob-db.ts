@@ -26,6 +26,12 @@ export type BlobDbSnapshot = {
   etag: string | null;
 };
 
+/** put/ifMatch expects a strong ETag; private get() may return a weak W/"..." form. */
+function strongEtag(etag: string | null | undefined): string | null {
+  if (!etag) return null;
+  return etag.startsWith("W/") ? etag.slice(2) : etag;
+}
+
 async function readPrivateJson(): Promise<BlobDbSnapshot> {
   const result = await get(PATHNAME, {
     access: "private",
@@ -40,7 +46,7 @@ async function readPrivateJson(): Promise<BlobDbSnapshot> {
 
   const buffer = Buffer.from(await new Response(result.stream).arrayBuffer());
   const db = JSON.parse(buffer.toString("utf8")) as Database;
-  return { db, etag: result.blob.etag };
+  return { db, etag: strongEtag(result.blob.etag) };
 }
 
 export async function readBlobDb(): Promise<BlobDbSnapshot> {
@@ -82,9 +88,9 @@ export async function writeBlobDb(
       token: process.env.BLOB_READ_WRITE_TOKEN,
       // Minimum allowed; private reads also use useCache:false.
       cacheControlMaxAge: 60,
-      ...(etag ? { ifMatch: etag } : {}),
+      ...(etag ? { ifMatch: strongEtag(etag) ?? etag } : {}),
     });
-    return { db, etag: result.etag };
+    return { db, etag: strongEtag(result.etag) ?? result.etag };
   } catch (error) {
     if (error instanceof BlobPreconditionFailedError) {
       throw new BlobConflictError();

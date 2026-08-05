@@ -1,0 +1,1178 @@
+{
+  "roles": [
+    {
+      "id": "role-001",
+      "name": "גנרל",
+      "sortOrder": 1
+    },
+    {
+      "id": "role-002",
+      "name": "מלמד (שיעור א')",
+      "sortOrder": 2
+    },
+    {
+      "id": "role-003",
+      "name": "מנהל מטבח",
+      "sortOrder": 3
+    },
+    {
+      "id": "role-004",
+      "name": "מנהל משבקי״ם",
+      "sortOrder": 4
+    },
+    {
+      "id": "role-005",
+      "name": "מנהל צוות טכני",
+      "sortOrder": 5
+    },
+    {
+      "id": "role-006",
+      "name": "מנהל שלאפט א חסיד",
+      "sortOrder": 6
+    },
+    {
+      "id": "role-007",
+      "name": "מע״ר",
+      "sortOrder": 7
+    },
+    {
+      "id": "role-008",
+      "name": "מעצב",
+      "sortOrder": 8
+    },
+    {
+      "id": "role-009",
+      "name": "מפקד (שיעור ב')",
+      "sortOrder": 9
+    },
+    {
+      "id": "role-010",
+      "name": "משב״ק",
+      "sortOrder": 10
+    },
+    {
+      "id": "role-011",
+      "name": "צוות טכני",
+      "sortOrder": 11
+    },
+    {
+      "id": "role-012",
+      "name": "צוות מזכירות",
+      "sortOrder": 12
+    },
+    {
+      "id": "role-013",
+      "name": "צוות מל״ש",
+      "sortOrder": 13
+    },
+    {
+      "id": "role-014",
+      "name": "צוות צילום וסושיאל",
+      "sortOrder": 14
+    },
+    {
+      "id": "role-015",
+      "name": "קצין",
+      "sortOrder": 15
+    },
+    {
+      "id": "role-016",
+      "name": "הנהלה בכירה",
+      "sortOrder": 16
+    }
+  ],
+  "people": [
+    {
+      "id": "person-001",
+      "name": "לוי יצחק ורדי",
+      "roleId": "role-001",
+      "isSenior": true
+    },
+    {
+      "id": "person-002",
+      "name": "נחמן ברדה",
+      "roleId": "role-001",
+      "isSenior": true
+    },
+    {
+      "id": "person-003",
+      "name": "מנחם מענדל גבירץ",
+      "roleId": "role-001",
+      "isSenior": true
+    },
+    {
+      "id": "person-004",
+      "name": "אליעזר נתן קפלן",
+      "roleId": "role-001",
+      "isSenior": true
+    },
+    {
+      "id": "person-005",
+      "name": "שמוליק ביסטריצקי",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-006",
+      "name": "שמואל גלבשטיין",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-007",
+      "name": "שמואל כהן",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-008",
+      "name": "הלל כהן",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-009",
+      "name": "לוי יצחק לבנוני",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-010",
+      "name": "מנחם מענדל מרקוביץ",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-011",
+      "name": "מנחם מענדל קוצובייבסקי",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-012",
+      "name": "לוי יצחק ריינהרץ",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-013",
+      "name": "גרשון אריאל רסקין",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-014",
+      "name": "מנחם מענדל בוקיעט",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-015",
+      "name": "פנחס הורביץ",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-016",
+      "name": "שניאור זלמן ישעיהו",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-017",
+      "name": "מנחם מענדל קוביטשעק",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-018",
+      "name": "יששכר דוב רוזנשיין",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-019",
+      "name": "מיכאל מנחם רז",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-020",
+      "name": "מנחם מענדל בטשוילי",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-021",
+      "name": "לוי יצחק וולף",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-022",
+      "name": "נתן וישצקי",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-023",
+      "name": "דוד חנזין",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-024",
+      "name": "שלום דב בער ליסון",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-025",
+      "name": "שלום אורי נתן נטע נפרסטק",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-026",
+      "name": "שניאור זלמן סוליש",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-027",
+      "name": "מנחם מענדל סלפושניק",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-028",
+      "name": "שמואל קלמן",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-029",
+      "name": "יחזקאל פינסון",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-030",
+      "name": "אריאל שלום תעיזי",
+      "roleId": "role-002",
+      "isSenior": false
+    },
+    {
+      "id": "person-031",
+      "name": "שמואל טורנהיים",
+      "roleId": "role-003",
+      "isSenior": true
+    },
+    {
+      "id": "person-032",
+      "name": "לוי יצחק טורנהיים",
+      "roleId": "role-003",
+      "isSenior": true
+    },
+    {
+      "id": "person-033",
+      "name": "מאיר בורובסקי",
+      "roleId": "role-004",
+      "isSenior": true
+    },
+    {
+      "id": "person-034",
+      "name": "שלום כהן",
+      "roleId": "role-004",
+      "isSenior": true
+    },
+    {
+      "id": "person-035",
+      "name": "שניאור זלמן קשת",
+      "roleId": "role-004",
+      "isSenior": true
+    },
+    {
+      "id": "person-036",
+      "name": "דוב בער הרטמן",
+      "roleId": "role-005",
+      "isSenior": true
+    },
+    {
+      "id": "person-037",
+      "name": "לוי דרוקמן",
+      "roleId": "role-006",
+      "isSenior": true
+    },
+    {
+      "id": "person-038",
+      "name": "יוסף יצחק קירשנבוים",
+      "roleId": "role-006",
+      "isSenior": true
+    },
+    {
+      "id": "person-039",
+      "name": "יוסף יצחק כהן",
+      "roleId": "role-007",
+      "isSenior": false
+    },
+    {
+      "id": "person-040",
+      "name": "ישראל שניאור זלמן הכהן",
+      "roleId": "role-008",
+      "isSenior": false
+    },
+    {
+      "id": "person-041",
+      "name": "מנחם מענדל אלטהויז",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-042",
+      "name": "שניאור זלמן ארבוב",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-043",
+      "name": "מנחם מענדל בר נתן",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-044",
+      "name": "מנחם מענדל סויסא",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-045",
+      "name": "נחמן סימקין",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-046",
+      "name": "מנחם מענדל רייניץ",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-047",
+      "name": "יהונתן שם-טוב חקוקי",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-048",
+      "name": "מנחם מענדל כהן",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-049",
+      "name": "יוסף יצחק כהן",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-050",
+      "name": "שלמה אליהו פישר",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-051",
+      "name": "זלמן בוטמן",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-052",
+      "name": "ישראל ברוק",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-053",
+      "name": "איתמר סאפראן",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-054",
+      "name": "מנחם מענדל לביוב",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-055",
+      "name": "אלעזר מימון הכהן",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-056",
+      "name": "מנחם מענדל גלמן",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-057",
+      "name": "ישראל זהר",
+      "roleId": "role-009",
+      "isSenior": false
+    },
+    {
+      "id": "person-058",
+      "name": "שלום דובער לוייב",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-059",
+      "name": "שניאור זלמן שרמן",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-060",
+      "name": "צבי יעקב הכהן הרמתי",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-061",
+      "name": "יוסף יצחק נריה לוייב",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-062",
+      "name": "יוסף יצחק מרזל",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-063",
+      "name": "יהונתן בנימין בורגן",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-064",
+      "name": "מנחם מענדל נימוי",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-065",
+      "name": "יוסף יצחק בר כוכבא",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-066",
+      "name": "מנחם מענדל פאכערט",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-067",
+      "name": "ארי ברוד",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-068",
+      "name": "שלום דובער פרידמן",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-069",
+      "name": "מנחם מענדל גולדובסקי",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-070",
+      "name": "שלום דובער פז",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-071",
+      "name": "הילל רז",
+      "roleId": "role-010",
+      "isSenior": false
+    },
+    {
+      "id": "person-072",
+      "name": "אלחנן גליצנשטיין",
+      "roleId": "role-011",
+      "isSenior": false
+    },
+    {
+      "id": "person-073",
+      "name": "שניאור זלמן רוזנשיין",
+      "roleId": "role-011",
+      "isSenior": false
+    },
+    {
+      "id": "person-074",
+      "name": "יוסף יצחק טוביה קישון",
+      "roleId": "role-011",
+      "isSenior": false
+    },
+    {
+      "id": "person-075",
+      "name": "שלום דובער ישראל סויסא",
+      "roleId": "role-012",
+      "isSenior": false
+    },
+    {
+      "id": "person-076",
+      "name": "זכריה תעיזי",
+      "roleId": "role-012",
+      "isSenior": false
+    },
+    {
+      "id": "person-077",
+      "name": "יוסף יצחק אחיטוב",
+      "roleId": "role-013",
+      "isSenior": false
+    },
+    {
+      "id": "person-078",
+      "name": "נתן סגל",
+      "roleId": "role-013",
+      "isSenior": false
+    },
+    {
+      "id": "person-079",
+      "name": "ראובן וגנר",
+      "roleId": "role-014",
+      "isSenior": false
+    },
+    {
+      "id": "person-080",
+      "name": "אפרים סלאווין",
+      "roleId": "role-014",
+      "isSenior": false
+    },
+    {
+      "id": "person-081",
+      "name": "יצחק פולק",
+      "roleId": "role-014",
+      "isSenior": false
+    },
+    {
+      "id": "person-082",
+      "name": "נתן שמחה גרינברג",
+      "roleId": "role-015",
+      "isSenior": true,
+      "isAdmin": true
+    },
+    {
+      "id": "person-083",
+      "name": "לוי יצחק ערד",
+      "roleId": "role-015",
+      "isSenior": true
+    },
+    {
+      "id": "person-084",
+      "name": "שמואל פינחס חזן",
+      "roleId": "role-015",
+      "isSenior": true
+    },
+    {
+      "id": "person-085",
+      "name": "מנחם מענדל בורנשטיין",
+      "roleId": "role-015",
+      "isSenior": true
+    },
+    {
+      "id": "person-086",
+      "name": "מענדל קשת",
+      "roleId": "role-016",
+      "isSenior": true
+    },
+    {
+      "id": "person-087",
+      "name": "חיים וייספיש",
+      "roleId": "role-016",
+      "isSenior": true
+    },
+    {
+      "id": "person-088",
+      "name": "יעקב קנייבסקי",
+      "roleId": "role-016",
+      "isSenior": true
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assign-msf9lhjo-wtvxj2",
+      "assigneeId": "person-001",
+      "recipientId": "person-005",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.220Z",
+      "updatedAt": "2026-08-04T23:03:47.220Z"
+    },
+    {
+      "id": "assign-msf9lhjp-cxvq3g",
+      "assigneeId": "person-002",
+      "recipientId": "person-006",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.221Z",
+      "updatedAt": "2026-08-04T23:03:47.221Z"
+    },
+    {
+      "id": "assign-msf9lhjq-sfk2gn",
+      "assigneeId": "person-003",
+      "recipientId": "person-007",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.222Z",
+      "updatedAt": "2026-08-04T23:03:47.222Z"
+    },
+    {
+      "id": "assign-msf9lhjr-1fqcqn",
+      "assigneeId": "person-004",
+      "recipientId": "person-008",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.223Z",
+      "updatedAt": "2026-08-04T23:03:47.223Z"
+    },
+    {
+      "id": "assign-msf9lhjt-feih2z",
+      "assigneeId": "person-031",
+      "recipientId": "person-009",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.225Z",
+      "updatedAt": "2026-08-04T23:03:47.225Z"
+    },
+    {
+      "id": "assign-msf9lhjy-wjocz1",
+      "assigneeId": "person-032",
+      "recipientId": "person-010",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.230Z",
+      "updatedAt": "2026-08-04T23:03:47.230Z"
+    },
+    {
+      "id": "assign-msf9lhjz-d4na8z",
+      "assigneeId": "person-033",
+      "recipientId": "person-011",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.231Z",
+      "updatedAt": "2026-08-04T23:03:47.231Z"
+    },
+    {
+      "id": "assign-msf9lhk3-l5pr20",
+      "assigneeId": "person-034",
+      "recipientId": "person-012",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.235Z",
+      "updatedAt": "2026-08-04T23:03:47.235Z"
+    },
+    {
+      "id": "assign-msf9lhk4-6e150u",
+      "assigneeId": "person-035",
+      "recipientId": "person-013",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.236Z",
+      "updatedAt": "2026-08-04T23:03:47.236Z"
+    },
+    {
+      "id": "assign-msf9lhk6-hvnr7j",
+      "assigneeId": "person-036",
+      "recipientId": "person-014",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.238Z",
+      "updatedAt": "2026-08-04T23:03:47.238Z"
+    },
+    {
+      "id": "assign-msf9lhk9-p6jop8",
+      "assigneeId": "person-037",
+      "recipientId": "person-015",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.241Z",
+      "updatedAt": "2026-08-04T23:03:47.241Z"
+    },
+    {
+      "id": "assign-msf9lhkb-fswrje",
+      "assigneeId": "person-038",
+      "recipientId": "person-016",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.243Z",
+      "updatedAt": "2026-08-04T23:03:47.243Z"
+    },
+    {
+      "id": "assign-msf9lhkc-1hv0ad",
+      "assigneeId": "person-082",
+      "recipientId": "person-017",
+      "status": "done",
+      "createdAt": "2026-08-04T23:03:47.244Z",
+      "updatedAt": "2026-08-04T23:05:17.268Z",
+      "contactMethod": "phone",
+      "feedback": "שיחה נעימ מאוד. המשפחה שמחה לקבל את התודה וזכירו את הזכרונות היפים מהקעמפ.",
+      "needsAdditionalThanks": true,
+      "additionalThankerIds": [
+        "person-004"
+      ],
+      "additionalThankerNote": "",
+      "completedAt": "2026-08-04T23:05:17.268Z"
+    },
+    {
+      "id": "assign-msf9lhkd-11wwpv",
+      "assigneeId": "person-083",
+      "recipientId": "person-018",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.245Z",
+      "updatedAt": "2026-08-04T23:03:47.245Z"
+    },
+    {
+      "id": "assign-msf9lhke-7su45h",
+      "assigneeId": "person-084",
+      "recipientId": "person-019",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.246Z",
+      "updatedAt": "2026-08-04T23:03:47.246Z"
+    },
+    {
+      "id": "assign-msf9lhkf-1vvngv",
+      "assigneeId": "person-085",
+      "recipientId": "person-020",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.247Z",
+      "updatedAt": "2026-08-04T23:03:47.247Z"
+    },
+    {
+      "id": "assign-msf9lhkg-mc2pgu",
+      "assigneeId": "person-086",
+      "recipientId": "person-021",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.248Z",
+      "updatedAt": "2026-08-04T23:03:47.248Z"
+    },
+    {
+      "id": "assign-msf9lhkh-omyg4y",
+      "assigneeId": "person-087",
+      "recipientId": "person-022",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.249Z",
+      "updatedAt": "2026-08-04T23:03:47.249Z"
+    },
+    {
+      "id": "assign-msf9lhki-erla40",
+      "assigneeId": "person-088",
+      "recipientId": "person-023",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.250Z",
+      "updatedAt": "2026-08-04T23:03:47.250Z"
+    },
+    {
+      "id": "assign-msf9lhkj-iuzaxo",
+      "assigneeId": "person-001",
+      "recipientId": "person-024",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.251Z",
+      "updatedAt": "2026-08-04T23:03:47.251Z"
+    },
+    {
+      "id": "assign-msf9lhkk-uld3jc",
+      "assigneeId": "person-002",
+      "recipientId": "person-025",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.252Z",
+      "updatedAt": "2026-08-04T23:03:47.252Z"
+    },
+    {
+      "id": "assign-msf9lhkm-d3lh5c",
+      "assigneeId": "person-003",
+      "recipientId": "person-026",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.254Z",
+      "updatedAt": "2026-08-04T23:03:47.254Z"
+    },
+    {
+      "id": "assign-msf9lhkn-s0fcaq",
+      "assigneeId": "person-004",
+      "recipientId": "person-027",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.255Z",
+      "updatedAt": "2026-08-04T23:03:47.255Z"
+    },
+    {
+      "id": "assign-msf9lhkp-djghbr",
+      "assigneeId": "person-031",
+      "recipientId": "person-028",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.257Z",
+      "updatedAt": "2026-08-04T23:03:47.257Z"
+    },
+    {
+      "id": "assign-msf9lhkq-6ypbdl",
+      "assigneeId": "person-032",
+      "recipientId": "person-029",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.258Z",
+      "updatedAt": "2026-08-04T23:03:47.258Z"
+    },
+    {
+      "id": "assign-msf9lhkq-e470on",
+      "assigneeId": "person-033",
+      "recipientId": "person-030",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.258Z",
+      "updatedAt": "2026-08-04T23:03:47.258Z"
+    },
+    {
+      "id": "assign-msf9lhkr-hftbxd",
+      "assigneeId": "person-034",
+      "recipientId": "person-039",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.259Z",
+      "updatedAt": "2026-08-04T23:03:47.259Z"
+    },
+    {
+      "id": "assign-msf9lhks-9x2ptk",
+      "assigneeId": "person-035",
+      "recipientId": "person-040",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.260Z",
+      "updatedAt": "2026-08-04T23:03:47.260Z"
+    },
+    {
+      "id": "assign-msf9lhkt-x9hgd4",
+      "assigneeId": "person-036",
+      "recipientId": "person-041",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.261Z",
+      "updatedAt": "2026-08-04T23:03:47.261Z"
+    },
+    {
+      "id": "assign-msf9lhkv-66rl4m",
+      "assigneeId": "person-037",
+      "recipientId": "person-042",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.263Z",
+      "updatedAt": "2026-08-04T23:03:47.263Z"
+    },
+    {
+      "id": "assign-msf9lhkw-te1wlk",
+      "assigneeId": "person-038",
+      "recipientId": "person-043",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.264Z",
+      "updatedAt": "2026-08-04T23:03:47.264Z"
+    },
+    {
+      "id": "assign-msf9lhkx-2fzhea",
+      "assigneeId": "person-082",
+      "recipientId": "person-044",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.265Z",
+      "updatedAt": "2026-08-04T23:03:47.265Z"
+    },
+    {
+      "id": "assign-msf9lhky-va144z",
+      "assigneeId": "person-083",
+      "recipientId": "person-045",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.266Z",
+      "updatedAt": "2026-08-04T23:03:47.266Z"
+    },
+    {
+      "id": "assign-msf9lhkz-vv2uhp",
+      "assigneeId": "person-084",
+      "recipientId": "person-046",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.267Z",
+      "updatedAt": "2026-08-04T23:03:47.267Z"
+    },
+    {
+      "id": "assign-msf9lhkz-9jkjwn",
+      "assigneeId": "person-085",
+      "recipientId": "person-047",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.267Z",
+      "updatedAt": "2026-08-04T23:03:47.267Z"
+    },
+    {
+      "id": "assign-msf9lhl0-ty4p0x",
+      "assigneeId": "person-086",
+      "recipientId": "person-048",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.268Z",
+      "updatedAt": "2026-08-04T23:03:47.268Z"
+    },
+    {
+      "id": "assign-msf9lhl1-p5xe8z",
+      "assigneeId": "person-087",
+      "recipientId": "person-049",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.269Z",
+      "updatedAt": "2026-08-04T23:03:47.269Z"
+    },
+    {
+      "id": "assign-msf9lhl2-uezqj3",
+      "assigneeId": "person-088",
+      "recipientId": "person-050",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.270Z",
+      "updatedAt": "2026-08-04T23:03:47.270Z"
+    },
+    {
+      "id": "assign-msf9lhl3-skrqb4",
+      "assigneeId": "person-001",
+      "recipientId": "person-051",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.271Z",
+      "updatedAt": "2026-08-04T23:03:47.271Z"
+    },
+    {
+      "id": "assign-msf9lhl4-cnp760",
+      "assigneeId": "person-002",
+      "recipientId": "person-052",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.272Z",
+      "updatedAt": "2026-08-04T23:03:47.272Z"
+    },
+    {
+      "id": "assign-msf9lhl6-6xuiqg",
+      "assigneeId": "person-003",
+      "recipientId": "person-053",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.274Z",
+      "updatedAt": "2026-08-04T23:03:47.274Z"
+    },
+    {
+      "id": "assign-msf9lhl7-xcs046",
+      "assigneeId": "person-004",
+      "recipientId": "person-054",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.275Z",
+      "updatedAt": "2026-08-04T23:03:47.275Z"
+    },
+    {
+      "id": "assign-msf9lhl8-3vluf8",
+      "assigneeId": "person-031",
+      "recipientId": "person-055",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.276Z",
+      "updatedAt": "2026-08-04T23:03:47.276Z"
+    },
+    {
+      "id": "assign-msf9lhla-7ni0uv",
+      "assigneeId": "person-032",
+      "recipientId": "person-056",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.278Z",
+      "updatedAt": "2026-08-04T23:03:47.278Z"
+    },
+    {
+      "id": "assign-msf9lhlb-pnvxzs",
+      "assigneeId": "person-033",
+      "recipientId": "person-057",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.279Z",
+      "updatedAt": "2026-08-04T23:03:47.279Z"
+    },
+    {
+      "id": "assign-msf9lhld-l4epj0",
+      "assigneeId": "person-034",
+      "recipientId": "person-058",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.281Z",
+      "updatedAt": "2026-08-04T23:03:47.281Z"
+    },
+    {
+      "id": "assign-msf9lhle-7xg0v1",
+      "assigneeId": "person-035",
+      "recipientId": "person-059",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.282Z",
+      "updatedAt": "2026-08-04T23:03:47.282Z"
+    },
+    {
+      "id": "assign-msf9lhlf-4ef4pe",
+      "assigneeId": "person-036",
+      "recipientId": "person-060",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.283Z",
+      "updatedAt": "2026-08-04T23:03:47.283Z"
+    },
+    {
+      "id": "assign-msf9lhlx-gjch3k",
+      "assigneeId": "person-037",
+      "recipientId": "person-061",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.301Z",
+      "updatedAt": "2026-08-04T23:03:47.301Z"
+    },
+    {
+      "id": "assign-msf9lhm8-lsqe97",
+      "assigneeId": "person-038",
+      "recipientId": "person-062",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.312Z",
+      "updatedAt": "2026-08-04T23:03:47.312Z"
+    },
+    {
+      "id": "assign-msf9lhm9-5t4eu4",
+      "assigneeId": "person-082",
+      "recipientId": "person-063",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.313Z",
+      "updatedAt": "2026-08-04T23:03:47.313Z"
+    },
+    {
+      "id": "assign-msf9lhma-cc0j0b",
+      "assigneeId": "person-083",
+      "recipientId": "person-064",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.314Z",
+      "updatedAt": "2026-08-04T23:03:47.314Z"
+    },
+    {
+      "id": "assign-msf9lhmc-u26zlv",
+      "assigneeId": "person-084",
+      "recipientId": "person-065",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.316Z",
+      "updatedAt": "2026-08-04T23:03:47.316Z"
+    },
+    {
+      "id": "assign-msf9lhme-ppj3wy",
+      "assigneeId": "person-085",
+      "recipientId": "person-066",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.318Z",
+      "updatedAt": "2026-08-04T23:03:47.318Z"
+    },
+    {
+      "id": "assign-msf9lhmh-qigqcc",
+      "assigneeId": "person-086",
+      "recipientId": "person-067",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.321Z",
+      "updatedAt": "2026-08-04T23:03:47.321Z"
+    },
+    {
+      "id": "assign-msf9lhmo-wrppss",
+      "assigneeId": "person-087",
+      "recipientId": "person-068",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.328Z",
+      "updatedAt": "2026-08-04T23:03:47.328Z"
+    },
+    {
+      "id": "assign-msf9lhmq-9pmnh4",
+      "assigneeId": "person-088",
+      "recipientId": "person-069",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.330Z",
+      "updatedAt": "2026-08-04T23:03:47.330Z"
+    },
+    {
+      "id": "assign-msf9lhmu-f9cnjw",
+      "assigneeId": "person-001",
+      "recipientId": "person-070",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.334Z",
+      "updatedAt": "2026-08-04T23:03:47.334Z"
+    },
+    {
+      "id": "assign-msf9lhmv-hci9iw",
+      "assigneeId": "person-002",
+      "recipientId": "person-071",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.335Z",
+      "updatedAt": "2026-08-04T23:03:47.335Z"
+    },
+    {
+      "id": "assign-msf9lhmx-gqahnu",
+      "assigneeId": "person-003",
+      "recipientId": "person-072",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.337Z",
+      "updatedAt": "2026-08-04T23:03:47.337Z"
+    },
+    {
+      "id": "assign-msf9lhmy-g10bq7",
+      "assigneeId": "person-004",
+      "recipientId": "person-073",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.338Z",
+      "updatedAt": "2026-08-04T23:03:47.338Z"
+    },
+    {
+      "id": "assign-msf9lhn0-4vt8f2",
+      "assigneeId": "person-031",
+      "recipientId": "person-074",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.340Z",
+      "updatedAt": "2026-08-04T23:03:47.340Z"
+    },
+    {
+      "id": "assign-msf9lhn1-b6yo8t",
+      "assigneeId": "person-032",
+      "recipientId": "person-075",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.341Z",
+      "updatedAt": "2026-08-04T23:03:47.341Z"
+    },
+    {
+      "id": "assign-msf9lhn2-do4tkp",
+      "assigneeId": "person-033",
+      "recipientId": "person-076",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.342Z",
+      "updatedAt": "2026-08-04T23:03:47.342Z"
+    },
+    {
+      "id": "assign-msf9lhn3-btgmel",
+      "assigneeId": "person-034",
+      "recipientId": "person-077",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.343Z",
+      "updatedAt": "2026-08-04T23:03:47.343Z"
+    },
+    {
+      "id": "assign-msf9lhn4-7f4tof",
+      "assigneeId": "person-035",
+      "recipientId": "person-078",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.344Z",
+      "updatedAt": "2026-08-04T23:03:47.344Z"
+    },
+    {
+      "id": "assign-msf9lhn6-t0jr6l",
+      "assigneeId": "person-036",
+      "recipientId": "person-079",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.346Z",
+      "updatedAt": "2026-08-04T23:03:47.346Z"
+    },
+    {
+      "id": "assign-msf9lhn7-ok501b",
+      "assigneeId": "person-037",
+      "recipientId": "person-080",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.347Z",
+      "updatedAt": "2026-08-04T23:03:47.347Z"
+    },
+    {
+      "id": "assign-msf9lhn8-3dtnyu",
+      "assigneeId": "person-038",
+      "recipientId": "person-081",
+      "status": "pending",
+      "createdAt": "2026-08-04T23:03:47.348Z",
+      "updatedAt": "2026-08-04T23:03:47.348Z"
+    }
+  ],
+  "updatedAt": "2026-08-04T23:54:40.731Z"
+}

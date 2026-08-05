@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordActivity } from "@/lib/activity";
 import { getCurrentUser, requireAdmin } from "@/lib/auth";
 import {
   autoDistribute,
@@ -6,6 +7,7 @@ import {
   createAssignment,
   createAssignmentsBulk,
   deleteAssignment,
+  getDatabase,
   releaseOwnAssignment,
   reorderOwnPriorities,
   updateAssignment,
@@ -20,6 +22,14 @@ function errorResponse(error: unknown) {
       ? 403
       : 400;
   return NextResponse.json({ error: message }, { status });
+}
+
+function personName(
+  people: { id: string; name: string }[],
+  id: string | undefined,
+) {
+  if (!id) return "מישהו";
+  return people.find((p) => p.id === id)?.name ?? "מישהו";
 }
 
 export async function POST(request: Request) {
@@ -46,6 +56,14 @@ export async function POST(request: Request) {
         userId: user.id,
         recipientId: body.recipientId,
       });
+      const db = await getDatabase();
+      const recipient = personName(db.people, body.recipientId);
+      recordActivity({
+        type: "claim",
+        actorId: user.id,
+        actorName: user.name,
+        message: `${user.name} לקח תודה ל${recipient}`,
+      });
       return NextResponse.json({ assignment });
     }
 
@@ -53,10 +71,21 @@ export async function POST(request: Request) {
       if (!body.assignmentId) {
         return NextResponse.json({ error: "חסר מזהה שיוך" }, { status: 400 });
       }
+      const dbBefore = await getDatabase();
+      const existing = dbBefore.assignments.find(
+        (a) => a.id === body.assignmentId,
+      );
+      const recipient = personName(dbBefore.people, existing?.recipientId);
       await releaseOwnAssignment({
         userId: user.id,
         assignmentId: body.assignmentId,
         isAdmin: Boolean(user.isAdmin),
+      });
+      recordActivity({
+        type: "release",
+        actorId: user.id,
+        actorName: user.name,
+        message: `${user.name} שחרר את התודה ל${recipient}`,
       });
       return NextResponse.json({ ok: true });
     }
@@ -65,6 +94,12 @@ export async function POST(request: Request) {
       if (!body.assignmentId) {
         return NextResponse.json({ error: "חסר מזהה שיוך" }, { status: 400 });
       }
+      const dbBefore = await getDatabase();
+      const existing = dbBefore.assignments.find(
+        (a) => a.id === body.assignmentId,
+      );
+      const recipient = personName(dbBefore.people, existing?.recipientId);
+      const assignee = personName(dbBefore.people, existing?.assigneeId);
       if (user.isAdmin) {
         await deleteAssignment(body.assignmentId);
       } else {
@@ -74,6 +109,12 @@ export async function POST(request: Request) {
           isAdmin: false,
         });
       }
+      recordActivity({
+        type: "delete",
+        actorId: user.id,
+        actorName: user.name,
+        message: `${user.name} מחק שיוך: ${assignee} → ${recipient}`,
+      });
       return NextResponse.json({ ok: true });
     }
 
@@ -96,6 +137,12 @@ export async function POST(request: Request) {
 
     if (body.action === "auto-distribute") {
       const assignments = await autoDistribute();
+      recordActivity({
+        type: "claim",
+        actorId: user.id,
+        actorName: user.name,
+        message: `${user.name} פיזר אוטומטית ${assignments.length} תודות`,
+      });
       return NextResponse.json({ assignments });
     }
 
@@ -103,6 +150,13 @@ export async function POST(request: Request) {
       const assignments = await createAssignmentsBulk({
         assigneeId: body.assigneeId,
         recipientIds: body.recipientIds,
+      });
+      const db = await getDatabase();
+      recordActivity({
+        type: "claim",
+        actorId: user.id,
+        actorName: user.name,
+        message: `${user.name} שייך ${assignments.length} תודות ל${personName(db.people, body.assigneeId)}`,
       });
       return NextResponse.json({ assignments });
     }
@@ -117,6 +171,13 @@ export async function POST(request: Request) {
     const assignment = await createAssignment({
       assigneeId: body.assigneeId,
       recipientId: body.recipientId,
+    });
+    const db = await getDatabase();
+    recordActivity({
+      type: "claim",
+      actorId: user.id,
+      actorName: user.name,
+      message: `${user.name} שייך ל${personName(db.people, body.assigneeId)} את ${personName(db.people, body.recipientId)}`,
     });
     return NextResponse.json({ assignment });
   } catch (error) {
@@ -150,10 +211,10 @@ export async function PATCH(request: Request) {
       await requireAdmin();
     }
 
+    const db = await getDatabase();
+    const existing = db.assignments.find((a) => a.id === body.id);
+
     if (!user.isAdmin) {
-      const { getDatabase } = await import("@/lib/db");
-      const db = await getDatabase();
-      const existing = db.assignments.find((a) => a.id === body.id);
       if (!existing || existing.assigneeId !== user.id) {
         return NextResponse.json(
           { error: "ניתן לעדכן רק משימות ששויכו אליך" },
@@ -163,6 +224,21 @@ export async function PATCH(request: Request) {
     }
 
     const assignment = await updateAssignment(body.id, body);
+    if (body.status === "done") {
+      const recipient = personName(db.people, assignment.recipientId);
+      const method =
+        body.contactMethod === "sms"
+          ? "בסמס"
+          : body.contactMethod === "phone"
+            ? "בשיחה"
+            : "";
+      recordActivity({
+        type: "done",
+        actorId: user.id,
+        actorName: user.name,
+        message: `${user.name} סיים תודה ל${recipient}${method ? ` ${method}` : ""}`,
+      });
+    }
     return NextResponse.json({ assignment });
   } catch (error) {
     return errorResponse(error);
@@ -181,6 +257,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "חסר מזהה" }, { status: 400 });
     }
 
+    const dbBefore = await getDatabase();
+    const existing = dbBefore.assignments.find((a) => a.id === id);
+    const recipient = personName(dbBefore.people, existing?.recipientId);
+
     if (user.isAdmin) {
       await deleteAssignment(id);
     } else {
@@ -190,6 +270,12 @@ export async function DELETE(request: Request) {
         isAdmin: false,
       });
     }
+    recordActivity({
+      type: "delete",
+      actorId: user.id,
+      actorName: user.name,
+      message: `${user.name} מחק שיוך ל${recipient}`,
+    });
     return NextResponse.json({ ok: true });
   } catch (error) {
     return errorResponse(error);

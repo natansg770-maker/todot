@@ -66,6 +66,36 @@ export type Database = {
   writeToken?: string;
 };
 
+export type ActivityType =
+  | "login"
+  | "claim"
+  | "release"
+  | "done"
+  | "delete"
+  | "join_request"
+  | "join_approved"
+  | "join_rejected";
+
+export type ActivityEvent = {
+  id: string;
+  type: ActivityType;
+  actorId: string;
+  actorName: string;
+  message: string;
+  createdAt: string;
+};
+
+export type PresenceEntry = {
+  name: string;
+  lastSeen: string;
+};
+
+export type LiveStore = {
+  presence: Record<string, PresenceEntry>;
+  activity: ActivityEvent[];
+  updatedAt: string;
+};
+
 export type Stats = {
   totalRecipients: number;
   assignedRecipients: number;

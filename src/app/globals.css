@@ -309,3 +309,140 @@ textarea {
   background: linear-gradient(90deg, var(--orange), var(--maroon));
   transition: width 400ms ease;
 }
+
+.online-pill {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.55rem 1rem;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.online-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: var(--pine);
+  box-shadow: 0 0 0 0 rgba(47, 107, 58, 0.55);
+  animation: pulse-dot 1.8s ease-out infinite;
+}
+
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(47, 107, 58, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(47, 107, 58, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 107, 58, 0);
+  }
+}
+
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.7rem;
+  align-items: center;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--line);
+  padding: 0.7rem 0.9rem;
+}
+
+.activity-msg {
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.activity-time {
+  font-size: 0.92rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.activity-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  background: rgba(122, 14, 20, 0.08);
+  color: var(--maroon);
+}
+
+.tag-done {
+  background: rgba(47, 107, 58, 0.14);
+  color: var(--pine);
+}
+
+.tag-claim,
+.tag-join_approved {
+  background: rgba(245, 168, 58, 0.2);
+  color: #9a5a00;
+}
+
+.tag-login {
+  background: rgba(47, 111, 159, 0.14);
+  color: var(--lake);
+}
+
+.toast-stack {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: min(22rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.live-toast {
+  pointer-events: auto;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255, 249, 242, 0.96);
+  box-shadow: 0 14px 36px rgba(77, 7, 12, 0.16);
+  padding: 0.9rem 1rem;
+  animation: toast-in 320ms ease both;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .activity-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .activity-time {
+    grid-column: 2;
+  }
+}

@@ -1,4 +1,5 @@
 import type {
+  ActivityEvent,
   Assignment,
   ClaimRequest,
   ContactMethod,
@@ -9,6 +10,13 @@ import type {
 } from "./types";
 
 export type DbResponse = Database & { stats: Stats };
+
+export type LiveSnapshot = {
+  onlineCount: number;
+  online: { id: string; name: string }[];
+  activity: ActivityEvent[];
+  serverTime: string;
+};
 
 async function parse<T>(res: Response): Promise<T> {
   const data = (await res.json()) as T & { error?: string };
@@ -45,6 +53,20 @@ export async function fetchDb(): Promise<DbResponse> {
 export async function fetchSession(): Promise<Person | null> {
   const data = await parse<{ user: Person | null }>(await request("/api/session"));
   return data.user;
+}
+
+export async function fetchLive(): Promise<LiveSnapshot> {
+  return parse(await request("/api/live"));
+}
+
+export async function postHeartbeat(): Promise<LiveSnapshot> {
+  return parse(
+    await request("/api/live", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "heartbeat" }),
+    }),
+  );
 }
 
 export async function setSession(

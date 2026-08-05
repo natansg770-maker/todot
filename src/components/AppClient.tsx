@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   autoDistributeApi,
   changePasswordApi,
@@ -38,6 +38,7 @@ import {
 } from "@/lib/helpers";
 import type { Assignment, ContactMethod, Person } from "@/lib/types";
 import { ClaimBoard } from "./ClaimBoard";
+import { LiveLayer } from "./LiveLayer";
 import { Logo } from "./Logo";
 
 type Tab = "mine" | "claim" | "overview" | "team" | "admin";
@@ -58,6 +59,12 @@ export function AppClient() {
     setDb(nextDb);
     setUser(nextUser);
   }
+
+  const refreshDbOnly = useCallback(() => {
+    void fetchDb()
+      .then(setDb)
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     refresh()
@@ -190,6 +197,8 @@ export function AppClient() {
           {error}
         </div>
       )}
+
+      <LiveLayer user={user} onDbRefresh={refreshDbOnly} />
 
       {tab === "mine" && (
         <MyTasks

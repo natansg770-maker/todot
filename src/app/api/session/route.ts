@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { recordActivity } from "@/lib/activity";
 import { authenticateSenior, getDatabase, publicPerson } from "@/lib/db";
+import { heartbeatPresence } from "@/lib/live-store";
 import { SESSION_COOKIE } from "@/lib/session";
 
 export async function GET() {
@@ -38,6 +40,14 @@ export async function POST(request: Request) {
       path: "/",
       maxAge: 60 * 60 * 24 * 60,
       secure: process.env.NODE_ENV === "production",
+    });
+
+    void heartbeatPresence({ userId: user.id, name: user.name }).catch(() => {});
+    recordActivity({
+      type: "login",
+      actorId: user.id,
+      actorName: user.name,
+      message: `${user.name} התחבר למערכת`,
     });
 
     return NextResponse.json({ user });

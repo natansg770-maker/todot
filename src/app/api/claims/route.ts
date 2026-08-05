@@ -1,12 +1,25 @@
 import { NextResponse } from "next/server";
+import { recordActivity } from "@/lib/activity";
 import { getCurrentUser } from "@/lib/auth";
-import { createClaimRequest, respondClaimRequest } from "@/lib/db";
+import {
+  createClaimRequest,
+  getDatabase,
+  respondClaimRequest,
+} from "@/lib/db";
 
 function errorResponse(error: unknown) {
   const message = error instanceof Error ? error.message : "שגיאה";
   const status =
     message.includes("הרשאה") || message.includes("רק") ? 403 : 400;
   return NextResponse.json({ error: message }, { status });
+}
+
+function personName(
+  people: { id: string; name: string }[],
+  id: string | undefined,
+) {
+  if (!id) return "מישהו";
+  return people.find((p) => p.id === id)?.name ?? "מישהו";
 }
 
 export async function POST(request: Request) {
@@ -32,12 +45,36 @@ export async function POST(request: Request) {
           { status: 400 },
         );
       }
+      const db = await getDatabase();
+      const pending = (db.claimRequests ?? []).find(
+        (r) => r.id === body.requestId,
+      );
       const result = await respondClaimRequest({
         requestId: body.requestId,
         actorId: user.id,
         approve: body.approve,
         isAdmin: Boolean(user.isAdmin),
       });
+      const recipient = personName(db.people, pending?.recipientId);
+      const requester = personName(db.people, pending?.requesterId);
+      if (body.approve) {
+        recordActivity({
+          type: "join_approved",
+          actorId: user.id,
+          actorName: user.name,
+          message: `${user.name} אישר ל${requester} להצטרף לתודה ל${recipient}`,
+        });
+      } else {
+        const selfCancel = pending?.requesterId === user.id;
+        recordActivity({
+          type: "join_rejected",
+          actorId: user.id,
+          actorName: user.name,
+          message: selfCancel
+            ? `${user.name} ביטל בקשה להצטרף לתודה ל${recipient}`
+            : `${user.name} דחה בקשה של ${requester} לתודה ל${recipient}`,
+        });
+      }
       return NextResponse.json(result);
     }
 
@@ -53,6 +90,13 @@ export async function POST(request: Request) {
       recipientId: body.recipientId,
       targetAssigneeId: body.targetAssigneeId,
       note: body.note,
+    });
+    const db = await getDatabase();
+    recordActivity({
+      type: "join_request",
+      actorId: user.id,
+      actorName: user.name,
+      message: `${user.name} ביקש להצטרף לתודה ל${personName(db.people, body.recipientId)} (אצל ${personName(db.people, body.targetAssigneeId)})`,
     });
     return NextResponse.json({ request: claimRequest });
   } catch (error) {

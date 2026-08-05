@@ -139,11 +139,11 @@ export function AppClient() {
           <div className="flex items-center gap-4">
             <Logo size={78} className="logo-float shrink-0" priority />
             <div>
-              <p className="text-sm font-semibold text-orange">מערכת תודות צוות</p>
-              <h1 className="brand-display text-2xl font-bold text-maroon sm:text-3xl">
+              <p className="text-sm font-normal text-orange">מערכת תודות צוות</p>
+              <h1 className="brand-display text-2xl text-maroon sm:text-3xl">
                 גן ישראל · משפחת השלוחים הצעירים
               </h1>
-              <p className="mt-1 text-sm text-muted">
+              <p className="mt-1 text-sm font-normal text-muted">
                 שלום {user.name} · מתאמים מי מודה למי, ומעדכנים אחרי השיחה
               </p>
             </div>
@@ -172,10 +172,10 @@ export function AppClient() {
           ).map(([id, label]) => (
             <button
               key={id}
-              className={`min-w-[8.5rem] flex-1 rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+              className={`min-w-[8.5rem] flex-1 rounded-2xl px-3 py-3 text-sm font-bold transition ${
                 tab === id
                   ? "bg-maroon text-[var(--paper)] shadow-md"
-                  : "bg-transparent text-maroon hover:bg-orange/15"
+                  : "bg-transparent font-normal text-maroon hover:bg-orange/15"
               }`}
               onClick={() => setTab(id)}
             >
@@ -259,8 +259,10 @@ function PasswordSettings({
     <div className="panel rounded-[28px] p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-bold text-maroon">הסיסמה שלי</h3>
-          <p className="text-sm text-muted">אפשר לעדכן את הסיסמה האישית בכל רגע</p>
+          <h3 className="section-title text-lg text-maroon">הסיסמה שלי</h3>
+          <p className="text-sm font-normal text-muted">
+            אפשר לעדכן את הסיסמה האישית בכל רגע
+          </p>
         </div>
         <button className="btn btn-ghost" onClick={() => setOpen((v) => !v)}>
           {open ? "סגור" : "שינוי סיסמה"}
@@ -337,13 +339,13 @@ function LoginView({
         <div className="relative px-6 pb-8 pt-10 text-center sm:px-10">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,rgba(245,168,58,0.35),transparent_70%)]" />
           <Logo size={180} className="logo-float relative mx-auto" priority />
-          <h1 className="brand-display animate-rise-delay-1 mt-5 text-3xl font-bold text-maroon sm:text-4xl">
+          <h1 className="brand-display animate-rise-delay-1 mt-5 text-3xl text-maroon sm:text-4xl">
             קעמפ גן ישראל
           </h1>
-          <p className="brand-display animate-rise-delay-1 text-xl text-maroon/80">
+          <p className="section-title animate-rise-delay-1 text-xl text-maroon/85">
             משפחת השלוחים הצעירים
           </p>
-          <p className="animate-rise-delay-2 mx-auto mt-4 max-w-md text-base leading-7 text-muted">
+          <p className="animate-rise-delay-2 mx-auto mt-4 max-w-md text-base font-normal leading-7 text-muted">
             כניסה לצוות הבכיר בלבד — 11 אנשים: 4 גנרלים, 4 קצינים, חיים,
             מענדל ויעקב.
           </p>
@@ -445,10 +447,10 @@ function MyTasks({
       <div className="panel rounded-[28px] p-5 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="brand-display text-2xl font-bold text-maroon">
+            <h2 className="section-title text-2xl text-maroon">
               המשימות שלי
             </h2>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm font-normal text-muted">
               {pendingTasks.length} ממתינות · {done.length} בוצעו · סדרו לפי
               עדיפות
             </p>

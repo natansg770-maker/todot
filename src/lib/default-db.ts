@@ -160,7 +160,7 @@ async function writeToGithub(db: Database): Promise<boolean> {
       }
     }
     const body: Record<string, string> = {
-      message: `chore: save system default snapshot (${db.updatedAt})`,
+      message: `chore: save system default snapshot (${db.updatedAt}) [vercel skip]`,
       content: Buffer.from(JSON.stringify(db, null, 2), "utf8").toString(
         "base64",
       ),

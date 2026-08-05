@@ -65,7 +65,7 @@ export async function writeGithubDb(
 ): Promise<{ db: Database; sha: string }> {
   db.updatedAt = new Date().toISOString();
   const body: Record<string, string> = {
-    message: `chore: update thank-you database (${db.updatedAt})`,
+    message: `chore: update thank-you database (${db.updatedAt}) [vercel skip]`,
     content: Buffer.from(JSON.stringify(db, null, 2), "utf8").toString("base64"),
     branch: BRANCH,
   };

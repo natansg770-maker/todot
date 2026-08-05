@@ -13,6 +13,8 @@ export function isUnavailableStorageError(error: unknown): boolean {
     lower.includes("billing") ||
     lower.includes("unauthorized") ||
     lower.includes("bad credentials") ||
-    lower.includes("401")
+    lower.includes("401") ||
+    lower.includes("blob get failed") ||
+    lower.includes("failed to fetch blob")
   );
 }

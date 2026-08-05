@@ -165,30 +165,28 @@ export function AppClient() {
       >
         <div className="site-header-inner">
           <div className="site-header-brand">
-            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <div className="site-header-identity">
               <Logo
-                size={headerStuck ? 48 : 78}
+                size={headerStuck ? 40 : 48}
                 className={`logo-float shrink-0${
                   headerStuck ? " logo-compact" : ""
                 }`}
                 priority
               />
               <div className="min-w-0">
-                <p className="site-header-kicker text-base font-medium text-orange">
-                  מערכת תודות צוות
-                </p>
-                <h1 className="brand-display site-header-title text-maroon">
+                <h1
+                  className="brand-display site-header-title text-maroon"
+                  title={`שלום ${user.name}`}
+                >
                   גן ישראל | משפחת השלוחים הצעירים
                 </h1>
-                <p className="site-header-greeting mt-2 text-base font-medium leading-7 text-muted">
-                  שלום {user.name} · מתאמים מי מודה למי, ומעדכנים אחרי השיחה
-                </p>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
+            <div className="site-header-actions">
               <ThemeToggle />
               <button
-                className="btn btn-ghost text-base"
+                type="button"
+                className="header-chip"
                 onClick={() => {
                   void run(async () => {
                     await setSession(null);
@@ -200,7 +198,7 @@ export function AppClient() {
               </button>
             </div>
           </div>
-          <nav className="site-header-nav">
+          <nav className="site-header-nav" aria-label="ניווט ראשי">
             {(
               [
                 ["mine", "המשימות שלי"],

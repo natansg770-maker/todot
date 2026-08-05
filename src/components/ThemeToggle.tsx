@@ -26,10 +26,10 @@ function playThemeFlash(next: Theme) {
 
   const cleanup = () => flash.remove();
   flash.addEventListener("animationend", cleanup, { once: true });
-  window.setTimeout(cleanup, 900);
+  window.setTimeout(cleanup, 1100);
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ className = "" }: { className?: string }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
@@ -55,11 +55,11 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="rounded-full border border-[var(--line)] bg-surface px-3 py-1.5 text-xs font-medium text-ink/70 transition hover:bg-surface-strong"
+      className={`header-chip ${className}`.trim()}
       aria-label={theme === "dark" ? "עבור לתצוגה בהירה" : "עבור לתצוגה כהה"}
       title={theme === "dark" ? "תצוגה בהירה" : "תצוגה כהה"}
     >
-      {theme === "dark" ? "תצוגה בהירה" : "תצוגה כהה"}
+      {theme === "dark" ? "בהיר" : "כהה"}
     </button>
   );
 }

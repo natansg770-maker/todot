@@ -846,20 +846,9 @@
       "phone": "0507704727"
     }
   ],
-  "assignments": [
-    {
-      "id": "assign-msfut4w1-ay4lk5",
-      "assigneeId": "person-086",
-      "recipientId": "person-001",
-      "status": "pending",
-      "priority": 1,
-      "createdAt": "2026-08-05T08:57:36.001Z",
-      "updatedAt": "2026-08-05T08:57:36.001Z",
-      "additionalThankerIds": []
-    }
-  ],
+  "assignments": [],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:15:23.804Z",
-  "revision": 78,
-  "writeToken": "w-msgj0sd8-pfvtub"
+  "updatedAt": "2026-08-05T20:15:26.716Z",
+  "revision": 79,
+  "writeToken": "w-msgj0um4-lyzvfj"
 }

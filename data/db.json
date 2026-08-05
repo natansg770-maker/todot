@@ -882,10 +882,19 @@
       "priority": 4,
       "createdAt": "2026-08-05T20:18:47.440Z",
       "updatedAt": "2026-08-05T20:18:47.440Z"
+    },
+    {
+      "id": "assign-msgj5kd4-6r9itc",
+      "assigneeId": "person-085",
+      "recipientId": "person-018",
+      "status": "pending",
+      "priority": 5,
+      "createdAt": "2026-08-05T20:19:06.712Z",
+      "updatedAt": "2026-08-05T20:19:06.712Z"
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:18:47.441Z",
-  "revision": 83,
-  "writeToken": "w-msgj55ht-hzesp1"
+  "updatedAt": "2026-08-05T20:19:06.712Z",
+  "revision": 84,
+  "writeToken": "w-msgj5kd4-nu8ywz"
 }

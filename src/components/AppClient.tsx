@@ -229,7 +229,7 @@ export function AppClient() {
         </div>
       </header>
 
-      <div className="app-main mx-auto max-w-6xl px-3 pb-28 pt-4 sm:px-6 sm:pb-10 sm:pt-6">
+      <div className="app-main mx-auto max-w-6xl px-3 pb-28 pt-4 sm:px-5 sm:pt-5 lg:px-6 lg:pb-10 lg:pt-6">
         {error && (
           <div className="mb-4 rounded-2xl border border-maroon/20 bg-maroon/8 px-4 py-3 text-base font-medium text-maroon">
             {error}
@@ -314,7 +314,7 @@ function PasswordSettings({
   return (
     <div className="panel rounded-[28px] p-4 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <h3 className="section-title text-lg text-maroon sm:text-xl">
             הסיסמה שלי
           </h3>
@@ -323,7 +323,7 @@ function PasswordSettings({
           </p>
         </div>
         <button
-          className="btn btn-ghost w-full sm:w-auto"
+          className="btn btn-ghost w-full shrink-0 sm:w-auto"
           onClick={() => setOpen((v) => !v)}
         >
           {open ? "סגור" : "שינוי סיסמה"}
@@ -512,9 +512,9 @@ function MyTasks({
       <PasswordSettings pending={pending} onAction={onAction} />
 
       <div className="panel rounded-[28px] p-4 sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-          <div className="min-w-0">
-            <h2 className="section-title text-2xl text-maroon sm:text-3xl">
+        <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-end md:justify-between">
+          <div className="min-w-0 flex-1">
+            <h2 className="section-title text-xl text-maroon sm:text-2xl md:text-3xl">
               המשימות שלי
             </h2>
             <p className="mt-1 text-sm font-medium leading-6 text-muted sm:text-base">
@@ -522,10 +522,12 @@ function MyTasks({
               עדיפות
             </p>
           </div>
-          <div className="w-full sm:min-w-[180px] sm:max-w-xs sm:flex-1">
-            <div className="mb-1 flex justify-between text-sm text-muted sm:text-base">
+          <div className="w-full min-w-0 md:max-w-xs md:flex-1">
+            <div className="mb-1 flex justify-between gap-3 text-sm text-muted sm:text-base">
               <span>התקדמות</span>
-              <span>{percent(done.length, mine.length)}%</span>
+              <span className="shrink-0">
+                {percent(done.length, mine.length)}%
+              </span>
             </div>
             <div className="progress-track">
               <div

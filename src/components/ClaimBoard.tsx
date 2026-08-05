@@ -84,10 +84,10 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
   return (
     <section className="animate-rise space-y-5">
       <div className="panel rounded-[28px] p-5 sm:p-6">
-        <h2 className="section-title text-3xl text-maroon">
+        <h2 className="section-title text-xl text-maroon sm:text-2xl md:text-3xl">
           לוקחים תודות
         </h2>
-        <p className="mt-1 max-w-2xl text-sm font-normal leading-6 text-muted">
+        <p className="mt-1 max-w-2xl text-sm font-normal leading-6 text-muted sm:text-base">
           בחרו בעצמכם למי להודות. אם מישהו כבר לקח — אפשר להגיש לו בקשה
           להצטרף גם לתודה הזו.
         </p>

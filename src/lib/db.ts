@@ -1,6 +1,11 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { canUseBlobDb, readBlobDb, writeBlobDb } from "./blob-db";
+import {
+  BlobConflictError,
+  canUseBlobDb,
+  readBlobDb,
+  writeBlobDb,
+} from "./blob-db";
 import { canUseGithubDb, readGithubDb, writeGithubDb } from "./github-db";
 import {
   DEFAULT_SENIOR_PASSWORDS,
@@ -25,6 +30,8 @@ const DB_PATH = path.join(DATA_DIR, "db.json");
 const MAX_MUTATION_RETRIES = 5;
 
 let githubSha: string | null = null;
+/** ETag of the last Blob read/write on this instance (for conditional puts). */
+let blobEtag: string | null = null;
 /** Serializes read-modify-write so concurrent handlers on one instance cannot stomp each other. */
 let mutationChain: Promise<unknown> = Promise.resolve();
 
@@ -96,7 +103,9 @@ function normalizePeople(db: Database): boolean {
 
 async function readRawDb(): Promise<Database> {
   if (canUseBlobDb()) {
-    return readBlobDb();
+    const { db, etag } = await readBlobDb();
+    blobEtag = etag;
+    return db;
   }
 
   if (canUseGithubDb()) {
@@ -119,7 +128,8 @@ async function writeRawDb(db: Database): Promise<void> {
   db.writeToken = uid("w");
 
   if (canUseBlobDb()) {
-    await writeBlobDb(db);
+    const saved = await writeBlobDb(db, blobEtag);
+    blobEtag = saved.etag;
     return;
   }
 
@@ -144,8 +154,8 @@ async function loadDb(): Promise<Database> {
 }
 
 /**
- * Serialize mutations on this instance: read → mutate → write.
- * Retries only on storage put failures.
+ * Serialize mutations on this instance: read → mutate → conditional write.
+ * Retries when another instance changed the Blob (ETag mismatch).
  */
 async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
   const run = async (): Promise<T> => {
@@ -161,7 +171,14 @@ async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
         return result;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        await new Promise((resolve) => setTimeout(resolve, 60 * (attempt + 1)));
+        const conflict =
+          error instanceof BlobConflictError ||
+          (error instanceof Error && error.message === "BLOB_CONFLICT");
+        // Conflict: re-read latest and retry the whole mutation.
+        // Other put errors: brief backoff then retry.
+        await new Promise((resolve) =>
+          setTimeout(resolve, conflict ? 30 * (attempt + 1) : 80 * (attempt + 1)),
+        );
       }
     }
 

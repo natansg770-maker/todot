@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   autoDistributeApi,
   changePasswordApi,
@@ -48,7 +48,7 @@ export function AppClient() {
   const [tab, setTab] = useState<Tab>("mine");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
   const [activeAssignment, setActiveAssignment] = useState<Assignment | null>(
     null,
   );
@@ -67,11 +67,14 @@ export function AppClient() {
 
   async function run(action: () => Promise<void>) {
     setError(null);
+    setPending(true);
     try {
       await action();
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "שגיאה");
+    } finally {
+      setPending(false);
     }
   }
 
@@ -119,12 +122,10 @@ export function AppClient() {
         error={error}
         pending={pending}
         onLogin={(userId, password) => {
-          startTransition(() => {
-            void run(async () => {
-              const next = await setSession(userId, password);
-              setUser(next);
-              setTab("mine");
-            });
+          void run(async () => {
+            const next = await setSession(userId, password);
+            setUser(next);
+            setTab("mine");
           });
         }}
       />
@@ -197,9 +198,7 @@ export function AppClient() {
           pending={pending}
           onOpen={(assignment) => setActiveAssignment(assignment)}
           onAction={(action) => {
-            startTransition(() => {
-              void run(action);
-            });
+            void run(action);
           }}
         />
       )}
@@ -209,9 +208,7 @@ export function AppClient() {
           user={user}
           pending={pending}
           onAction={(action) => {
-            startTransition(() => {
-              void run(action);
-            });
+            void run(action);
           }}
         />
       )}
@@ -223,9 +220,7 @@ export function AppClient() {
           user={user}
           pending={pending}
           onAction={(action) => {
-            startTransition(() => {
-              void run(action);
-            });
+            void run(action);
           }}
         />
       )}

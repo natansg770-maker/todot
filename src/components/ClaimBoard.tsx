@@ -180,7 +180,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                         })
                       }
                     >
-                      לוקח על עצמי
+                      {pending ? "שומר…" : "לוקח על עצמי"}
                     </button>
                   )}
 
@@ -194,7 +194,7 @@ export function ClaimBoard({ db, user, pending, onAction }: ClaimBoardProps) {
                         })
                       }
                     >
-                      שחרור מהרשימה שלי
+                      {pending ? "משחרר…" : "שחרור מהרשימה שלי"}
                     </button>
                   )}
 

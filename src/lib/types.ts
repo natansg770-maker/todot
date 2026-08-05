@@ -60,6 +60,10 @@ export type Database = {
   assignments: Assignment[];
   claimRequests: ClaimRequest[];
   updatedAt: string;
+  /** Monotonic revision used to detect lost Blob updates. */
+  revision?: number;
+  /** Unique token of the last successful writer; used for write confirmation. */
+  writeToken?: string;
 };
 
 export type Stats = {

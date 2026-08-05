@@ -22,14 +22,24 @@ import {
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "db.json");
+const MAX_MUTATION_RETRIES = 8;
 
 let githubSha: string | null = null;
-let writeQueue: Promise<void> = Promise.resolve();
+/** Serializes read-modify-write so concurrent handlers on one instance cannot stomp each other. */
+let mutationChain: Promise<unknown> = Promise.resolve();
+
+function uid(prefix: string) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 function normalizePeople(db: Database): boolean {
   let changed = false;
   if (!Array.isArray(db.claimRequests)) {
     db.claimRequests = [];
+    changed = true;
+  }
+  if (typeof db.revision !== "number") {
+    db.revision = 1;
     changed = true;
   }
 
@@ -59,7 +69,7 @@ function normalizePeople(db: Database): boolean {
     }
   }
 
-  // Ensure every assignee has contiguous priorities for their pending list.
+  // Ensure every assignee has contiguous priorities for their list.
   const byAssignee = new Map<string, Assignment[]>();
   for (const assignment of db.assignments) {
     const list = byAssignee.get(assignment.assigneeId) ?? [];
@@ -84,68 +94,107 @@ function normalizePeople(db: Database): boolean {
   return changed;
 }
 
-async function ensureDb(): Promise<Database> {
+async function readRawDb(): Promise<Database> {
   if (canUseBlobDb()) {
-    const db = await readBlobDb();
-    if (normalizePeople(db)) {
-      return saveDb(db);
-    }
-    return db;
+    return readBlobDb();
   }
 
   if (canUseGithubDb()) {
     const { db, sha } = await readGithubDb();
     githubSha = sha;
-    if (normalizePeople(db)) {
-      return saveDb(db);
-    }
     return db;
   }
 
   try {
     const raw = await fs.readFile(DB_PATH, "utf8");
-    const db = JSON.parse(raw) as Database;
-    if (normalizePeople(db)) {
-      return saveDb(db);
-    }
-    return db;
+    return JSON.parse(raw) as Database;
   } catch {
-    const seed = createSeedDatabase();
-    return saveDb(seed);
+    return createSeedDatabase();
   }
 }
 
-async function saveDb(db: Database): Promise<Database> {
+async function writeRawDb(db: Database): Promise<void> {
   db.updatedAt = new Date().toISOString();
+  db.revision = (db.revision ?? 0) + 1;
 
   if (canUseBlobDb()) {
-    writeQueue = writeQueue.then(async () => {
-      await writeBlobDb(db);
-    });
-    await writeQueue;
-    return db;
+    await writeBlobDb(db);
+    return;
   }
 
   if (canUseGithubDb()) {
-    writeQueue = writeQueue.then(async () => {
-      const saved = await writeGithubDb(db, githubSha);
-      githubSha = saved.sha;
-    });
-    await writeQueue;
-    return db;
+    const saved = await writeGithubDb(db, githubSha);
+    githubSha = saved.sha;
+    return;
   }
 
   await fs.mkdir(DATA_DIR, { recursive: true });
   await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
+}
+
+/**
+ * Read-only load. Normalizes in memory but does NOT write.
+ * Persisting normalization happens only inside mutateDb.
+ */
+async function loadDb(): Promise<Database> {
+  const db = await readRawDb();
+  normalizePeople(db);
   return db;
 }
 
-function uid(prefix: string) {
-  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+/**
+ * Atomic-ish mutation: serialize on this instance, retry when another writer
+ * overwrites our Blob put (detected via unique writeToken).
+ */
+async function mutateDb<T>(fn: (db: Database) => T | Promise<T>): Promise<T> {
+  const run = async (): Promise<T> => {
+    let lastError: Error | null = null;
+
+    for (let attempt = 0; attempt < MAX_MUTATION_RETRIES; attempt++) {
+      const db = await loadDb();
+      const result = await fn(db);
+      normalizePeople(db);
+
+      const writeToken = uid("w");
+      db.writeToken = writeToken;
+
+      try {
+        await writeRawDb(db);
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        await sleep(50 * (attempt + 1));
+        continue;
+      }
+
+      // Confirm THIS write is what Blob currently holds.
+      const confirmed = await readRawDb();
+      if (confirmed.writeToken === writeToken) {
+        return result;
+      }
+
+      await sleep(50 * (attempt + 1));
+    }
+
+    throw (
+      lastError ??
+      new Error("לא הצלחנו לשמור את השינוי. נסו שוב בעוד רגע")
+    );
+  };
+
+  const next = mutationChain.then(run, run);
+  mutationChain = next.then(
+    () => undefined,
+    () => undefined,
+  );
+  return next;
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function getDatabase(): Promise<Database> {
-  return ensureDb();
+  return loadDb();
 }
 
 /** Public-safe person object (no password hash). */
@@ -165,7 +214,7 @@ export async function authenticateSenior(
   userId: string,
   password: string,
 ): Promise<Person> {
-  const db = await ensureDb();
+  const db = await loadDb();
   const user = db.people.find((p) => p.id === userId && p.isSenior);
   if (!user?.passwordHash) {
     throw new Error("משתמש לא נמצא או שאין לו סיסמה");
@@ -181,20 +230,27 @@ export async function setPersonPassword(input: {
   password: string;
   asDefault?: boolean;
 }): Promise<Person> {
-  const db = await ensureDb();
-  const person = db.people.find((p) => p.id === input.personId);
-  if (!person?.isSenior) throw new Error("ניתן להגדיר סיסמה רק לצוות בכיר");
-  const password = input.password.trim();
-  if (password.length < 4) throw new Error("הסיסמה חייבת להכיל לפחות 4 תווים");
-  person.passwordHash = hashPassword(password);
-  person.usesDefaultPassword = Boolean(input.asDefault);
-  await saveDb(db);
-  return publicPerson(person);
+  return mutateDb((db) => {
+    const person = db.people.find((p) => p.id === input.personId);
+    if (!person?.isSenior) throw new Error("ניתן להגדיר סיסמה רק לצוות בכיר");
+    const password = input.password.trim();
+    if (password.length < 4) throw new Error("הסיסמה חייבת להכיל לפחות 4 תווים");
+    person.passwordHash = hashPassword(password);
+    person.usesDefaultPassword = Boolean(input.asDefault);
+    return publicPerson(person);
+  });
 }
 
 export async function resetDatabase(): Promise<Database> {
-  const seed = createSeedDatabase();
-  return saveDb(seed);
+  return mutateDb((db) => {
+    const seed = createSeedDatabase();
+    db.roles = seed.roles;
+    db.people = seed.people;
+    db.assignments = seed.assignments;
+    db.claimRequests = seed.claimRequests;
+    db.revision = seed.revision ?? 1;
+    return db;
+  });
 }
 
 export function computeStats(db: Database): Stats {
@@ -227,38 +283,38 @@ export function computeStats(db: Database): Stats {
 }
 
 export async function addRole(name: string): Promise<Role> {
-  const db = await ensureDb();
-  const maxOrder = db.roles.reduce((m, r) => Math.max(m, r.sortOrder), 0);
-  const role: Role = {
-    id: uid("role"),
-    name: name.trim(),
-    sortOrder: maxOrder + 1,
-  };
-  db.roles.push(role);
-  await saveDb(db);
-  return role;
+  return mutateDb((db) => {
+    const maxOrder = db.roles.reduce((m, r) => Math.max(m, r.sortOrder), 0);
+    const role: Role = {
+      id: uid("role"),
+      name: name.trim(),
+      sortOrder: maxOrder + 1,
+    };
+    db.roles.push(role);
+    return role;
+  });
 }
 
 export async function updateRole(
   roleId: string,
   patch: Partial<Pick<Role, "name" | "sortOrder">>,
 ): Promise<Role> {
-  const db = await ensureDb();
-  const role = db.roles.find((r) => r.id === roleId);
-  if (!role) throw new Error("התפקיד לא נמצא");
-  if (patch.name !== undefined) role.name = patch.name.trim();
-  if (patch.sortOrder !== undefined) role.sortOrder = patch.sortOrder;
-  await saveDb(db);
-  return role;
+  return mutateDb((db) => {
+    const role = db.roles.find((r) => r.id === roleId);
+    if (!role) throw new Error("התפקיד לא נמצא");
+    if (patch.name !== undefined) role.name = patch.name.trim();
+    if (patch.sortOrder !== undefined) role.sortOrder = patch.sortOrder;
+    return role;
+  });
 }
 
 export async function deleteRole(roleId: string): Promise<void> {
-  const db = await ensureDb();
-  if (db.people.some((p) => p.roleId === roleId)) {
-    throw new Error("לא ניתן למחוק תפקיד שמשויכים אליו אנשים");
-  }
-  db.roles = db.roles.filter((r) => r.id !== roleId);
-  await saveDb(db);
+  await mutateDb((db) => {
+    if (db.people.some((p) => p.roleId === roleId)) {
+      throw new Error("לא ניתן למחוק תפקיד שמשויכים אליו אנשים");
+    }
+    db.roles = db.roles.filter((r) => r.id !== roleId);
+  });
 }
 
 export async function addPerson(input: {
@@ -268,28 +324,28 @@ export async function addPerson(input: {
   phone?: string;
   notes?: string;
 }): Promise<Person> {
-  const db = await ensureDb();
-  if (!db.roles.some((r) => r.id === input.roleId)) {
-    throw new Error("התפקיד לא נמצא");
-  }
-  const name = input.name.trim();
-  const isSenior = SENIOR_NAMES.has(name);
-  const defaultPassword = DEFAULT_SENIOR_PASSWORDS[name];
-  const person: Person = {
-    id: uid("person"),
-    name,
-    roleId: input.roleId,
-    isSenior,
-    isAdmin: name === ADMIN_NAME,
-    phone: input.phone?.trim() || undefined,
-    notes: input.notes?.trim() || undefined,
-    passwordHash:
-      isSenior && defaultPassword ? hashPassword(defaultPassword) : undefined,
-    usesDefaultPassword: isSenior && defaultPassword ? true : undefined,
-  };
-  db.people.push(person);
-  await saveDb(db);
-  return publicPerson(person);
+  return mutateDb((db) => {
+    if (!db.roles.some((r) => r.id === input.roleId)) {
+      throw new Error("התפקיד לא נמצא");
+    }
+    const name = input.name.trim();
+    const isSenior = SENIOR_NAMES.has(name);
+    const defaultPassword = DEFAULT_SENIOR_PASSWORDS[name];
+    const person: Person = {
+      id: uid("person"),
+      name,
+      roleId: input.roleId,
+      isSenior,
+      isAdmin: name === ADMIN_NAME,
+      phone: input.phone?.trim() || undefined,
+      notes: input.notes?.trim() || undefined,
+      passwordHash:
+        isSenior && defaultPassword ? hashPassword(defaultPassword) : undefined,
+      usesDefaultPassword: isSenior && defaultPassword ? true : undefined,
+    };
+    db.people.push(person);
+    return publicPerson(person);
+  });
 }
 
 export async function updatePerson(
@@ -298,56 +354,55 @@ export async function updatePerson(
     Pick<Person, "name" | "roleId" | "isSenior" | "phone" | "notes">
   >,
 ): Promise<Person> {
-  const db = await ensureDb();
-  const person = db.people.find((p) => p.id === personId);
-  if (!person) throw new Error("האדם לא נמצא");
-  if (patch.name !== undefined) person.name = patch.name.trim();
-  if (patch.roleId !== undefined) {
-    if (!db.roles.some((r) => r.id === patch.roleId)) {
-      throw new Error("התפקיד לא נמצא");
+  return mutateDb((db) => {
+    const person = db.people.find((p) => p.id === personId);
+    if (!person) throw new Error("האדם לא נמצא");
+    if (patch.name !== undefined) person.name = patch.name.trim();
+    if (patch.roleId !== undefined) {
+      if (!db.roles.some((r) => r.id === patch.roleId)) {
+        throw new Error("התפקיד לא נמצא");
+      }
+      person.roleId = patch.roleId;
     }
-    person.roleId = patch.roleId;
-  }
-  if (patch.isSenior !== undefined) person.isSenior = patch.isSenior;
-  if (patch.phone !== undefined) person.phone = patch.phone.trim() || undefined;
-  if (patch.notes !== undefined) person.notes = patch.notes.trim() || undefined;
-  person.isAdmin = person.name === ADMIN_NAME;
-  person.isSenior = SENIOR_NAMES.has(person.name);
-  if (person.isSenior && !person.passwordHash) {
-    const defaultPassword = DEFAULT_SENIOR_PASSWORDS[person.name];
-    if (defaultPassword) {
-      person.passwordHash = hashPassword(defaultPassword);
-      person.usesDefaultPassword = true;
+    if (patch.isSenior !== undefined) person.isSenior = patch.isSenior;
+    if (patch.phone !== undefined) person.phone = patch.phone.trim() || undefined;
+    if (patch.notes !== undefined) person.notes = patch.notes.trim() || undefined;
+    person.isAdmin = person.name === ADMIN_NAME;
+    person.isSenior = SENIOR_NAMES.has(person.name);
+    if (person.isSenior && !person.passwordHash) {
+      const defaultPassword = DEFAULT_SENIOR_PASSWORDS[person.name];
+      if (defaultPassword) {
+        person.passwordHash = hashPassword(defaultPassword);
+        person.usesDefaultPassword = true;
+      }
     }
-  }
-  if (!person.isSenior) {
-    delete person.passwordHash;
-    delete person.usesDefaultPassword;
-  }
-  await saveDb(db);
-  return publicPerson(person);
+    if (!person.isSenior) {
+      delete person.passwordHash;
+      delete person.usesDefaultPassword;
+    }
+    return publicPerson(person);
+  });
 }
 
 export async function deletePerson(personId: string): Promise<void> {
-  const db = await ensureDb();
-  db.people = db.people.filter((p) => p.id !== personId);
-  db.assignments = db.assignments.filter(
-    (a) => a.assigneeId !== personId && a.recipientId !== personId,
-  );
-  db.claimRequests = (db.claimRequests ?? []).filter(
-    (r) =>
-      r.requesterId !== personId &&
-      r.targetAssigneeId !== personId &&
-      r.recipientId !== personId,
-  );
-  await saveDb(db);
+  await mutateDb((db) => {
+    db.people = db.people.filter((p) => p.id !== personId);
+    db.assignments = db.assignments.filter(
+      (a) => a.assigneeId !== personId && a.recipientId !== personId,
+    );
+    db.claimRequests = (db.claimRequests ?? []).filter(
+      (r) =>
+        r.requesterId !== personId &&
+        r.targetAssigneeId !== personId &&
+        r.recipientId !== personId,
+    );
+  });
 }
 
-export async function createAssignment(input: {
-  assigneeId: string;
-  recipientId: string;
-}): Promise<Assignment> {
-  const db = await ensureDb();
+function createAssignmentInDb(
+  db: Database,
+  input: { assigneeId: string; recipientId: string },
+): Assignment {
   const assignee = db.people.find((p) => p.id === input.assigneeId);
   const recipient = db.people.find((p) => p.id === input.recipientId);
   if (!assignee || !recipient) throw new Error("אדם לא נמצא");
@@ -374,20 +429,27 @@ export async function createAssignment(input: {
     updatedAt: now,
   };
   db.assignments.push(assignment);
-  await saveDb(db);
   return assignment;
+}
+
+export async function createAssignment(input: {
+  assigneeId: string;
+  recipientId: string;
+}): Promise<Assignment> {
+  return mutateDb((db) => createAssignmentInDb(db, input));
 }
 
 export async function claimForSelf(input: {
   userId: string;
   recipientId: string;
 }): Promise<Assignment> {
-  const db = await ensureDb();
-  const user = db.people.find((p) => p.id === input.userId);
-  if (!user?.isSenior) throw new Error("רק צוות בכיר יכול לקחת תודה");
-  return createAssignment({
-    assigneeId: input.userId,
-    recipientId: input.recipientId,
+  return mutateDb((db) => {
+    const user = db.people.find((p) => p.id === input.userId);
+    if (!user?.isSenior) throw new Error("רק צוות בכיר יכול לקחת תודה");
+    return createAssignmentInDb(db, {
+      assigneeId: input.userId,
+      recipientId: input.recipientId,
+    });
   });
 }
 
@@ -396,51 +458,51 @@ export async function releaseOwnAssignment(input: {
   assignmentId: string;
   isAdmin?: boolean;
 }): Promise<void> {
-  const db = await ensureDb();
-  const assignment = db.assignments.find((a) => a.id === input.assignmentId);
-  if (!assignment) throw new Error("השיוך לא נמצא");
-  if (!input.isAdmin && assignment.assigneeId !== input.userId) {
-    throw new Error("ניתן לשחרר רק משימה שלך");
-  }
-  if (assignment.status === "done" && !input.isAdmin) {
-    throw new Error("לא ניתן לשחרר משימה שכבר בוצעה");
-  }
-  db.assignments = db.assignments.filter((a) => a.id !== input.assignmentId);
-  db.claimRequests = (db.claimRequests ?? []).filter(
-    (r) =>
-      !(
-        r.status === "pending" &&
-        r.recipientId === assignment.recipientId &&
-        r.targetAssigneeId === assignment.assigneeId
-      ),
-  );
-  await saveDb(db);
+  await mutateDb((db) => {
+    const assignment = db.assignments.find((a) => a.id === input.assignmentId);
+    if (!assignment) throw new Error("השיוך לא נמצא");
+    if (!input.isAdmin && assignment.assigneeId !== input.userId) {
+      throw new Error("ניתן לשחרר רק משימה שלך");
+    }
+    if (assignment.status === "done" && !input.isAdmin) {
+      throw new Error("לא ניתן לשחרר משימה שכבר בוצעה");
+    }
+    db.assignments = db.assignments.filter((a) => a.id !== input.assignmentId);
+    db.claimRequests = (db.claimRequests ?? []).filter(
+      (r) =>
+        !(
+          r.status === "pending" &&
+          r.recipientId === assignment.recipientId &&
+          r.targetAssigneeId === assignment.assigneeId
+        ),
+    );
+  });
 }
 
 export async function reorderOwnPriorities(input: {
   userId: string;
   assignmentIds: string[];
 }): Promise<Assignment[]> {
-  const db = await ensureDb();
-  const mine = db.assignments.filter((a) => a.assigneeId === input.userId);
-  const mineIds = new Set(mine.map((a) => a.id));
-  if (
-    input.assignmentIds.length !== mine.length ||
-    input.assignmentIds.some((id) => !mineIds.has(id))
-  ) {
-    throw new Error("רשימת העדיפויות לא תואמת את המשימות שלך");
-  }
-  input.assignmentIds.forEach((id, index) => {
-    const assignment = db.assignments.find((a) => a.id === id);
-    if (assignment) {
-      assignment.priority = index + 1;
-      assignment.updatedAt = new Date().toISOString();
+  return mutateDb((db) => {
+    const mine = db.assignments.filter((a) => a.assigneeId === input.userId);
+    const mineIds = new Set(mine.map((a) => a.id));
+    if (
+      input.assignmentIds.length !== mine.length ||
+      input.assignmentIds.some((id) => !mineIds.has(id))
+    ) {
+      throw new Error("רשימת העדיפויות לא תואמת את המשימות שלך");
     }
+    input.assignmentIds.forEach((id, index) => {
+      const assignment = db.assignments.find((a) => a.id === id);
+      if (assignment) {
+        assignment.priority = index + 1;
+        assignment.updatedAt = new Date().toISOString();
+      }
+    });
+    return db.assignments
+      .filter((a) => a.assigneeId === input.userId)
+      .sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
   });
-  await saveDb(db);
-  return db.assignments
-    .filter((a) => a.assigneeId === input.userId)
-    .sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
 }
 
 export async function createClaimRequest(input: {
@@ -449,60 +511,60 @@ export async function createClaimRequest(input: {
   targetAssigneeId: string;
   note?: string;
 }): Promise<ClaimRequest> {
-  const db = await ensureDb();
-  const requester = db.people.find((p) => p.id === input.requesterId);
-  const target = db.people.find((p) => p.id === input.targetAssigneeId);
-  const recipient = db.people.find((p) => p.id === input.recipientId);
-  if (!requester?.isSenior || !target?.isSenior || !recipient) {
-    throw new Error("בקשה לא תקינה");
-  }
-  if (requester.id === target.id) {
-    throw new Error("אין צורך לבקש מעצמך");
-  }
-  if (requester.id === recipient.id) {
-    throw new Error("לא ניתן לבקש להודות לעצמך");
-  }
+  return mutateDb((db) => {
+    const requester = db.people.find((p) => p.id === input.requesterId);
+    const target = db.people.find((p) => p.id === input.targetAssigneeId);
+    const recipient = db.people.find((p) => p.id === input.recipientId);
+    if (!requester?.isSenior || !target?.isSenior || !recipient) {
+      throw new Error("בקשה לא תקינה");
+    }
+    if (requester.id === target.id) {
+      throw new Error("אין צורך לבקש מעצמך");
+    }
+    if (requester.id === recipient.id) {
+      throw new Error("לא ניתן לבקש להודות לעצמך");
+    }
 
-  const targetHas = db.assignments.some(
-    (a) =>
-      a.assigneeId === input.targetAssigneeId &&
-      a.recipientId === input.recipientId,
-  );
-  if (!targetHas) {
-    throw new Error("האדם שבחרת לא מחזיק את התודה הזו");
-  }
+    const targetHas = db.assignments.some(
+      (a) =>
+        a.assigneeId === input.targetAssigneeId &&
+        a.recipientId === input.recipientId,
+    );
+    if (!targetHas) {
+      throw new Error("האדם שבחרת לא מחזיק את התודה הזו");
+    }
 
-  const alreadyMine = db.assignments.some(
-    (a) =>
-      a.assigneeId === input.requesterId &&
-      a.recipientId === input.recipientId,
-  );
-  if (alreadyMine) throw new Error("כבר לקחת את התודה הזו");
+    const alreadyMine = db.assignments.some(
+      (a) =>
+        a.assigneeId === input.requesterId &&
+        a.recipientId === input.recipientId,
+    );
+    if (alreadyMine) throw new Error("כבר לקחת את התודה הזו");
 
-  const pendingExists = (db.claimRequests ?? []).some(
-    (r) =>
-      r.status === "pending" &&
-      r.requesterId === input.requesterId &&
-      r.recipientId === input.recipientId &&
-      r.targetAssigneeId === input.targetAssigneeId,
-  );
-  if (pendingExists) throw new Error("כבר שלחת בקשה ממתינה");
+    const pendingExists = (db.claimRequests ?? []).some(
+      (r) =>
+        r.status === "pending" &&
+        r.requesterId === input.requesterId &&
+        r.recipientId === input.recipientId &&
+        r.targetAssigneeId === input.targetAssigneeId,
+    );
+    if (pendingExists) throw new Error("כבר שלחת בקשה ממתינה");
 
-  const now = new Date().toISOString();
-  const request: ClaimRequest = {
-    id: uid("claim"),
-    recipientId: input.recipientId,
-    requesterId: input.requesterId,
-    targetAssigneeId: input.targetAssigneeId,
-    note: input.note?.trim() || undefined,
-    status: "pending",
-    createdAt: now,
-    updatedAt: now,
-  };
-  db.claimRequests = db.claimRequests ?? [];
-  db.claimRequests.push(request);
-  await saveDb(db);
-  return request;
+    const now = new Date().toISOString();
+    const request: ClaimRequest = {
+      id: uid("claim"),
+      recipientId: input.recipientId,
+      requesterId: input.requesterId,
+      targetAssigneeId: input.targetAssigneeId,
+      note: input.note?.trim() || undefined,
+      status: "pending",
+      createdAt: now,
+      updatedAt: now,
+    };
+    db.claimRequests = db.claimRequests ?? [];
+    db.claimRequests.push(request);
+    return request;
+  });
 }
 
 export async function respondClaimRequest(input: {
@@ -511,64 +573,65 @@ export async function respondClaimRequest(input: {
   approve: boolean;
   isAdmin?: boolean;
 }): Promise<{ request: ClaimRequest; assignment?: Assignment }> {
-  const db = await ensureDb();
-  const request = (db.claimRequests ?? []).find((r) => r.id === input.requestId);
-  if (!request) throw new Error("הבקשה לא נמצאה");
-  if (request.status !== "pending") throw new Error("הבקשה כבר טופלה");
+  return mutateDb((db) => {
+    const request = (db.claimRequests ?? []).find(
+      (r) => r.id === input.requestId,
+    );
+    if (!request) throw new Error("הבקשה לא נמצאה");
+    if (request.status !== "pending") throw new Error("הבקשה כבר טופלה");
 
-  const canRespond =
-    input.isAdmin ||
-    request.targetAssigneeId === input.actorId ||
-    request.requesterId === input.actorId;
-  if (!canRespond) throw new Error("אין הרשאה לטפל בבקשה");
+    const canRespond =
+      input.isAdmin ||
+      request.targetAssigneeId === input.actorId ||
+      request.requesterId === input.actorId;
+    if (!canRespond) throw new Error("אין הרשאה לטפל בבקשה");
 
-  // Requester can only cancel (reject their own pending request).
-  if (
-    request.requesterId === input.actorId &&
-    !input.isAdmin &&
-    request.targetAssigneeId !== input.actorId &&
-    input.approve
-  ) {
-    throw new Error("רק מי שמחזיק את התודה יכול לאשר");
-  }
+    if (
+      request.requesterId === input.actorId &&
+      !input.isAdmin &&
+      request.targetAssigneeId !== input.actorId &&
+      input.approve
+    ) {
+      throw new Error("רק מי שמחזיק את התודה יכול לאשר");
+    }
 
-  const now = new Date().toISOString();
-  if (!input.approve) {
-    request.status = "rejected";
+    const now = new Date().toISOString();
+    if (!input.approve) {
+      request.status = "rejected";
+      request.updatedAt = now;
+      return { request };
+    }
+
+    request.status = "approved";
     request.updatedAt = now;
-    await saveDb(db);
-    return { request };
-  }
-
-  request.status = "approved";
-  request.updatedAt = now;
-  await saveDb(db);
-
-  const assignment = await createAssignment({
-    assigneeId: request.requesterId,
-    recipientId: request.recipientId,
+    const assignment = createAssignmentInDb(db, {
+      assigneeId: request.requesterId,
+      recipientId: request.recipientId,
+    });
+    return { request, assignment };
   });
-  return { request, assignment };
 }
 
 export async function createAssignmentsBulk(input: {
   assigneeId: string;
   recipientIds: string[];
 }): Promise<Assignment[]> {
-  const created: Assignment[] = [];
-  for (const recipientId of input.recipientIds) {
-    try {
-      created.push(
-        await createAssignment({
-          assigneeId: input.assigneeId,
-          recipientId,
-        }),
-      );
-    } catch {
-      // skip duplicates / invalid
+  return mutateDb((db) => {
+    const created: Assignment[] = [];
+    for (const recipientId of input.recipientIds) {
+      try {
+        created.push(
+          createAssignmentInDb(db, {
+            assigneeId: input.assigneeId,
+            recipientId,
+          }),
+        );
+      } catch {
+        // skip duplicates / invalid
+      }
     }
-  }
-  return created;
+    return created;
+  });
 }
 
 export async function updateAssignment(
@@ -583,79 +646,84 @@ export async function updateAssignment(
     assigneeId?: string;
   },
 ): Promise<Assignment> {
-  const db = await ensureDb();
-  const assignment = db.assignments.find((a) => a.id === assignmentId);
-  if (!assignment) throw new Error("השיוך לא נמצא");
+  return mutateDb((db) => {
+    const assignment = db.assignments.find((a) => a.id === assignmentId);
+    if (!assignment) throw new Error("השיוך לא נמצא");
 
-  if (patch.assigneeId !== undefined) {
-    const assignee = db.people.find((p) => p.id === patch.assigneeId);
-    if (!assignee?.isSenior) throw new Error("המשויך חייב להיות מהצוות הבכיר");
-    assignment.assigneeId = patch.assigneeId;
-  }
-  if (patch.contactMethod !== undefined) {
-    assignment.contactMethod = patch.contactMethod;
-  }
-  if (patch.feedback !== undefined) assignment.feedback = patch.feedback.trim();
-  if (patch.needsAdditionalThanks !== undefined) {
-    assignment.needsAdditionalThanks = patch.needsAdditionalThanks;
-  }
-  if (patch.additionalThankerIds !== undefined) {
-    assignment.additionalThankerIds = patch.additionalThankerIds;
-  }
-  if (patch.additionalThankerNote !== undefined) {
-    assignment.additionalThankerNote = patch.additionalThankerNote.trim();
-  }
-  if (patch.status !== undefined) {
-    assignment.status = patch.status;
-    assignment.completedAt =
-      patch.status === "done" ? new Date().toISOString() : null;
-  }
+    if (patch.assigneeId !== undefined) {
+      const assignee = db.people.find((p) => p.id === patch.assigneeId);
+      if (!assignee?.isSenior) throw new Error("המשויך חייב להיות מהצוות הבכיר");
+      assignment.assigneeId = patch.assigneeId;
+    }
+    if (patch.contactMethod !== undefined) {
+      assignment.contactMethod = patch.contactMethod;
+    }
+    if (patch.feedback !== undefined) assignment.feedback = patch.feedback.trim();
+    if (patch.needsAdditionalThanks !== undefined) {
+      assignment.needsAdditionalThanks = patch.needsAdditionalThanks;
+    }
+    if (patch.additionalThankerIds !== undefined) {
+      assignment.additionalThankerIds = patch.additionalThankerIds;
+    }
+    if (patch.additionalThankerNote !== undefined) {
+      assignment.additionalThankerNote = patch.additionalThankerNote.trim();
+    }
+    if (patch.status !== undefined) {
+      assignment.status = patch.status;
+      assignment.completedAt =
+        patch.status === "done" ? new Date().toISOString() : null;
+    }
 
-  assignment.updatedAt = new Date().toISOString();
-  await saveDb(db);
-  return assignment;
+    assignment.updatedAt = new Date().toISOString();
+    return assignment;
+  });
 }
 
 export async function deleteAssignment(assignmentId: string): Promise<void> {
-  const db = await ensureDb();
-  db.assignments = db.assignments.filter((a) => a.id !== assignmentId);
-  await saveDb(db);
+  await mutateDb((db) => {
+    db.assignments = db.assignments.filter((a) => a.id !== assignmentId);
+  });
 }
 
 export async function autoDistribute(): Promise<Assignment[]> {
-  const db = await ensureDb();
-  const seniorList = db.people.filter((p) => p.isSenior);
-  const assigned = new Set(db.assignments.map((a) => a.recipientId));
-  const unassigned = db.people.filter((p) => !p.isSenior && !assigned.has(p.id));
-
-  if (seniorList.length === 0 || unassigned.length === 0) return [];
-
-  const load = new Map<string, number>();
-  for (const s of seniorList) {
-    load.set(
-      s.id,
-      db.assignments.filter((a) => a.assigneeId === s.id && a.status === "pending")
-        .length,
+  return mutateDb((db) => {
+    const seniorList = db.people.filter((p) => p.isSenior);
+    const assigned = new Set(db.assignments.map((a) => a.recipientId));
+    const unassigned = db.people.filter(
+      (p) => !p.isSenior && !assigned.has(p.id),
     );
-  }
 
-  const created: Assignment[] = [];
-  for (const recipient of unassigned) {
-    let best = seniorList[0];
-    let bestLoad = load.get(best.id) ?? 0;
-    for (const senior of seniorList) {
-      const current = load.get(senior.id) ?? 0;
-      if (current < bestLoad) {
-        best = senior;
-        bestLoad = current;
-      }
+    if (seniorList.length === 0 || unassigned.length === 0) return [];
+
+    const load = new Map<string, number>();
+    for (const s of seniorList) {
+      load.set(
+        s.id,
+        db.assignments.filter(
+          (a) => a.assigneeId === s.id && a.status === "pending",
+        ).length,
+      );
     }
-    const assignment = await createAssignment({
-      assigneeId: best.id,
-      recipientId: recipient.id,
-    });
-    created.push(assignment);
-    load.set(best.id, bestLoad + 1);
-  }
-  return created;
+
+    const created: Assignment[] = [];
+    for (const recipient of unassigned) {
+      let best = seniorList[0];
+      let bestLoad = load.get(best.id) ?? 0;
+      for (const senior of seniorList) {
+        const current = load.get(senior.id) ?? 0;
+        if (current < bestLoad) {
+          best = senior;
+          bestLoad = current;
+        }
+      }
+      const assignment = createAssignmentInDb(db, {
+        assigneeId: best.id,
+        recipientId: recipient.id,
+      });
+      created.push(assignment);
+      load.set(best.id, bestLoad + 1);
+      assigned.add(recipient.id);
+    }
+    return created;
+  });
 }

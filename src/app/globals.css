@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Magnet PM";
+  src: url("/fonts/Magnet-PM-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Magnet PM";
+  src: url("/fonts/Magnet-PM-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Magnet PM";
+  src: url("/fonts/Magnet-PM-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Magnet PM";
+  src: url("/fonts/Magnet-PM-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --maroon: #7a0e14;
   --maroon-deep: #4d070c;
@@ -15,6 +47,7 @@
   --shadow: 0 18px 50px rgba(77, 7, 12, 0.12);
   --background: var(--paper);
   --foreground: var(--ink);
+  --font-magnet: "Magnet PM", sans-serif;
 }
 
 @theme inline {
@@ -30,8 +63,8 @@
   --color-muted: var(--muted);
   --color-paper: var(--paper);
   --color-sand: var(--sand);
-  --font-sans: var(--font-rubik);
-  --font-display: var(--font-frank);
+  --font-sans: var(--font-magnet);
+  --font-display: var(--font-magnet);
 }
 
 * {
@@ -46,7 +79,7 @@ body {
   margin: 0;
   min-height: 100%;
   color: var(--ink);
-  font-family: var(--font-rubik), "Rubik", sans-serif;
+  font-family: var(--font-magnet);
   background:
     radial-gradient(circle at 12% 10%, rgba(245, 168, 58, 0.28), transparent 34%),
     radial-gradient(circle at 88% 0%, rgba(47, 111, 159, 0.18), transparent 32%),
@@ -82,7 +115,8 @@ textarea {
 }
 
 .brand-display {
-  font-family: var(--font-frank), "Frank Ruhl Libre", serif;
+  font-family: var(--font-magnet);
+  font-weight: 700;
 }
 
 .panel {

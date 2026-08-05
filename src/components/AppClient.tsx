@@ -159,29 +159,48 @@ export function AppClient() {
       <div ref={headerSentinelRef} className="header-sentinel" aria-hidden />
 
       <header
-        className={`site-header panel animate-rise${
-          headerStuck ? " is-stuck" : ""
-        }`}
+        className={`site-header animate-rise${headerStuck ? " is-stuck" : ""}`}
       >
-        <div className="site-header-inner">
-          <div className="site-header-brand">
+        <div className="site-header-shell panel">
+          <div className="site-header-row">
             <div className="site-header-identity">
               <Logo
-                size={headerStuck ? 40 : 48}
+                size={headerStuck ? 52 : 64}
                 className={`logo-float shrink-0${
                   headerStuck ? " logo-compact" : ""
                 }`}
                 priority
               />
-              <div className="min-w-0">
-                <h1
-                  className="brand-display site-header-title text-maroon"
-                  title={`שלום ${user.name}`}
-                >
-                  גן ישראל | משפחת השלוחים הצעירים
-                </h1>
-              </div>
+              <h1
+                className="brand-display site-header-title text-maroon"
+                title={`שלום ${user.name}`}
+              >
+                גן ישראל | משפחת השלוחים הצעירים
+              </h1>
             </div>
+
+            <nav className="site-header-nav" aria-label="ניווט ראשי">
+              {(
+                [
+                  ["mine", "המשימות שלי"],
+                  ["claim", "לוקחים תודות"],
+                  ["overview", "סקירה"],
+                  ["team", "הצוות"],
+                  ...(user.isAdmin ? [["admin", "ניהול"] as const] : []),
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  className={`site-tab ${
+                    tab === id ? "site-tab-active" : "site-tab-idle"
+                  }`}
+                  onClick={() => setTab(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+
             <div className="site-header-actions">
               <ThemeToggle />
               <button
@@ -198,27 +217,6 @@ export function AppClient() {
               </button>
             </div>
           </div>
-          <nav className="site-header-nav" aria-label="ניווט ראשי">
-            {(
-              [
-                ["mine", "המשימות שלי"],
-                ["claim", "לוקחים תודות"],
-                ["overview", "סקירה"],
-                ["team", "הצוות"],
-                ...(user.isAdmin ? [["admin", "ניהול"] as const] : []),
-              ] as const
-            ).map(([id, label]) => (
-              <button
-                key={id}
-                className={`site-tab ${
-                  tab === id ? "site-tab-active" : "site-tab-idle"
-                }`}
-                onClick={() => setTab(id)}
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
         </div>
       </header>
 

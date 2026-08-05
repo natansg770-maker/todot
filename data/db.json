@@ -848,16 +848,6 @@
   ],
   "assignments": [
     {
-      "id": "assign-msf9lhkn-s0fcaq",
-      "assigneeId": "person-004",
-      "recipientId": "person-028",
-      "status": "pending",
-      "createdAt": "2026-08-04T23:03:47.255Z",
-      "updatedAt": "2026-08-04T23:03:47.255Z",
-      "priority": 1,
-      "additionalThankerIds": []
-    },
-    {
       "id": "assign-msf9lhkp-djghbr",
       "assigneeId": "person-033",
       "recipientId": "person-029",
@@ -1034,7 +1024,7 @@
       "status": "pending",
       "createdAt": "2026-08-04T23:03:47.275Z",
       "updatedAt": "2026-08-04T23:03:47.275Z",
-      "priority": 2,
+      "priority": 1,
       "additionalThankerIds": []
     },
     {
@@ -1214,7 +1204,7 @@
       "status": "pending",
       "createdAt": "2026-08-04T23:03:47.338Z",
       "updatedAt": "2026-08-04T23:03:47.338Z",
-      "priority": 3,
+      "priority": 2,
       "additionalThankerIds": []
     },
     {
@@ -1309,7 +1299,7 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:11:20.858Z",
-  "revision": 28,
-  "writeToken": "w-msgivkwp-o6d4wl"
+  "updatedAt": "2026-08-05T20:11:36.320Z",
+  "revision": 29,
+  "writeToken": "w-msgivwu8-yvy6wb"
 }

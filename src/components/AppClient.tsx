@@ -171,15 +171,18 @@ export function AppClient() {
           <div className="site-header-row">
             <div className="site-header-identity">
               <Logo
-                size={headerStuck ? 44 : 56}
-                className="shrink-0"
+                size={headerStuck ? 40 : 48}
+                className="site-header-logo shrink-0"
                 priority
               />
               <h1
                 className="brand-display site-header-title text-maroon"
                 title={`שלום ${user.name}`}
               >
-                גן ישראל | משפחת השלוחים הצעירים
+                <span className="title-full">
+                  גן ישראל | משפחת השלוחים הצעירים
+                </span>
+                <span className="title-short">גן ישראל</span>
               </h1>
             </div>
 
@@ -218,14 +221,15 @@ export function AppClient() {
                   });
                 }}
               >
-                החלף משתמש
+                <span className="chip-full">החלף משתמש</span>
+                <span className="chip-short">החלף</span>
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-4 pb-8 pt-5 sm:px-6 sm:pb-10 sm:pt-6">
+      <div className="app-main mx-auto max-w-6xl px-3 pb-28 pt-4 sm:px-6 sm:pb-10 sm:pt-6">
         {error && (
           <div className="mb-4 rounded-2xl border border-maroon/20 bg-maroon/8 px-4 py-3 text-base font-medium text-maroon">
             {error}
@@ -308,15 +312,20 @@ function PasswordSettings({
   const [message, setMessage] = useState<string | null>(null);
 
   return (
-    <div className="panel rounded-[28px] p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h3 className="section-title text-xl text-maroon">הסיסמה שלי</h3>
-          <p className="text-base font-medium text-muted">
+    <div className="panel rounded-[28px] p-4 sm:p-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h3 className="section-title text-lg text-maroon sm:text-xl">
+            הסיסמה שלי
+          </h3>
+          <p className="text-sm font-medium leading-6 text-muted sm:text-base">
             אפשר לעדכן את הסיסמה האישית בכל רגע
           </p>
         </div>
-        <button className="btn btn-ghost" onClick={() => setOpen((v) => !v)}>
+        <button
+          className="btn btn-ghost w-full sm:w-auto"
+          onClick={() => setOpen((v) => !v)}
+        >
           {open ? "סגור" : "שינוי סיסמה"}
         </button>
       </div>
@@ -502,19 +511,19 @@ function MyTasks({
     <section className="animate-rise space-y-5">
       <PasswordSettings pending={pending} onAction={onAction} />
 
-      <div className="panel rounded-[28px] p-5 sm:p-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="section-title text-3xl text-maroon">
+      <div className="panel rounded-[28px] p-4 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+          <div className="min-w-0">
+            <h2 className="section-title text-2xl text-maroon sm:text-3xl">
               המשימות שלי
             </h2>
-            <p className="mt-1 text-base font-medium text-muted">
+            <p className="mt-1 text-sm font-medium leading-6 text-muted sm:text-base">
               {pendingTasks.length} ממתינות · {done.length} בוצעו · סדרו לפי
               עדיפות
             </p>
           </div>
-          <div className="min-w-[180px] flex-1 sm:max-w-xs">
-            <div className="mb-1 flex justify-between text-base text-muted">
+          <div className="w-full sm:min-w-[180px] sm:max-w-xs sm:flex-1">
+            <div className="mb-1 flex justify-between text-sm text-muted sm:text-base">
               <span>התקדמות</span>
               <span>{percent(done.length, mine.length)}%</span>
             </div>

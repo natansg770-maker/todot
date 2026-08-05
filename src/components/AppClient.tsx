@@ -339,13 +339,13 @@ function LoginView({
         <div className="relative px-6 pb-8 pt-10 text-center sm:px-10">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,rgba(245,168,58,0.35),transparent_70%)]" />
           <Logo size={180} className="logo-float relative mx-auto" priority />
-          <h1 className="brand-display animate-rise-delay-1 mt-5 text-3xl text-maroon sm:text-4xl">
+          <h1 className="brand-display animate-rise-delay-1 mt-5 text-4xl text-maroon sm:text-5xl">
             קעמפ גן ישראל
           </h1>
-          <p className="section-title animate-rise-delay-1 text-xl text-maroon/85">
+          <p className="section-title animate-rise-delay-1 text-2xl text-maroon/85">
             משפחת השלוחים הצעירים
           </p>
-          <p className="animate-rise-delay-2 mx-auto mt-4 max-w-md text-base font-normal leading-7 text-muted">
+          <p className="animate-rise-delay-2 mx-auto mt-4 max-w-lg text-lg font-medium leading-8 text-muted">
             כניסה לצוות הבכיר בלבד — 11 אנשים: 4 גנרלים, 4 קצינים, חיים,
             מענדל ויעקב.
           </p>
@@ -1299,15 +1299,23 @@ function AdminPanel({
                       </button>
                     )}
                     <button
-                      className="underline text-maroon"
+                      type="button"
+                      className="btn btn-ghost !px-3 !py-2 text-sm"
                       disabled={pending}
-                      onClick={() =>
+                      onClick={() => {
+                        if (
+                          !confirm(
+                            `למחוק את השיוך של ${assignee?.name ?? "?"} → ${recipient?.name ?? "?"}?`,
+                          )
+                        ) {
+                          return;
+                        }
                         onAction(async () => {
                           await deleteAssignmentApi(assignment.id);
-                        })
-                      }
+                        });
+                      }}
                     >
-                      מחק שיוך
+                      {pending ? "מוחק…" : "מחק שיוך"}
                     </button>
                   </div>
                 </div>

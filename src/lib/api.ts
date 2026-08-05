@@ -25,6 +25,7 @@ async function request(input: string, init?: RequestInit): Promise<Response> {
     return await fetch(input, {
       ...init,
       cache: "no-store",
+      credentials: "same-origin",
       signal: controller.signal,
     });
   } catch (error) {
@@ -294,8 +295,10 @@ export async function updateAssignmentApi(
 
 export async function deleteAssignmentApi(id: string): Promise<void> {
   await parse(
-    await fetch(`/api/assignments?id=${encodeURIComponent(id)}`, {
-      method: "DELETE",
+    await request("/api/assignments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", assignmentId: id }),
     }),
   );
 }

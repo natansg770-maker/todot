@@ -61,6 +61,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true });
     }
 
+    if (body.action === "delete") {
+      if (!body.assignmentId) {
+        return NextResponse.json({ error: "חסר מזהה שיוך" }, { status: 400 });
+      }
+      if (user.isAdmin) {
+        await deleteAssignment(body.assignmentId);
+      } else {
+        await releaseOwnAssignment({
+          userId: user.id,
+          assignmentId: body.assignmentId,
+          isAdmin: false,
+        });
+      }
+      return NextResponse.json({ ok: true });
+    }
+
     if (body.action === "reorder") {
       if (!body.assignmentIds?.length) {
         return NextResponse.json(

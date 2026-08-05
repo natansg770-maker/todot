@@ -13,6 +13,22 @@ function applyTheme(theme: Theme) {
   }
 }
 
+function playThemeFlash(next: Theme) {
+  if (typeof document === "undefined") return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  document.querySelectorAll(".theme-flash").forEach((node) => node.remove());
+
+  const flash = document.createElement("div");
+  flash.className = `theme-flash theme-flash-${next}`;
+  flash.setAttribute("aria-hidden", "true");
+  document.body.appendChild(flash);
+
+  const cleanup = () => flash.remove();
+  flash.addEventListener("animationend", cleanup, { once: true });
+  window.setTimeout(cleanup, 900);
+}
+
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>("light");
 
@@ -30,6 +46,7 @@ export function ThemeToggle() {
 
   function toggle() {
     const next: Theme = theme === "dark" ? "light" : "dark";
+    playThemeFlash(next);
     setTheme(next);
     applyTheme(next);
   }

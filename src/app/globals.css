@@ -607,6 +607,98 @@ html.dark .chip-pending {
   animation-delay: 170ms;
 }
 
+/* Diagonal theme-switch flash: top-left → bottom-right */
+.theme-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  overflow: hidden;
+  animation: theme-flash-veil 720ms ease-out forwards;
+}
+
+.theme-flash::before {
+  content: "";
+  position: absolute;
+  top: -55%;
+  left: -55%;
+  width: 210%;
+  height: 210%;
+  transform: translate3d(-42%, -42%, 0);
+  animation: theme-flash-sweep 720ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.theme-flash-light {
+  background: radial-gradient(
+    120% 80% at 0% 0%,
+    rgba(255, 249, 242, 0.22),
+    transparent 55%
+  );
+}
+
+.theme-flash-light::before {
+  background: linear-gradient(
+    135deg,
+    transparent 38%,
+    rgba(255, 249, 242, 0.12) 46%,
+    rgba(245, 168, 58, 0.55) 50%,
+    rgba(255, 249, 242, 0.18) 54%,
+    transparent 62%
+  );
+}
+
+.theme-flash-dark {
+  background: radial-gradient(
+    120% 80% at 0% 0%,
+    rgba(122, 14, 20, 0.18),
+    transparent 55%
+  );
+}
+
+.theme-flash-dark::before {
+  background: linear-gradient(
+    135deg,
+    transparent 38%,
+    rgba(26, 20, 18, 0.2) 46%,
+    rgba(240, 178, 90, 0.42) 50%,
+    rgba(122, 14, 20, 0.22) 54%,
+    transparent 62%
+  );
+}
+
+@keyframes theme-flash-veil {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes theme-flash-sweep {
+  0% {
+    transform: translate3d(-42%, -42%, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(42%, 42%, 0);
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -621,8 +713,14 @@ html.dark .chip-pending {
   .badge-pop,
   .stagger-in > *,
   .live-toast,
-  .float-panel {
+  .float-panel,
+  .theme-flash,
+  .theme-flash::before {
     animation: none !important;
+  }
+
+  .theme-flash {
+    display: none !important;
   }
 
   .btn,

@@ -188,30 +188,53 @@ textarea {
 }
 
 .site-header-shell {
-  --apple-glass-bg: rgba(255, 255, 255, 0.68);
+  --apple-glass-bg: rgba(255, 255, 255, 0.52);
   --apple-glass-border: rgba(0, 0, 0, 0.1);
   --apple-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
   max-width: 72rem;
   margin-inline: auto;
   border-radius: 22px;
-  background-color: var(--apple-glass-bg);
   border: 0.5px solid var(--apple-glass-border);
   box-shadow: var(--apple-glass-shadow);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: transparent;
+  overflow: hidden;
   transition:
     border-radius 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    box-shadow 280ms ease,
-    background-color 280ms ease;
+    box-shadow 280ms ease;
 }
 
 html.dark .site-header-shell {
-  --apple-glass-bg: rgba(22, 22, 24, 0.72);
+  --apple-glass-bg: rgba(22, 22, 24, 0.55);
   --apple-glass-border: rgba(255, 255, 255, 0.14);
   --apple-glass-shadow: 0 10px 36px rgba(0, 0, 0, 0.4);
 }
 
+/* Dedicated glass layer — more reliable than blur on the shell itself */
+.site-header-glass {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: var(--apple-glass-bg);
+  backdrop-filter: saturate(180%) blur(40px);
+  -webkit-backdrop-filter: saturate(180%) blur(40px);
+  pointer-events: none;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header-glass {
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  html.dark .site-header-glass {
+    background: rgba(22, 22, 24, 0.92);
+  }
+}
+
 .site-header-row {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
   align-items: center;
@@ -324,13 +347,13 @@ html.dark .header-chip:hover {
 .site-tab-active {
   background: var(--maroon);
   color: #fff9f2;
-  box-shadow: 0 6px 16px rgba(122, 14, 20, 0.22);
+  box-shadow: 0 4px 12px rgba(122, 14, 20, 0.2);
 }
 
 html.dark .site-tab-active {
   background: #b8454c;
   color: #fff9f2;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .site-tab-idle {

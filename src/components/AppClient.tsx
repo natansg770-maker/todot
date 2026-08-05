@@ -160,11 +160,12 @@ export function AppClient() {
 
       <header className={`site-header${headerStuck ? " is-stuck" : ""}`}>
         <div className="site-header-shell">
+          <div className="site-header-glass" aria-hidden />
           <div className="site-header-row">
             <div className="site-header-identity">
               <Logo
                 size={headerStuck ? 44 : 56}
-                className={`shrink-0${headerStuck ? "" : " logo-float"}`}
+                className="shrink-0"
                 priority
               />
               <h1

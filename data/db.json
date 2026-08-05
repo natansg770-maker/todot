@@ -1541,18 +1541,9 @@
       "createdAt": "2026-08-05T08:57:36.001Z",
       "updatedAt": "2026-08-05T08:57:36.001Z",
       "additionalThankerIds": []
-    },
-    {
-      "id": "assign-msgi5gkb-8byw9j",
-      "assigneeId": "person-085",
-      "recipientId": "person-005",
-      "status": "pending",
-      "priority": 1,
-      "createdAt": "2026-08-05T19:51:02.170Z",
-      "updatedAt": "2026-08-05T19:51:02.170Z"
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T19:57:34.491Z",
-  "revision": 3
+  "updatedAt": "2026-08-05T19:59:15.849Z",
+  "revision": 4
 }

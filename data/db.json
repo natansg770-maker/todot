@@ -930,10 +930,19 @@
       ],
       "additionalThankerNote": "תגיד לו תודה על ניהול הצוות ופינוקם",
       "completedAt": "2026-08-05T20:24:40.171Z"
+    },
+    {
+      "id": "assign-msgjg7el-w2yvw3",
+      "assigneeId": "person-003",
+      "recipientId": "person-017",
+      "status": "pending",
+      "priority": 1,
+      "createdAt": "2026-08-05T20:27:23.133Z",
+      "updatedAt": "2026-08-05T20:27:23.133Z"
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:24:40.171Z",
-  "revision": 90,
-  "writeToken": "w-msgjcpnv-o3wn3q"
+  "updatedAt": "2026-08-05T20:27:23.133Z",
+  "revision": 91,
+  "writeToken": "w-msgjg7el-6erc05"
 }

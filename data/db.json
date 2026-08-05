@@ -848,16 +848,6 @@
   ],
   "assignments": [
     {
-      "id": "assign-msf9lhme-ppj3wy",
-      "assigneeId": "person-088",
-      "recipientId": "person-068",
-      "status": "pending",
-      "createdAt": "2026-08-04T23:03:47.318Z",
-      "updatedAt": "2026-08-04T23:03:47.318Z",
-      "priority": 1,
-      "additionalThankerIds": []
-    },
-    {
       "id": "assign-msf9lhmh-qigqcc",
       "assigneeId": "person-089",
       "recipientId": "person-069",
@@ -919,7 +909,7 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:15:11.678Z",
-  "revision": 72,
-  "writeToken": "w-msgj0j0e-ae7yhd"
+  "updatedAt": "2026-08-05T20:15:13.502Z",
+  "revision": 73,
+  "writeToken": "w-msgj0kf2-khetgn"
 }

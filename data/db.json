@@ -848,16 +848,6 @@
   ],
   "assignments": [
     {
-      "id": "assign-msf9lhjp-cxvq3g",
-      "assigneeId": "person-002",
-      "recipientId": "person-006",
-      "status": "pending",
-      "createdAt": "2026-08-04T23:03:47.221Z",
-      "updatedAt": "2026-08-04T23:03:47.221Z",
-      "priority": 1,
-      "additionalThankerIds": []
-    },
-    {
       "id": "assign-msf9lhjq-sfk2gn",
       "assigneeId": "person-003",
       "recipientId": "person-007",
@@ -1034,7 +1024,7 @@
       "status": "pending",
       "createdAt": "2026-08-04T23:03:47.252Z",
       "updatedAt": "2026-08-04T23:03:47.252Z",
-      "priority": 2,
+      "priority": 1,
       "additionalThankerIds": []
     },
     {
@@ -1214,7 +1204,7 @@
       "status": "pending",
       "createdAt": "2026-08-04T23:03:47.272Z",
       "updatedAt": "2026-08-04T23:03:47.272Z",
-      "priority": 3,
+      "priority": 2,
       "additionalThankerIds": []
     },
     {
@@ -1394,7 +1384,7 @@
       "status": "pending",
       "createdAt": "2026-08-04T23:03:47.335Z",
       "updatedAt": "2026-08-04T23:03:47.335Z",
-      "priority": 4,
+      "priority": 3,
       "additionalThankerIds": []
     },
     {
@@ -1509,7 +1499,7 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:09:34.087Z",
-  "revision": 8,
-  "writeToken": "w-msgitaiv-vzagku"
+  "updatedAt": "2026-08-05T20:09:48.730Z",
+  "revision": 9,
+  "writeToken": "w-msgitltm-wfario"
 }

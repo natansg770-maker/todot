@@ -1,0 +1,854 @@
+{
+  "roles": [
+    {
+      "id": "role-001",
+      "name": "גנרל",
+      "sortOrder": 1
+    },
+    {
+      "id": "role-002",
+      "name": "מלמד (שיעור א')",
+      "sortOrder": 2
+    },
+    {
+      "id": "role-003",
+      "name": "מנהל מטבח",
+      "sortOrder": 3
+    },
+    {
+      "id": "role-004",
+      "name": "מנהל משבקי״ם",
+      "sortOrder": 4
+    },
+    {
+      "id": "role-005",
+      "name": "מנהל צוות טכני",
+      "sortOrder": 5
+    },
+    {
+      "id": "role-006",
+      "name": "מנהל שלאפט א חסיד",
+      "sortOrder": 6
+    },
+    {
+      "id": "role-007",
+      "name": "מע״ר",
+      "sortOrder": 7
+    },
+    {
+      "id": "role-008",
+      "name": "מעצב",
+      "sortOrder": 8
+    },
+    {
+      "id": "role-009",
+      "name": "מפקד (שיעור ב')",
+      "sortOrder": 9
+    },
+    {
+      "id": "role-010",
+      "name": "משב״ק",
+      "sortOrder": 10
+    },
+    {
+      "id": "role-011",
+      "name": "צוות טכני",
+      "sortOrder": 11
+    },
+    {
+      "id": "role-012",
+      "name": "צוות מזכירות",
+      "sortOrder": 12
+    },
+    {
+      "id": "role-013",
+      "name": "צוות מל״ש",
+      "sortOrder": 13
+    },
+    {
+      "id": "role-014",
+      "name": "צוות צילום וסושיאל",
+      "sortOrder": 14
+    },
+    {
+      "id": "role-015",
+      "name": "קצין",
+      "sortOrder": 15
+    },
+    {
+      "id": "role-016",
+      "name": "הנהלה בכירה",
+      "sortOrder": 16
+    },
+    {
+      "id": "role-017",
+      "name": "זיידע",
+      "sortOrder": 17
+    }
+  ],
+  "people": [
+    {
+      "id": "person-001",
+      "name": "לוי יצחק ורדי",
+      "roleId": "role-001",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0545901293",
+      "passwordHash": "bbde111f1e5fabcd344b98ca8329d7bc:a18dd303e844ee129fc22404c9920daf7719d558cbbf039e3d25f8fb589d98c3",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-002",
+      "name": "נחמן ברדה",
+      "roleId": "role-001",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0533611770",
+      "passwordHash": "996bd74f5e78c501319f5e00021810da:cf594ca4c4f7d5452fb735d7983e4701269366a486556fd2a593cf19f6777c44",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-003",
+      "name": "מנחם מענדל גבירץ",
+      "roleId": "role-001",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0533370016",
+      "passwordHash": "33305492d2e03a90fd372699ea59a48d:e78c44c98184937cb7767186fd7c75c5273cacd015957a497bc744b338e0529b",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-004",
+      "name": "אליעזר נתן קפלן",
+      "roleId": "role-001",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0515137704",
+      "passwordHash": "c399abdec5a2733efd1b52800bc9b6fd:332572c8784cb6c60ee55958676b3b233d77ba6f4eb48ad95d4eeaa1ec364fd9",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-005",
+      "name": "שמוליק ביסטריצקי",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0533872443"
+    },
+    {
+      "id": "person-006",
+      "name": "שמואל גלבשטיין",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0533460410"
+    },
+    {
+      "id": "person-007",
+      "name": "שמואל כהן",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0547704755"
+    },
+    {
+      "id": "person-008",
+      "name": "הלל כהן",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068246"
+    },
+    {
+      "id": "person-009",
+      "name": "לוי יצחק לבנוני",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068231"
+    },
+    {
+      "id": "person-010",
+      "name": "מנחם מענדל מרקוביץ",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068091"
+    },
+    {
+      "id": "person-011",
+      "name": "מנחם מענדל קוצובייבסקי",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0537610572"
+    },
+    {
+      "id": "person-012",
+      "name": "לוי יצחק ריינהרץ",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0587706500"
+    },
+    {
+      "id": "person-013",
+      "name": "גרשון אריאל רסקין",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068065"
+    },
+    {
+      "id": "person-014",
+      "name": "מנחם מענדל בוקיעט",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0512807705"
+    },
+    {
+      "id": "person-015",
+      "name": "פנחס הורביץ",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0554004349"
+    },
+    {
+      "id": "person-016",
+      "name": "פיני הורביץ",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0534821277"
+    },
+    {
+      "id": "person-017",
+      "name": "שניאור זלמן ישעיהו",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068170"
+    },
+    {
+      "id": "person-018",
+      "name": "מנחם מענדל קוביטשעק",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0537700850"
+    },
+    {
+      "id": "person-019",
+      "name": "יששכר דוב רוזנשיין",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0534928337"
+    },
+    {
+      "id": "person-020",
+      "name": "מיכאל מנחם רז",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068074"
+    },
+    {
+      "id": "person-021",
+      "name": "מנחם מענדל בטשוילי",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068027"
+    },
+    {
+      "id": "person-022",
+      "name": "לוי יצחק וולף",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555067991"
+    },
+    {
+      "id": "person-023",
+      "name": "נתן וישצקי",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0549377639"
+    },
+    {
+      "id": "person-024",
+      "name": "דוד חנזין",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0512770617"
+    },
+    {
+      "id": "person-025",
+      "name": "שלום דב בער ליסון",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068228"
+    },
+    {
+      "id": "person-026",
+      "name": "שלום אורי נתן נטע נפרסטק",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0528046770"
+    },
+    {
+      "id": "person-027",
+      "name": "שניאור זלמן סוליש",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0527288770"
+    },
+    {
+      "id": "person-028",
+      "name": "מנחם מענדל סלפושניק",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0584770653"
+    },
+    {
+      "id": "person-029",
+      "name": "שמואל קלמן",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068102"
+    },
+    {
+      "id": "person-030",
+      "name": "יחזקאל פינסון",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0587704030"
+    },
+    {
+      "id": "person-031",
+      "name": "אריאל שלום תעיזי",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0515034770"
+    },
+    {
+      "id": "person-032",
+      "name": "יהודא לייב רונצוייג",
+      "roleId": "role-002",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0512929764"
+    },
+    {
+      "id": "person-033",
+      "name": "שמואל טורנהיים",
+      "roleId": "role-003",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0586278682"
+    },
+    {
+      "id": "person-034",
+      "name": "לוי יצחק טורנהיים",
+      "roleId": "role-003",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0587698434"
+    },
+    {
+      "id": "person-035",
+      "name": "מאיר בורובסקי",
+      "roleId": "role-004",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0533611993"
+    },
+    {
+      "id": "person-036",
+      "name": "שלום כהן",
+      "roleId": "role-004",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0533770003"
+    },
+    {
+      "id": "person-037",
+      "name": "שניאור זלמן קשת",
+      "roleId": "role-004",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0552770462"
+    },
+    {
+      "id": "person-038",
+      "name": "דוב בער הרטמן",
+      "roleId": "role-005",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0546036356"
+    },
+    {
+      "id": "person-039",
+      "name": "לוי דרוקמן",
+      "roleId": "role-006",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0512653611"
+    },
+    {
+      "id": "person-040",
+      "name": "יוסף יצחק קירשנבוים",
+      "roleId": "role-006",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0584770112"
+    },
+    {
+      "id": "person-041",
+      "name": "יוסף יצחק כהן",
+      "roleId": "role-007",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0557704638"
+    },
+    {
+      "id": "person-042",
+      "name": "ישראל שניאור זלמן הכהן",
+      "roleId": "role-008",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0537701284"
+    },
+    {
+      "id": "person-043",
+      "name": "מנחם מענדל אלטהויז",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0556780439"
+    },
+    {
+      "id": "person-044",
+      "name": "שניאור זלמן ארבוב",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0559816409"
+    },
+    {
+      "id": "person-045",
+      "name": "מנחם מענדל בר נתן",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0559548258"
+    },
+    {
+      "id": "person-046",
+      "name": "מנחם מענדל סויסא",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0537700148"
+    },
+    {
+      "id": "person-047",
+      "name": "נחמן סימקין",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0584995378"
+    },
+    {
+      "id": "person-048",
+      "name": "מנחם מענדל רייניץ",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555067928"
+    },
+    {
+      "id": "person-049",
+      "name": "יהונתן שם-טוב חקוקי",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0556753001"
+    },
+    {
+      "id": "person-050",
+      "name": "מנחם מענדל כהן",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0557756568"
+    },
+    {
+      "id": "person-051",
+      "name": "יוסף יצחק כהן",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0587116848"
+    },
+    {
+      "id": "person-052",
+      "name": "שלמה אליהו פישר",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0586712257"
+    },
+    {
+      "id": "person-053",
+      "name": "זלמן בוטמן",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555067926"
+    },
+    {
+      "id": "person-054",
+      "name": "ישראל ברוק",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0552888426"
+    },
+    {
+      "id": "person-055",
+      "name": "איתמר סאפראן",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555569771"
+    },
+    {
+      "id": "person-056",
+      "name": "מנחם מענדל לביוב",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0547052419"
+    },
+    {
+      "id": "person-057",
+      "name": "אלעזר מימון הכהן",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0533770420"
+    },
+    {
+      "id": "person-058",
+      "name": "מנחם מענדל גלמן",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0559405727"
+    },
+    {
+      "id": "person-059",
+      "name": "ישראל זהר",
+      "roleId": "role-009",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0583227734"
+    },
+    {
+      "id": "person-060",
+      "name": "שלום דובער לוייב",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555587695"
+    },
+    {
+      "id": "person-061",
+      "name": "שניאור זלמן שרמן",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068589"
+    },
+    {
+      "id": "person-062",
+      "name": "צבי יעקב הכהן הרמתי",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0554415326"
+    },
+    {
+      "id": "person-063",
+      "name": "יוסף יצחק נריה לוייב",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555662731"
+    },
+    {
+      "id": "person-064",
+      "name": "יוסף יצחק מרזל",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068591"
+    },
+    {
+      "id": "person-065",
+      "name": "יהונתן בנימין בורגן",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068616"
+    },
+    {
+      "id": "person-066",
+      "name": "מנחם מענדל נימוי",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0535431574"
+    },
+    {
+      "id": "person-067",
+      "name": "יוסף יצחק בר כוכבא",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068792"
+    },
+    {
+      "id": "person-068",
+      "name": "מנחם מענדל פאכערט",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0554415211"
+    },
+    {
+      "id": "person-069",
+      "name": "ארי ברוד",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555069290"
+    },
+    {
+      "id": "person-070",
+      "name": "שלום דובער פרידמן",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0587705600"
+    },
+    {
+      "id": "person-071",
+      "name": "מנחם מענדל גולדובסקי",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068791"
+    },
+    {
+      "id": "person-072",
+      "name": "שלום דובער פז",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068596"
+    },
+    {
+      "id": "person-073",
+      "name": "הילל רז",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0544465260"
+    },
+    {
+      "id": "person-074",
+      "name": "יוסף יצחק רומנוב",
+      "roleId": "role-010",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068624"
+    },
+    {
+      "id": "person-075",
+      "name": "אלחנן גליצנשטיין",
+      "roleId": "role-011",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0515457706"
+    },
+    {
+      "id": "person-076",
+      "name": "שניאור זלמן רוזנשיין",
+      "roleId": "role-011",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0539246838"
+    },
+    {
+      "id": "person-077",
+      "name": "יוסף יצחק טוביה קישון",
+      "roleId": "role-011",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0535733328"
+    },
+    {
+      "id": "person-078",
+      "name": "שלום דובער ישראל סויסא",
+      "roleId": "role-012",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0532436310"
+    },
+    {
+      "id": "person-079",
+      "name": "זכריה תעיזי",
+      "roleId": "role-012",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0515177033"
+    },
+    {
+      "id": "person-080",
+      "name": "יוסף יצחק אחיטוב",
+      "roleId": "role-013",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0559882130"
+    },
+    {
+      "id": "person-081",
+      "name": "נתן סגל",
+      "roleId": "role-013",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0547468788"
+    },
+    {
+      "id": "person-082",
+      "name": "ראובן וגנר",
+      "roleId": "role-014",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0532838770"
+    },
+    {
+      "id": "person-083",
+      "name": "אפרים סלאווין",
+      "roleId": "role-014",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555068922"
+    },
+    {
+      "id": "person-084",
+      "name": "יצחק פולק",
+      "roleId": "role-014",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0555069141"
+    },
+    {
+      "id": "person-085",
+      "name": "נתן שמחה גרינברג",
+      "roleId": "role-015",
+      "isSenior": true,
+      "isAdmin": true,
+      "phone": "0559771003",
+      "passwordHash": "034fbd9a689b0ff28fff7ecd40487c40:fbd5df668af0f02feb2d6e6670b78dd08666108c32c3bc95434ffd85a869b099",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-086",
+      "name": "לוי יצחק ערד",
+      "roleId": "role-015",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0553196076",
+      "passwordHash": "d74d86afecdb09a25c636db43e25be03:3d23353e7aae6f3029fe0944492116d42fa8e1f49097f3c3146a873b13c0263a",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-087",
+      "name": "שמואל פינחס חזן",
+      "roleId": "role-015",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0515337702",
+      "passwordHash": "2a3b9f4e377bddc26f8daf4312665daf:b559d5890d66a406b6a51aef1942cfe70a333b5f5c1d09cd71100b43cce26de0",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-088",
+      "name": "מנחם מענדל בורנשטיין",
+      "roleId": "role-015",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0533578477",
+      "passwordHash": "2e70054b30bbfb002afcc2bed346dea2:cb059ce93a54e1b1e7265d3d0df58f432cbc35e0fd29d6c5486a8747962afe00",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-089",
+      "name": "מענדל קשת",
+      "roleId": "role-016",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0502491888",
+      "passwordHash": "be019dd725126629c3d23d5f5a491ad5:b18aa930c0a3b7c38442d87a3ed5b34a4d64dd264d47ac35ed98b4a2eca2cccd",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-090",
+      "name": "חיים וייספיש",
+      "roleId": "role-016",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0584243770",
+      "passwordHash": "18e9b12766d2b9c3efae9570502c4917:418f97e718e6f88c1c5967e3b68363daf251c882b29e1861dc6d7a9d1374756b",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-091",
+      "name": "יעקב קנייבסקי",
+      "roleId": "role-016",
+      "isSenior": true,
+      "isAdmin": false,
+      "phone": "0536277055",
+      "passwordHash": "244ca0c92d66259af7d16ee8ccc33e4c:113d96c8cfe2c1fab1a12263fe99888e5ed1ddb12f34f8ab46caecbe03695210",
+      "usesDefaultPassword": true
+    },
+    {
+      "id": "person-092",
+      "name": "ישראל גולדברג",
+      "roleId": "role-017",
+      "isSenior": false,
+      "isAdmin": false,
+      "phone": "0507704727"
+    }
+  ],
+  "assignments": [],
+  "claimRequests": [],
+  "updatedAt": "2026-08-05T20:17:57.722Z",
+  "revision": 79,
+  "writeToken": "w-msgj0um4-lyzvfj"
+}

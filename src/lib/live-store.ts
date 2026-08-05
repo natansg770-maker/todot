@@ -34,6 +34,13 @@ function uid(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+async function ensureLiveSeed(): Promise<LiveStore> {
+  const seed = emptyLive();
+  blobEtag = null;
+  await writeRaw(seed, null);
+  return seed;
+}
+
 async function readRaw(): Promise<LiveStore> {
   if (canUseBlob()) {
     try {
@@ -42,8 +49,13 @@ async function readRaw(): Promise<LiveStore> {
         token: process.env.BLOB_READ_WRITE_TOKEN,
         useCache: false,
       });
-      if (!result || result.statusCode !== 200 || !result.stream) {
-        throw new Error(`Live blob get failed: ${result?.statusCode ?? "?"}`);
+      if (
+        !result ||
+        result.statusCode === 404 ||
+        result.statusCode !== 200 ||
+        !result.stream
+      ) {
+        return ensureLiveSeed();
       }
       blobEtag = strongEtag(result.blob.etag);
       const buffer = Buffer.from(await new Response(result.stream).arrayBuffer());
@@ -56,11 +68,11 @@ async function readRaw(): Promise<LiveStore> {
         error instanceof BlobNotFoundError ||
         (error instanceof Error &&
           (error.message.includes("not found") ||
-            error.message.includes("404")))
+            error.message.includes("404") ||
+            error.message.includes("NoSuchKey") ||
+            error.message.includes("Live blob get failed")))
       ) {
-        const seed = emptyLive();
-        await writeRaw(seed, null);
-        return seed;
+        return ensureLiveSeed();
       }
       throw error;
     }

@@ -148,7 +148,7 @@ export function AppClient() {
             <div>
               <p className="text-base font-medium text-orange">מערכת תודות צוות</p>
               <h1 className="brand-display text-3xl text-maroon sm:text-4xl">
-                גן ישראל · משפחת השלוחים הצעירים
+                גן ישראל | משפחת השלוחים הצעירים
               </h1>
               <p className="mt-2 text-base font-medium leading-7 text-muted">
                 שלום {user.name} · מתאמים מי מודה למי, ומעדכנים אחרי השיחה

@@ -49,3 +49,4 @@ next-env.d.ts
 /public/brand/logo.jpeg
 /public/brand/logo.webp
 /public/brand/logo.gif
+data/default-db.json

@@ -872,13 +872,13 @@
       "status": "done",
       "priority": 3,
       "createdAt": "2026-08-05T20:18:31.704Z",
-      "updatedAt": "2026-08-05T20:23:14.691Z",
+      "updatedAt": "2026-08-05T20:23:16.419Z",
       "contactMethod": "sms",
       "feedback": "נשלח SMS תודה",
       "needsAdditionalThanks": false,
       "additionalThankerIds": [],
       "additionalThankerNote": "",
-      "completedAt": "2026-08-05T20:23:14.691Z"
+      "completedAt": "2026-08-05T20:23:16.419Z"
     },
     {
       "id": "assign-msgj55ht-j54mdc",
@@ -917,7 +917,7 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:23:14.691Z",
-  "revision": 87,
-  "writeToken": "w-msgjavpf-rwcqvp"
+  "updatedAt": "2026-08-05T20:23:16.419Z",
+  "revision": 88,
+  "writeToken": "w-msgjax1f-dtvi7a"
 }

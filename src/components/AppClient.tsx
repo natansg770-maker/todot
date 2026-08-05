@@ -706,49 +706,51 @@ function MyTasks({
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      className="btn btn-ghost !px-3 !py-2.5 text-sm"
-                      disabled={pending || index === 0}
-                      onClick={() =>
-                        onAction(async () => {
-                          await movePriority(assignment.id, -1);
-                        })
-                      }
-                    >
-                      למעלה
-                    </button>
-                    <button
-                      className="btn btn-ghost !px-3 !py-2.5 text-sm"
-                      disabled={pending || index === mine.length - 1}
-                      onClick={() =>
-                        onAction(async () => {
-                          await movePriority(assignment.id, 1);
-                        })
-                      }
-                    >
-                      למטה
-                    </button>
-                    {assignment.status === "pending" && (
+                  <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         className="btn btn-ghost !px-3 !py-2.5 text-sm"
-                        disabled={pending}
-                        onClick={() => {
-                          setBusyId(assignment.id);
+                        disabled={pending || index === 0}
+                        onClick={() =>
                           onAction(async () => {
-                            try {
-                              await releaseAssignmentApi(assignment.id);
-                            } finally {
-                              setBusyId(null);
-                            }
-                          });
-                        }}
+                            await movePriority(assignment.id, -1);
+                          })
+                        }
                       >
-                        שחרור
+                        למעלה
                       </button>
-                    )}
+                      <button
+                        className="btn btn-ghost !px-3 !py-2.5 text-sm"
+                        disabled={pending || index === mine.length - 1}
+                        onClick={() =>
+                          onAction(async () => {
+                            await movePriority(assignment.id, 1);
+                          })
+                        }
+                      >
+                        למטה
+                      </button>
+                      {assignment.status === "pending" && (
+                        <button
+                          className="btn btn-ghost !px-3 !py-2.5 text-sm"
+                          disabled={pending}
+                          onClick={() => {
+                            setBusyId(assignment.id);
+                            onAction(async () => {
+                              try {
+                                await releaseAssignmentApi(assignment.id);
+                              } finally {
+                                setBusyId(null);
+                              }
+                            });
+                          }}
+                        >
+                          שחרור
+                        </button>
+                      )}
+                    </div>
                     <button
-                      className="btn btn-secondary"
+                      className="btn btn-secondary w-full sm:w-auto"
                       onClick={() => onOpen(assignment)}
                     >
                       {assignment.status === "done"

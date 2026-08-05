@@ -248,6 +248,15 @@ export function LiveLayer({
         ))}
       </div>
 
+      {(panel === "updates" || panel === "chat") && (
+        <button
+          type="button"
+          className="float-scrim"
+          aria-label="סגירת חלון"
+          onClick={() => setPanel("none")}
+        />
+      )}
+
       {panel === "updates" && (
         <div className="float-panel" role="dialog" aria-label="לוח עדכונים">
           <div className="float-panel-head">

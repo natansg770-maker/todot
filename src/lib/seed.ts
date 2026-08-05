@@ -3,6 +3,7 @@ import {
   hashPassword,
   SENIOR_NAMES,
 } from "./passwords";
+import { phoneForPerson } from "./phones";
 import { ADMIN_NAME, type Database, type Person, type Role } from "./types";
 
 function id(prefix: string, index: number) {
@@ -130,17 +131,22 @@ export function createSeedDatabase(): Database {
 
   const people: Person[] = [];
   let personIndex = 1;
+  const nameOccurrence = new Map<string, number>();
 
   for (const [key, names] of Object.entries(peopleByRole)) {
     for (const name of names) {
+      const occurrence = nameOccurrence.get(name) ?? 0;
+      nameOccurrence.set(name, occurrence + 1);
       const isSenior = SENIOR_NAMES.has(name);
       const defaultPassword = DEFAULT_SENIOR_PASSWORDS[name];
+      const phone = phoneForPerson(name, occurrence);
       people.push({
         id: id("person", personIndex++),
         name,
         roleId: roleIdByKey[key],
         isSenior,
         isAdmin: name === ADMIN_NAME,
+        phone,
         passwordHash:
           isSenior && defaultPassword
             ? hashPassword(defaultPassword)

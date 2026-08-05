@@ -62,7 +62,7 @@ export async function POST(request: Request) {
           type: "join_approved",
           actorId: user.id,
           actorName: user.name,
-          message: `${user.name} אישר ל${requester} להצטרף לתודה ל${recipient}`,
+          message: `${user.name} אישר ל־${requester} להצטרף להודות ל־${recipient}`,
         });
       } else {
         const selfCancel = pending?.requesterId === user.id;
@@ -71,8 +71,8 @@ export async function POST(request: Request) {
           actorId: user.id,
           actorName: user.name,
           message: selfCancel
-            ? `${user.name} ביטל בקשה להצטרף לתודה ל${recipient}`
-            : `${user.name} דחה בקשה של ${requester} לתודה ל${recipient}`,
+            ? `${user.name} ביטל בקשה להצטרף להודות ל־${recipient}`
+            : `${user.name} דחה את בקשת ${requester} להצטרף להודות ל־${recipient}`,
         });
       }
       return NextResponse.json(result);
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
       type: "join_request",
       actorId: user.id,
       actorName: user.name,
-      message: `${user.name} ביקש להצטרף לתודה ל${personName(db.people, body.recipientId)} (אצל ${personName(db.people, body.targetAssigneeId)})`,
+      message: `${user.name} ביקש להצטרף להודות ל־${personName(db.people, body.recipientId)} (אצל ${personName(db.people, body.targetAssigneeId)})`,
     });
     return NextResponse.json({ request: claimRequest });
   } catch (error) {

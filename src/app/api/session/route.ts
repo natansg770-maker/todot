@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { recordActivity } from "@/lib/activity";
 import { authenticateSenior, getDatabase, publicPerson } from "@/lib/db";
 import { heartbeatPresence } from "@/lib/live-store";
 import { SESSION_COOKIE } from "@/lib/session";
@@ -45,12 +44,6 @@ export async function POST(request: Request) {
     await heartbeatPresence({ userId: user.id, name: user.name }).catch(
       () => undefined,
     );
-    await recordActivity({
-      type: "login",
-      actorId: user.id,
-      actorName: user.name,
-      message: `${user.name} התחבר למערכת`,
-    });
 
     return NextResponse.json({ user });
   } catch (error) {

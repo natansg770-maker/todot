@@ -62,7 +62,7 @@ export async function POST(request: Request) {
         type: "claim",
         actorId: user.id,
         actorName: user.name,
-        message: `${user.name} לקח תודה ל${recipient}`,
+        message: `${user.name} לקח על עצמו להודות ל־${recipient}`,
       });
       return NextResponse.json({ assignment });
     }
@@ -81,12 +81,14 @@ export async function POST(request: Request) {
         assignmentId: body.assignmentId,
         isAdmin: Boolean(user.isAdmin),
       });
-      await recordActivity({
-        type: "release",
-        actorId: user.id,
-        actorName: user.name,
-        message: `${user.name} שחרר את התודה ל${recipient}`,
-      });
+      if (existing) {
+        await recordActivity({
+          type: "release",
+          actorId: user.id,
+          actorName: user.name,
+          message: `${user.name} שחרר את המשימה להודות ל־${recipient}`,
+        });
+      }
       return NextResponse.json({ ok: true });
     }
 
@@ -109,12 +111,14 @@ export async function POST(request: Request) {
           isAdmin: false,
         });
       }
-      await recordActivity({
-        type: "delete",
-        actorId: user.id,
-        actorName: user.name,
-        message: `${user.name} מחק שיוך: ${assignee} → ${recipient}`,
-      });
+      if (existing) {
+        await recordActivity({
+          type: "delete",
+          actorId: user.id,
+          actorName: user.name,
+          message: `${user.name} מחק את השיוך של ${assignee} ל־${recipient}`,
+        });
+      }
       return NextResponse.json({ ok: true });
     }
 
@@ -156,7 +160,7 @@ export async function POST(request: Request) {
         type: "claim",
         actorId: user.id,
         actorName: user.name,
-        message: `${user.name} שייך ${assignments.length} תודות ל${personName(db.people, body.assigneeId)}`,
+        message: `${user.name} שייך ${assignments.length} תודות ל־${personName(db.people, body.assigneeId)}`,
       });
       return NextResponse.json({ assignments });
     }
@@ -177,7 +181,7 @@ export async function POST(request: Request) {
       type: "claim",
       actorId: user.id,
       actorName: user.name,
-      message: `${user.name} שייך ל${personName(db.people, body.assigneeId)} את ${personName(db.people, body.recipientId)}`,
+      message: `${user.name} שייך ל־${personName(db.people, body.assigneeId)} את ${personName(db.people, body.recipientId)}`,
     });
     return NextResponse.json({ assignment });
   } catch (error) {
@@ -236,7 +240,7 @@ export async function PATCH(request: Request) {
         type: "done",
         actorId: user.id,
         actorName: user.name,
-        message: `${user.name} סיים תודה ל${recipient}${method ? ` ${method}` : ""}`,
+        message: `${user.name} סיים להודות ל־${recipient}${method ? ` (${method})` : ""}`,
       });
     }
     return NextResponse.json({ assignment });
@@ -274,7 +278,7 @@ export async function DELETE(request: Request) {
       type: "delete",
       actorId: user.id,
       actorName: user.name,
-      message: `${user.name} מחק שיוך ל${recipient}`,
+      message: `${user.name} מחק את השיוך ל־${recipient}`,
     });
     return NextResponse.json({ ok: true });
   } catch (error) {

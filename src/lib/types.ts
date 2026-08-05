@@ -90,9 +90,18 @@ export type PresenceEntry = {
   lastSeen: string;
 };
 
+export type ChatMessage = {
+  id: string;
+  senderId: string;
+  senderName: string;
+  text: string;
+  createdAt: string;
+};
+
 export type LiveStore = {
   presence: Record<string, PresenceEntry>;
   activity: ActivityEvent[];
+  chat: ChatMessage[];
   updatedAt: string;
 };
 

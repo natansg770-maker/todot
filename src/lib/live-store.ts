@@ -6,11 +6,17 @@ import {
   get,
   put,
 } from "@vercel/blob";
-import type { ActivityEvent, LiveStore, PresenceEntry } from "./types";
+import type {
+  ActivityEvent,
+  ChatMessage,
+  LiveStore,
+  PresenceEntry,
+} from "./types";
 
 const PATHNAME = "data/live.json";
 const LOCAL_PATH = path.join(process.cwd(), "data", "live.json");
 const MAX_ACTIVITY = 40;
+const MAX_CHAT = 120;
 const ONLINE_MS = 45_000;
 const MAX_MUTATION_RETRIES = 10;
 
@@ -27,11 +33,23 @@ function strongEtag(etag: string | null | undefined): string | null {
 }
 
 function emptyLive(): LiveStore {
-  return { presence: {}, activity: [], updatedAt: new Date().toISOString() };
+  return {
+    presence: {},
+    activity: [],
+    chat: [],
+    updatedAt: new Date().toISOString(),
+  };
 }
 
 function uid(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function normalizeStore(data: LiveStore): LiveStore {
+  if (!data.presence) data.presence = {};
+  if (!Array.isArray(data.activity)) data.activity = [];
+  if (!Array.isArray(data.chat)) data.chat = [];
+  return data;
 }
 
 async function ensureLiveSeed(): Promise<LiveStore> {
@@ -54,10 +72,7 @@ async function readRaw(): Promise<LiveStore> {
       }
       blobEtag = strongEtag(result.blob.etag);
       const buffer = Buffer.from(await new Response(result.stream).arrayBuffer());
-      const data = JSON.parse(buffer.toString("utf8")) as LiveStore;
-      if (!data.presence) data.presence = {};
-      if (!Array.isArray(data.activity)) data.activity = [];
-      return data;
+      return normalizeStore(JSON.parse(buffer.toString("utf8")) as LiveStore);
     } catch (error) {
       if (
         error instanceof BlobNotFoundError ||
@@ -75,10 +90,7 @@ async function readRaw(): Promise<LiveStore> {
 
   try {
     const raw = await fs.readFile(LOCAL_PATH, "utf8");
-    const data = JSON.parse(raw) as LiveStore;
-    if (!data.presence) data.presence = {};
-    if (!Array.isArray(data.activity)) data.activity = [];
-    return data;
+    return normalizeStore(JSON.parse(raw) as LiveStore);
   } catch {
     return emptyLive();
   }
@@ -147,6 +159,7 @@ export async function getLiveSnapshot(): Promise<{
   onlineCount: number;
   online: { id: string; name: string }[];
   activity: ActivityEvent[];
+  chat: ChatMessage[];
   serverTime: string;
 }> {
   const store = await readRaw();
@@ -159,7 +172,10 @@ export async function getLiveSnapshot(): Promise<{
   return {
     onlineCount: online.length,
     online,
-    activity: store.activity.slice(0, MAX_ACTIVITY),
+    activity: store.activity
+      .filter((e) => e.type !== "login")
+      .slice(0, MAX_ACTIVITY),
+    chat: (store.chat ?? []).slice(-MAX_CHAT),
     serverTime: new Date().toISOString(),
   };
 }
@@ -170,7 +186,6 @@ export async function heartbeatPresence(input: {
 }): Promise<{ onlineCount: number }> {
   return mutateLive((store) => {
     const now = Date.now();
-    // Drop stale presence while writing heartbeat.
     for (const [id, entry] of Object.entries(store.presence)) {
       if (!isOnline(entry, now)) delete store.presence[id];
     }
@@ -191,6 +206,18 @@ export async function logActivity(input: {
   actorName: string;
   message: string;
 }): Promise<ActivityEvent> {
+  // Login noise made the board look fake — skip it entirely.
+  if (input.type === "login") {
+    return {
+      id: uid("evt"),
+      type: input.type,
+      actorId: input.actorId,
+      actorName: input.actorName,
+      message: input.message,
+      createdAt: new Date().toISOString(),
+    };
+  }
+
   return mutateLive((store) => {
     const event: ActivityEvent = {
       id: uid("evt"),
@@ -200,7 +227,37 @@ export async function logActivity(input: {
       message: input.message,
       createdAt: new Date().toISOString(),
     };
-    store.activity = [event, ...store.activity].slice(0, MAX_ACTIVITY);
+    store.activity = [event, ...store.activity]
+      .filter((e) => e.type !== "login")
+      .slice(0, MAX_ACTIVITY);
     return event;
+  });
+}
+
+export async function postChatMessage(input: {
+  senderId: string;
+  senderName: string;
+  text: string;
+}): Promise<ChatMessage> {
+  const text = input.text.trim();
+  if (!text) throw new Error("נא לכתוב הודעה");
+  if (text.length > 500) throw new Error("ההודעה ארוכה מדי");
+
+  return mutateLive((store) => {
+    const message: ChatMessage = {
+      id: uid("msg"),
+      senderId: input.senderId,
+      senderName: input.senderName,
+      text,
+      createdAt: new Date().toISOString(),
+    };
+    store.chat = [...(store.chat ?? []), message].slice(-MAX_CHAT);
+    return message;
+  });
+}
+
+export async function clearActivityFeed(): Promise<void> {
+  await mutateLive((store) => {
+    store.activity = [];
   });
 }

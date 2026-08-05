@@ -1,6 +1,7 @@
 import type {
   ActivityEvent,
   Assignment,
+  ChatMessage,
   ClaimRequest,
   ContactMethod,
   Database,
@@ -15,6 +16,7 @@ export type LiveSnapshot = {
   onlineCount: number;
   online: { id: string; name: string }[];
   activity: ActivityEvent[];
+  chat: ChatMessage[];
   serverTime: string;
 };
 
@@ -65,6 +67,16 @@ export async function postHeartbeat(): Promise<LiveSnapshot> {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "heartbeat" }),
+    }),
+  );
+}
+
+export async function sendChatMessageApi(text: string): Promise<LiveSnapshot> {
+  return parse(
+    await request("/api/live", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "chat", text }),
     }),
   );
 }

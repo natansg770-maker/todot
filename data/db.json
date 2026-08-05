@@ -878,10 +878,18 @@
       "id": "assign-msgj55ht-j54mdc",
       "assigneeId": "person-085",
       "recipientId": "person-021",
-      "status": "pending",
+      "status": "done",
       "priority": 4,
       "createdAt": "2026-08-05T20:18:47.440Z",
-      "updatedAt": "2026-08-05T20:18:47.440Z"
+      "updatedAt": "2026-08-05T20:21:21.984Z",
+      "contactMethod": "sms",
+      "feedback": "דיברנו אודות הפייפן",
+      "needsAdditionalThanks": true,
+      "additionalThankerIds": [
+        "person-003"
+      ],
+      "additionalThankerNote": "תגיד לו שהפייפן יצא מעולה ומוצלח למרות שהוא לא יצא כל יום ואתה יודע עד כמה קשה להכין פייפן כ\"ש וק\"ו תוך כדי הקעמפ וכו' וכו'",
+      "completedAt": "2026-08-05T20:21:21.984Z"
     },
     {
       "id": "assign-msgj5kd4-6r9itc",
@@ -903,7 +911,7 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:19:11.050Z",
-  "revision": 85,
-  "writeToken": "w-msgj5npm-4ivqhb"
+  "updatedAt": "2026-08-05T20:21:21.984Z",
+  "revision": 86,
+  "writeToken": "w-msgj8gqo-9uum95"
 }

@@ -1328,21 +1328,6 @@
       "additionalThankerIds": []
     },
     {
-      "id": "assign-msf9lhm9-5t4eu4",
-      "assigneeId": "person-085",
-      "recipientId": "person-065",
-      "status": "pending",
-      "createdAt": "2026-08-04T23:03:47.313Z",
-      "updatedAt": "2026-08-05T20:09:03.340Z",
-      "contactMethod": "phone",
-      "feedback": "היה מהים",
-      "needsAdditionalThanks": false,
-      "additionalThankerIds": [],
-      "additionalThankerNote": "",
-      "completedAt": null,
-      "priority": 1
-    },
-    {
       "id": "assign-msf9lhma-cc0j0b",
       "assigneeId": "person-086",
       "recipientId": "person-066",
@@ -1534,7 +1519,7 @@
     }
   ],
   "claimRequests": [],
-  "updatedAt": "2026-08-05T20:09:08.528Z",
-  "revision": 6,
-  "writeToken": "w-msgisqsw-gbn23m"
+  "updatedAt": "2026-08-05T20:09:11.159Z",
+  "revision": 7,
+  "writeToken": "w-msgisstz-jt9fcv"
 }

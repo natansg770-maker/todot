@@ -38,6 +38,9 @@ export function assignmentsForAssignee(
     .filter((a) => a.assigneeId === assigneeId)
     .sort((a, b) => {
       if (a.status !== b.status) return a.status === "pending" ? -1 : 1;
+      const pa = a.priority ?? Number.MAX_SAFE_INTEGER;
+      const pb = b.priority ?? Number.MAX_SAFE_INTEGER;
+      if (pa !== pb) return pa - pb;
       return a.createdAt.localeCompare(b.createdAt);
     });
 }

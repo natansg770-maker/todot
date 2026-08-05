@@ -26,6 +26,8 @@ export type Assignment = {
   assigneeId: string;
   recipientId: string;
   status: AssignmentStatus;
+  /** Lower number = higher personal priority */
+  priority?: number;
   contactMethod?: ContactMethod | null;
   feedback?: string;
   needsAdditionalThanks?: boolean;
@@ -36,10 +38,24 @@ export type Assignment = {
   updatedAt: string;
 };
 
+export type ClaimRequestStatus = "pending" | "approved" | "rejected";
+
+export type ClaimRequest = {
+  id: string;
+  recipientId: string;
+  requesterId: string;
+  targetAssigneeId: string;
+  note?: string;
+  status: ClaimRequestStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Database = {
   roles: Role[];
   people: Person[];
   assignments: Assignment[];
+  claimRequests: ClaimRequest[];
   updatedAt: string;
 };
 
@@ -51,4 +67,5 @@ export type Stats = {
   doneAssignments: number;
   unassignedRecipients: number;
   additionalThanksNeeded: number;
+  openClaimRequests: number;
 };

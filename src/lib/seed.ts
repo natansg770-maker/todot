@@ -153,6 +153,7 @@ export function createSeedDatabase(): Database {
     roles,
     people,
     assignments: [],
+    claimRequests: [],
     updatedAt: new Date().toISOString(),
   };
 }

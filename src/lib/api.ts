@@ -1,5 +1,6 @@
 import type {
   Assignment,
+  ClaimRequest,
   ContactMethod,
   Database,
   Person,
@@ -134,6 +135,68 @@ export async function createAssignmentApi(input: {
     }),
   );
   return data.assignment;
+}
+
+export async function claimAssignmentApi(recipientId: string): Promise<Assignment> {
+  const data = await parse<{ assignment: Assignment }>(
+    await request("/api/assignments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "claim", recipientId }),
+    }),
+  );
+  return data.assignment;
+}
+
+export async function releaseAssignmentApi(assignmentId: string): Promise<void> {
+  await parse(
+    await request("/api/assignments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "release", assignmentId }),
+    }),
+  );
+}
+
+export async function reorderAssignmentsApi(
+  assignmentIds: string[],
+): Promise<Assignment[]> {
+  const data = await parse<{ assignments: Assignment[] }>(
+    await request("/api/assignments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "reorder", assignmentIds }),
+    }),
+  );
+  return data.assignments;
+}
+
+export async function createClaimRequestApi(input: {
+  recipientId: string;
+  targetAssigneeId: string;
+  note?: string;
+}): Promise<ClaimRequest> {
+  const data = await parse<{ request: ClaimRequest }>(
+    await request("/api/claims", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "create", ...input }),
+    }),
+  );
+  return data.request;
+}
+
+export async function respondClaimRequestApi(input: {
+  requestId: string;
+  approve: boolean;
+}): Promise<{ request: ClaimRequest; assignment?: Assignment }> {
+  return parse(
+    await request("/api/claims", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "respond", ...input }),
+    }),
+  );
 }
 
 export async function createAssignmentsBulkApi(input: {

@@ -11,7 +11,10 @@ import {
   deleteRoleApi,
   fetchDb,
   fetchSession,
+  releaseAssignmentApi,
+  reorderAssignmentsApi,
   resetDbApi,
+  respondClaimRequestApi,
   setSession,
   updateAssignmentApi,
   updatePersonApi,
@@ -30,9 +33,10 @@ import {
   thankablePeople,
 } from "@/lib/helpers";
 import type { Assignment, ContactMethod, Person } from "@/lib/types";
+import { ClaimBoard } from "./ClaimBoard";
 import { Logo } from "./Logo";
 
-type Tab = "mine" | "overview" | "team" | "admin";
+type Tab = "mine" | "claim" | "overview" | "team" | "admin";
 
 export function AppClient() {
   const [db, setDb] = useState<DbResponse | null>(null);
@@ -153,12 +157,15 @@ export function AppClient() {
         </div>
         <nav
           className={`grid gap-2 border-t border-[var(--line)] bg-white/40 p-3 ${
-            user.isAdmin ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"
+            user.isAdmin
+              ? "grid-cols-2 sm:grid-cols-5"
+              : "grid-cols-2 sm:grid-cols-4"
           }`}
         >
           {(
             [
               ["mine", "המשימות שלי"],
+              ["claim", "לוקחים תודות"],
               ["overview", "סקירה"],
               ["team", "הצוות"],
               ...(user.isAdmin ? [["admin", "ניהול"] as const] : []),
@@ -189,7 +196,25 @@ export function AppClient() {
         <MyTasks
           db={db}
           user={user}
+          pending={pending}
           onOpen={(assignment) => setActiveAssignment(assignment)}
+          onAction={(action) => {
+            startTransition(() => {
+              void run(action);
+            });
+          }}
+        />
+      )}
+      {tab === "claim" && (
+        <ClaimBoard
+          db={db}
+          user={user}
+          pending={pending}
+          onAction={(action) => {
+            startTransition(() => {
+              void run(action);
+            });
+          }}
         />
       )}
       {tab === "overview" && <Overview db={db} />}
@@ -289,14 +314,18 @@ function LoginView({
 function MyTasks({
   db,
   user,
+  pending,
   onOpen,
+  onAction,
 }: {
   db: DbResponse;
   user: Person;
+  pending: boolean;
   onOpen: (assignment: Assignment) => void;
+  onAction: (action: () => Promise<void>) => void;
 }) {
   const mine = assignmentsForAssignee(db, user.id);
-  const pending = mine.filter((a) => a.status === "pending");
+  const pendingTasks = mine.filter((a) => a.status === "pending");
   const done = mine.filter((a) => a.status === "done");
   const suggestions = db.assignments.filter(
     (a) =>
@@ -304,6 +333,22 @@ function MyTasks({
       a.status === "done" &&
       a.additionalThankerIds?.includes(user.id),
   );
+  const incomingRequests = (db.claimRequests ?? []).filter(
+    (r) => r.status === "pending" && r.targetAssigneeId === user.id,
+  );
+  const outgoingRequests = (db.claimRequests ?? []).filter(
+    (r) => r.status === "pending" && r.requesterId === user.id,
+  );
+
+  async function movePriority(assignmentId: string, direction: -1 | 1) {
+    const ordered = mine.map((a) => a.id);
+    const index = ordered.indexOf(assignmentId);
+    const next = index + direction;
+    if (index < 0 || next < 0 || next >= ordered.length) return;
+    const swapped = [...ordered];
+    [swapped[index], swapped[next]] = [swapped[next], swapped[index]];
+    await reorderAssignmentsApi(swapped);
+  }
 
   return (
     <section className="animate-rise space-y-5">
@@ -314,7 +359,8 @@ function MyTasks({
               המשימות שלי
             </h2>
             <p className="mt-1 text-sm text-muted">
-              {pending.length} ממתינות · {done.length} בוצעו
+              {pendingTasks.length} ממתינות · {done.length} בוצעו · סדרו לפי
+              עדיפות
             </p>
           </div>
           <div className="min-w-[180px] flex-1 sm:max-w-xs">
@@ -332,12 +378,101 @@ function MyTasks({
         </div>
       </div>
 
+      {incomingRequests.length > 0 && (
+        <div className="rounded-[24px] border border-maroon/20 bg-maroon/5 p-4">
+          <h3 className="font-semibold text-maroon">בקשות להצטרף לתודות שלי</h3>
+          <ul className="mt-3 space-y-3">
+            {incomingRequests.map((request) => {
+              const recipient = personById(db, request.recipientId);
+              const requester = personById(db, request.requesterId);
+              return (
+                <li
+                  key={request.id}
+                  className="rounded-2xl bg-white/80 px-3 py-3 text-sm"
+                >
+                  <p>
+                    <strong>{requester?.name}</strong> מבקש גם להודות ל־
+                    <strong>{recipient?.name}</strong>
+                  </p>
+                  {request.note && (
+                    <p className="mt-1 text-muted">{request.note}</p>
+                  )}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      className="btn btn-secondary !px-3 !py-2 text-xs"
+                      disabled={pending}
+                      onClick={() =>
+                        onAction(async () => {
+                          await respondClaimRequestApi({
+                            requestId: request.id,
+                            approve: true,
+                          });
+                        })
+                      }
+                    >
+                      אישור
+                    </button>
+                    <button
+                      className="btn btn-ghost !px-3 !py-2 text-xs"
+                      disabled={pending}
+                      onClick={() =>
+                        onAction(async () => {
+                          await respondClaimRequestApi({
+                            requestId: request.id,
+                            approve: false,
+                          });
+                        })
+                      }
+                    >
+                      דחייה
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {outgoingRequests.length > 0 && (
+        <div className="rounded-[24px] border border-orange/40 bg-orange/10 p-4">
+          <h3 className="font-semibold text-maroon">הבקשות ששלחתי</h3>
+          <ul className="mt-3 space-y-2">
+            {outgoingRequests.map((request) => {
+              const recipient = personById(db, request.recipientId);
+              const target = personById(db, request.targetAssigneeId);
+              return (
+                <li
+                  key={request.id}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-white/70 px-3 py-3 text-sm"
+                >
+                  <span>
+                    בקשה על <strong>{recipient?.name}</strong> אצל {target?.name}
+                  </span>
+                  <button
+                    className="underline text-maroon"
+                    disabled={pending}
+                    onClick={() =>
+                      onAction(async () => {
+                        await respondClaimRequestApi({
+                          requestId: request.id,
+                          approve: false,
+                        });
+                      })
+                    }
+                  >
+                    ביטול בקשה
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       {suggestions.length > 0 && (
         <div className="rounded-[24px] border border-orange/40 bg-orange/10 p-4">
-          <h3 className="font-semibold text-maroon">בקשות לתודה נוספת</h3>
-          <p className="mt-1 text-sm text-muted">
-            מישהו ציין שכדאי שגם אתה תודה לאנשים האלה
-          </p>
+          <h3 className="font-semibold text-maroon">הומלץ שגם תודה</h3>
           <ul className="mt-3 space-y-2">
             {suggestions.map((a) => {
               const recipient = personById(db, a.recipientId);
@@ -363,10 +498,10 @@ function MyTasks({
       )}
 
       {mine.length === 0 ? (
-        <EmptyState text="עדיין לא שויכו אליך אנשים להודות להם. נתן שמחה יכול לשייך משימות במסך הניהול." />
+        <EmptyState text="עדיין אין לך משימות. עברו לטאב ״לוקחים תודות״ ובחרו למי להודות." />
       ) : (
         <div className="space-y-3">
-          {mine.map((assignment) => {
+          {mine.map((assignment, index) => {
             const recipient = personById(db, assignment.recipientId);
             if (!recipient) return null;
             return (
@@ -377,6 +512,9 @@ function MyTasks({
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
+                      <span className="chip chip-warn">
+                        עדיפות {assignment.priority ?? index + 1}
+                      </span>
                       <h3 className="text-lg font-bold text-ink">
                         {recipient.name}
                       </h3>
@@ -403,12 +541,51 @@ function MyTasks({
                       </p>
                     )}
                   </div>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => onOpen(assignment)}
-                  >
-                    {assignment.status === "done" ? "עדכון פרטים" : "עדכון אחרי תודה"}
-                  </button>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      className="btn btn-ghost !px-3 !py-2 text-xs"
+                      disabled={pending || index === 0}
+                      onClick={() =>
+                        onAction(async () => {
+                          await movePriority(assignment.id, -1);
+                        })
+                      }
+                    >
+                      למעלה
+                    </button>
+                    <button
+                      className="btn btn-ghost !px-3 !py-2 text-xs"
+                      disabled={pending || index === mine.length - 1}
+                      onClick={() =>
+                        onAction(async () => {
+                          await movePriority(assignment.id, 1);
+                        })
+                      }
+                    >
+                      למטה
+                    </button>
+                    {assignment.status === "pending" && (
+                      <button
+                        className="btn btn-ghost !px-3 !py-2 text-xs"
+                        disabled={pending}
+                        onClick={() =>
+                          onAction(async () => {
+                            await releaseAssignmentApi(assignment.id);
+                          })
+                        }
+                      >
+                        שחרור
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => onOpen(assignment)}
+                    >
+                      {assignment.status === "done"
+                        ? "עדכון פרטים"
+                        : "עדכון אחרי תודה"}
+                    </button>
+                  </div>
                 </div>
               </article>
             );
